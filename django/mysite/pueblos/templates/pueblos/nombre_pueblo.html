@@ -1,0 +1,29 @@
+{% if pbls%}
+    <table>
+	<tr>
+		<td><strong>id_Pueblo</strong></td>
+		<td><strong>Nombre Pueblo</strong></td>
+		<td><strong>url</strong></td>
+		<td><strong>Provincia</strong></td>
+
+	</tr>
+    {% for p in pbls %}
+	<tr>
+		<td>{{ p.id }} </td>
+		<td>{{ p.dspueblo }}</td>
+		{% if p.url != ''%}
+			{% if p.redirec != '' and p.redirec != None%}
+			<td><a HREF= {{ p.redirec }} >{{p.redirec}}</a></td>
+			{% else %}
+			<td><a HREF= {{ p.url }} >{{p.url}}</a></td>
+			{% endif %}
+		{% else %}
+			<td></td>
+		{% endif %}
+		<td>{{ pr.dsprovincia}} </td>
+	</tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No pueblos are available.</p>
+{% endif %}

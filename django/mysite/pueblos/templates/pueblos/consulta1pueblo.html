@@ -1,0 +1,25 @@
+{% if pbls%}
+{% for p in pbls %}
+var obj = {'pueblo': {
+	'id' : '{{p.id}}',
+	'nombre': '{{p.dspueblo}}',
+	'coordenadas':{
+		'latitud': '{{p.latitud}}',
+		'longitud: '{{p.longitud}}'
+	},
+	'url' : '{% if p.url != ''%}{% if p.redirec != '' and p.redirec != None%}{{ p.redirec }}',{% else %}{{ p.url }}',{% endif %}{%else%}',{%endif%}
+	'provincia' : '{{pr.dsprovincia}}'
+	'noticias' : [	
+	{%for n in not%}
+		{'cabecera': ''
+			'resumen': ''
+			'contenido': ''
+			'url_noticia': ''
+			},
+	{%endfor%}
+			]
+	} 
+}
+{% endfor %}
+{% endif %}
+	

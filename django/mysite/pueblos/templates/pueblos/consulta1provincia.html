@@ -1,0 +1,26 @@
+{% if pbls%}
+<pre>
+{"provincia" :{
+	"nombre" : "{{pr.dsprovincia}}",
+	"pueblo": [
+	{% for p in pbls %}	{
+		"id" : "{{p.id}}",
+		"nombre": "{{p.dspueblo}}",
+		"latitud": "{{p.latitud}}",
+		"longitud: "{{p.longitud}}",
+		"url" : "{% if p.url != ''%}{% if p.redirec != '' and p.redirec != None%}{{ p.redirec }}",{% else %}{{ p.url }}",{% endif %}{%else%}",{%endif%}
+		"noticias" : [	
+		{%for n in not%}
+			{   "cabecera": ""
+				"resumen": ""
+				"contenido": ""
+				"url_noticia": ""
+			},
+		{%endfor%}
+			]
+		}{%if p.dspueblo != lp.dspueblo%},{%endif%}
+	{% endfor %}
+	]
+}
+</pre>
+{% endif %}	
