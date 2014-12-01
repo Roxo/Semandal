@@ -6,6 +6,7 @@ import noticias_tipo1
 import noticias_tipo2
 import noticias_tipo5
 import noticias_tipo6
+import noticias_tipo7
 import urllib2
 import MySQLdb
 import time
@@ -19,7 +20,7 @@ def extraer(url, p_id):
         for element in lista:
             url2 = url[:-26] + "content/noticias_list_xmlpage.html?target=" + element
             noticias_content.extraer(url2, 1, p_id)
-            return
+        return
     if "actualidad" in url:
         if "noticias" in url:
             if "index.jsp" in url:
@@ -31,7 +32,7 @@ def extraer(url, p_id):
                     for element in lista:
                         url2 = url[:-9] + element + '/'
                         noticias_tipo1.extraer(url2, 1,p_id)
-                        return
+                    return
             else:
                 noticias_tipo5.extraer(url, 1,p_id)
                 return
@@ -40,17 +41,23 @@ def extraer(url, p_id):
             for element in lista:
                 url2 = url + element + '/'
                 noticias_tipo1.extraer(url2, 0, p_id)
-                return
+            return
     if "noticias" in url:
         noticias_tipo5.extraer(url, 1, p_id)
         return
     if "noticias.html?general=true" in url:
         noticias_tipo6.extraer(url, 1, p_id)
         return
+    if "home.jsp" in url:
+        noticias_tipo7.extraer(url, 1, p_id)
+        return
+	
 print "Empezamos!"
-provincias = ["4","11","14","18","21","23","29","41"]
+#provincias = ["4","11","14","18","21","23","29","41"]
+provincias = ["41"]
 for p in provincias:
     cur = Pueblo.objects.filter(provincia_id = p, opencms = 1)
+    #cur = Pueblo.objects.filter(id = 6135, opencms = 1)
     for row in cur: 
         if row.url != '' and "trebujena" not in row.url and "cambil" not in row.url:
             extraer(localizador.getURLNoticias(row.url), row.id)

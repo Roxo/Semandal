@@ -26,8 +26,13 @@ urlpatterns = patterns('',
     url(r'^api/noticias/categorias/$',views.vercategorias, name='vercategorias'),
     url(r'^api/noticias/ultima/$',views.lastnot, name='lastnot'),
     url(r'^api/comentarios/ultimo/$',views.lastcomment, name='lascomment'),
-    url(r'^api/busqueda/(?P<datos>[\,\:\(\w\-\_\d\)]*)/$',views.busqueda, name='busqueda'),
-   # url(r'^pueblos/(?P<p_id>\d+)/noticias/?P<id_noticia>\d+/$', views.idpueblo, name='idpueblo'),
+    url(r'^api/busqueda/(?P<datos>[\,s\:\(\w\-\_\d\)]*)/$',views.busqueda, name='busqueda'),
+    url(r'^api/deuda/(?P<p_id>\d+]*)/$',views.getdeuda, name='getdeuda'),
+    url(r'^api/C_insert/(?P<n_id>\d+]*)/(?P<u_id>\d+]*)/(?P<dsc>.*)$',views.insertcomment, name='insertcomment'),
+    url(r'^api/logginuser/(?P<id_user>\d+)/$',views.ulog,name='ulog'),
+    url(r'^api/log/(?P<user>[\w\@\.]*)/(?P<pas>.*)/$',views.log,name='log'),
+    url(r'^api/register/(?P<user>[\w\@\.]*)/(?P<fn>[\w\@\.]*)/(?P<sn>[\w\@\.]*)/(?P<usr>[\w\@\.]*)/(?P<pas>.*)/(?P<mail>[\w\@\.]*)/$',views.register,name='register'),
+  # url(r'^pueblos/(?P<p_id>\d+)/noticias/?P<id_noticia>\d+/$', views.idpueblo, name='idpueblo'),
 
 
 )

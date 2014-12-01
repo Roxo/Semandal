@@ -42,22 +42,25 @@ class Categoria(models.Model):
 
 class Noticias(models.Model):
 	pueblo = models.ForeignKey(Pueblo)
-	dstitular = models.CharField(max_length=500,null = True)
+	dstitular = models.CharField(max_length=1500,null = True)
 	dscuerpo = models.CharField(max_length=50000,null = True)
 	fecha = models.DateField(null=True)
-	resumen = models.CharField(max_length=2000,null=True)
+	resumen = models.CharField(max_length=2500,null=True)
 	url = models.CharField(max_length=300,null=True)
 	etiqueta = models.ForeignKey(Categoria,null=True)
-
+	
 class Usuario(models.Model):
 	dsusuario =  models.CharField(max_length=100)
+	dsnombre = models.CharField(max_length=100)
+	dsapellido1 = models.CharField(max_length=100)
+	dsapellido2 = models.CharField(max_length=100)
 	pueblo = models.ForeignKey(Pueblo)
 	token = models.CharField(max_length=200)
 	correo = models.CharField(max_length=100,null=True)
 
 class Amigode(models.Model):
 	idamistad = models.ForeignKey(Usuario,related_name='soy_amigo')
-	idamisgode = models.ForeignKey(Usuario,related_name='es_mi_amigo')
+	idamigode = models.ForeignKey(Usuario,related_name='es_mi_amigo')
 
 class Comentarios(models.Model):
 	dscomentario = models.CharField(max_length=200)

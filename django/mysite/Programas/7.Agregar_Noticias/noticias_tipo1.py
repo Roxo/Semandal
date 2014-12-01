@@ -23,11 +23,13 @@ def extraer(url, nivel, pueblo_id):
 		Hay dos posibilidades
 		Las noticias estan en listas desordenadas <ul>, esta lista tiene como atributo class "noticias"
 		Las noticias estan en un div de class content-noticias group"""
+	print url
 	p = url.split('/')
 	categoria = p[-2]
-	cat = Categoria.objects.filter(etiqueta = categoria)
+	print categoria
+	cat = Categoria.objects.filter(etiqueta__exact = categoria)
 	if cat is None:
-		cat = Categoria.objects.filter(etiqueta = "sin_categoria")
+		cat = Categoria.objects.filter(etiqueta__exact = "sin_categoria")
 	href= ""
 	l = len(p)
 	for y in range(3,l-1):
@@ -53,11 +55,9 @@ def extraer(url, nivel, pueblo_id):
 			titular = None
 			enlace = None
 			cuerpo = None
-			dia = element.find('p')
+			dia = element.find('strong', attrs={'class' : 'date'})
 			if dia is not None:
 				fecha = dia.getText()
-				fecha = fecha[1:]
-				fecha = fecha[:-1]
 			else:
 				nfecha = element.getText()
 				fecha = re.findall("\[(.*?)\]", nfecha)
@@ -66,6 +66,7 @@ def extraer(url, nivel, pueblo_id):
 			if titu is not None:
 				titular = titu.text
 				titular = modifica_string.elimina_blancos(titular)
+				titular = modifica_string.elimina_char_especial(titular)
 				titular = titular.replace("\n", "-")
 				partes = url.split('/')
 				U = partes[0]+'//'+partes[2]
@@ -74,16 +75,25 @@ def extraer(url, nivel, pueblo_id):
 			if c is not None:
 				cuerpo = c.text
 				cuerpo = modifica_string.elimina_blancos(cuerpo)
+				cuerpo = modifica_string.elimina_char_especial(cuerpo)
 				cuerpo = cuerpo.replace("\n", "-")
 			texto_noticia = get_noticia(enlace)
 			if texto_noticia == "":
 				texto_noticia = None
 			texto_noticia = modifica_string.elimina_blancos(texto_noticia)
-			texto_noticia = texto_noticia.replace("\n", "-")
+			texto_noticia = modifica_string.elimina_char_especial(texto_noticia)
+			if texto_noticia is not None:
+				texto_noticia = texto_noticia.replace("\n", "-")
 			fecha = fecha.split("/")
-			dia = date(day = int(fecha[0]), month = int(fecha[1]), year = int(fecha[2]))
-			p = Noticias(dstitular = titular, dscuerpo = texto_noticia, resumen = cuerpo, url = enlace, etiqueta = cat[0], fecha = dia, pueblo_id = pueblo_id)
-			p.save()
+			yr = int(fecha[2])
+			if yr < 20:
+				yr = 2000 + yr
+			if yr < 99:
+				yr = 1900 + yr
+			dia = date(day = int(fecha[0]), month = int(fecha[1]), year = yr)
+			for e in cat:
+				p = Noticias(dstitular = titular, dscuerpo = texto_noticia, resumen = cuerpo, url = enlace, etiqueta = e, fecha = dia, pueblo_id = pueblo_id)
+				p.save()
 		if len(lis) != 0:
 			digitos = len(str(nivel))
 			nivel = nivel + 10

@@ -1,9 +1,9 @@
 import urllib2
 import modifica_string
+from datetime import date
 from bs4 import BeautifulSoup
 from pueblos.models import Categoria
 from pueblos.models import Noticias
-
 def get_noticia(url):
 	try:
 		respuesta = urllib2.urlopen(url)
@@ -15,7 +15,6 @@ def get_noticia(url):
 		return modifica_string.elimina_comentarios(noticias[0].text)
 	else:
 		noticias = soup.body.find_all('div', attrs={'id' : 'content_gordo'})
-		print type(noticias)
 		if len(noticias) != 0:
 			return modifica_string.elimina_comentarios(noticias[0].text)
 		else:
@@ -29,7 +28,10 @@ def format_fecha(fecha):
 		if partes[1] == meses[y]:
 			mes = y + 1
 			break
-	f = str(partes[0]) +'/'+ str(mes) +'/'+ str(partes[2])[-2:]
+	if  mes  < 10:
+		f = str(partes[0]) +'/0'+ str(mes) +'/'+ str(partes[2])
+	else:
+		f = str(partes[0]) +'/'+ str(mes) +'/'+ str(partes[2])
 	return f
 
 def extraer(url, nivel, pueblo_id):
@@ -40,9 +42,9 @@ def extraer(url, nivel, pueblo_id):
 	"""
 	c = url.split("=")
 	categoria = c[-1]
-	cat = Categoria.objects.filter(etiqueta = categoria)
+	cat = Categoria.objects.filter(etiqueta__exact = categoria)
 	if cat is None:
-		cat = Categoria.objects.filter(etiqueta = "sin_categoria")	
+		cat = Categoria.objects.filter(etiqueta__exact = "sin_categoria")	
 	try:
 		respuesta = urllib2.urlopen(url)
 	except:
@@ -50,7 +52,6 @@ def extraer(url, nivel, pueblo_id):
 	if "alert.html" in respuesta.geturl():
 		return []
 	soup = BeautifulSoup(respuesta)
-	x = soup.body.find_all('a', attrs={'class' : 'enlace_localizador'})
 	noticias_odd = soup.body.find_all('div', attrs={'class' : 'odd-item'})
 	if len(noticias_odd) == 0:
 		return []
@@ -59,14 +60,15 @@ def extraer(url, nivel, pueblo_id):
 		titular = None
 		enlace = None
 		cuerpo = None
-		date = element.find('span', attrs={'class' : 'date'})
-		if date is not None:
-			fecha = date.text
+		date2 = element.find('span', attrs={'class' : 'date'})
+		if date2 is not None:
+			fecha = date2.text
 			fecha = format_fecha(fecha)
 		titu = element.find('span', attrs={'class' : 'item-title'})
 		if titu is not None:
 			titular = titu.text
 			titular = modifica_string.elimina_blancos(titular)
+			titular = modifica_string.elimina_char_especial(titular)
 			titular = titular.replace("\n", "-")
 		li = element.find('a')
 		if li is not None:
@@ -75,29 +77,42 @@ def extraer(url, nivel, pueblo_id):
 			enlace = U + li.get('href')
 		cuerpo = element.text
 		cuerpo = modifica_string.elimina_blancos(cuerpo)
+		cuerpo = modifica_string.elimina_char_especial(cuerpo)
 		cuerpo = cuerpo.replace("\n", "-")
+		if len(cuerpo) > 600:
+			cuerpo = None
 		texto_noticia = get_noticia(enlace)
 		if texto_noticia == "":
 			texto_noticia = None
 		texto_noticia = modifica_string.elimina_blancos(texto_noticia)
-		texto_noticia = texto_noticia.replace("\n", "-")
-		fecha = fecha.split("/")
-		dia = date(day = int(fecha[0]), month = int(fecha[1]), year = int(fecha[2]))
-		p = Noticias(dstitular = titular, dscuerpo = texto_noticia, resumen = cuerpo, url = enlace, etiqueta = cat[0], fecha = dia, pueblo_id = pueblo_id)
-		p.save()
+		texto_noticia = modifica_string.elimina_char_especial(texto_noticia)
+		if texto_noticia is not None:
+			texto_noticia = texto_noticia.replace("\n", "-")
+		if fecha is not None:
+			fecha = unicode(fecha)
+			fecha = fecha.split("/")
+			dia =date(day = int(fecha[0]), month = int(fecha[1]), year = int(fecha[2]))
+
+		else:
+			dia = None
+		for e in cat:
+			p = Noticias(dstitular = titular, dscuerpo = texto_noticia, resumen = cuerpo, url = enlace, etiqueta = e, fecha = dia, pueblo_id = pueblo_id)
+			p.save()
 	noticias_even = soup.body.find_all('div', attrs={'class' : 'even-item'})
 	for element in noticias_even:
 		fecha = None
 		titular = None
 		enlace = None
 		cuerpo = None
-		date = element.find('span', attrs={'class' : 'date'})
-		if date is not None:
-			fecha = date.text
+		date2 = element.find('span', attrs={'class' : 'date'})
+		if date2 is not None:
+			fecha = date2.text
+			fecha = format_fecha(fecha)
 		titu = element.find('span', attrs={'class' : 'item-title'})
 		if titu is not None:
 			titular = titu.text
 			titular = modifica_string.elimina_blancos(titular)
+			titular = modifica_string.elimina_char_especial(titular)
 			titular = titular.replace("\n", "-")
 		li = element.find('a')
 		if li is not None:
@@ -106,16 +121,26 @@ def extraer(url, nivel, pueblo_id):
 			enlace = U + li.get('href')
 		cuerpo = element.text
 		cuerpo = modifica_string.elimina_blancos(cuerpo)
+		cuerpo = modifica_string.elimina_char_especial(cuerpo)
 		cuerpo = cuerpo.replace("\n", "-")
+		if len(cuerpo) > 600:
+			cuerpo = None
 		texto_noticia = get_noticia(enlace)
 		if texto_noticia == "":
 			texto_noticia = None
 		texto_noticia = modifica_string.elimina_blancos(texto_noticia)
-		texto_noticia = texto_noticia.replace("\n", "-")
-		fecha = fecha.split("/")
-		dia = date(day = int(fecha[0]), month = int(fecha[1]), year = int(fecha[2]))
-		p = Noticias(dstitular = titular, dscuerpo = texto_noticia, resumen = cuerpo, url = enlace, etiqueta = cat[0], fecha = dia, pueblo_id = pueblo_id)
-		p.save()
+		texto_noticia = modifica_string.elimina_char_especial(texto_noticia)
+		if texto_noticia is not None:
+			texto_noticia = texto_noticia.replace("\n", "-")
+		if fecha is not None:
+			print fecha
+			fecha = fecha.split("/")
+			dia =date(day = int(fecha[0]), month = int(fecha[1]), year = int(fecha[2]))
+		else:
+			dia = None
+		for e in cat:
+			p = Noticias(dstitular = titular, dscuerpo = texto_noticia, resumen = cuerpo, url = enlace, etiqueta = e, fecha = dia, pueblo_id = pueblo_id)
+			p.save()
 	digitos = len(str(nivel))
 	if nivel == 1:
 		nivel = nivel + 1

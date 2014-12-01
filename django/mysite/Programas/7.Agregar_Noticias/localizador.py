@@ -19,10 +19,12 @@ def test(url):
         url - Direccion web
     """
     respuesta = urllib2.urlopen(url)
-    print respuesta.geturl();
-    print respuesta.getcode();
-    print respuesta.info();
+    #print respuesta.geturl();
+    #print respuesta.getcode();
+    #print respuesta.info();
     #print respuesta.read();
+    print getURLNoticias(url)
+    
 def get_content(url):
     print url
     respuesta = ""
@@ -113,14 +115,19 @@ def URLCompleta(url):
         else:
             return respuesta.geturl() + '/'
     codigo_html = respuesta.read()
+    reg_exp = 'HTTP-EQUIV="REFRESH"\s*content="\d; url=/?([\W|\w]+)"[\W|\w]+'
+    if len(codigo_html) > 90:
+        reg_exp = 'HTTP-EQUIV="REFRESH"\s*content="\d; url=/?([\W|\w]+)"[\W|\w]+</head>'
     if "HTTP-EQUIV=" in codigo_html:
-        nueva_url = re.findall('HTTP-EQUIV="REFRESH" content="0; url=\W((\W|\w)+)"\W*>', codigo_html, re.I)
-        if "index" in nueva_url[0][0]:
-            opencms = nueva_url[0][0][:-10]
+        nueva_url = re.findall(reg_exp, codigo_html, re.I)
+        if "index" in nueva_url[0]:
+            opencms = nueva_url[0][:-10]
         else:
-            opencms = nueva_url[0][0]
+            opencms = nueva_url[0]
         if opencms[-1] != '/':
             opencms = opencms + '/'
+        if opencms[1] != '/' and url[-1] != '/':
+            opencms = '/' + opencms
         return url + opencms
     else:
         enlaces = re.findall(r'href=[\'"]?([^\'" >]+)', codigo_html)
@@ -132,7 +139,6 @@ def URLCompleta(url):
                 enlaces_aux.append(Y)
                 
         return url + most_common(enlaces_aux)
-
 def most_common(L):
     """ Obtiene el elemento mas comun de una lista 
     

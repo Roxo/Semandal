@@ -222,28 +222,35 @@ def noticias(request,p_id,ind1,ind2):
 	return HttpResponse(var);
 
 def amigos(request,id_user):
-	id_amigos = Amigode.objects.filter(id=id_user)
+	id_amigos = Amigode.objects.filter(idamistad = id_user)
 	if len(id_amigos) != 0:
 		retrieveamigos=""
 		for i in id_amigos:
 			usuario=i
-			retrieveamigos=retrieveamigos+'{"id_amigo":"'+usuario.id+'","amigo":"'+usuario.dsusuario+'"},'
+			ap1=usuario.idamigode.dsapellido1
+			if ap1 is None:
+				ap1 = ""
+			ap2=usuario.idamigode.dsapellido2
+			if ap2 is None:
+				ap2 = ""
+			retrieveamigos=retrieveamigos+'{"id_amigo":"'+str(usuario.idamigode.id)+'","amigo":"'+usuario.idamigode.dsusuario+'","nombre":"'+usuario.idamigode.dsnombre+'","ap1":"'+ap1+'","ap2":"'+ap2+'","pueblo":"'+usuario.idamigode.pueblo.dspueblo+'","idpueblo":"'+str(usuario.idamigode.pueblo.id)+'"},'
 		retrieveamigos=retrieveamigos[0:len(retrieveamigos)-1]
-		ret='{"amigos":['+retrieveamigos+']}'
+		ret='{"namigos":"'+str(len(id_amigos))+'","amigos":['+retrieveamigos+']}'
 	else:
 		ret = '{"amigos":"este usuario no tiene amigos"}'
 	return HttpResponse(ret)
 
 def getperfil(request,id_user):
-	user = Usuario.objects.filter(id= id_user)[0]
+	user = Usuario.objects.filter(id= id_user)
 	if len(user) != 0:
+		user = user[0]
 		t = user.pueblo.id
 		pueblo = Pueblo.objects.filter(id = t)[0]
 		retrievecomentarios=getlastcomentarios(id_user)
-		ret = '{"id":"'+user.dsusuario+'","pueblo":"'+pueblo.dspueblo+'","busquedaimagenes":"'+pueblo.busqueda.replace(" ","_")+'","comentarios_recientes":['+retrievecomentarios+']}'
+		ret = '{"id":"'+str(user.id)+'","dsusuario":"'+user.dsusuario+'","dspueblo":"'+pueblo.dspueblo+'","pid":"'+str(pueblo.id)+'","busquedaimagenes":"'+pueblo.busqueda.replace(" ","_")+'","puntuacion":"'+retrievecomentarios[0]+'","comentarios_recientes":['+retrievecomentarios[1]+'],"noticias":['+retrievecomentarios[2]+']}'
 	else:
 		ret = '{"id":"este usuario no existe"}'
-	agregarabd("api/usuario/"+id_users)
+	agregarabd("api/usuario/"+id_user)
 	return HttpResponse(ret)
 
 def llamadas(request):
@@ -256,19 +263,29 @@ def llamadas(request):
 	return HttpResponse(obj)
 
 def getlastcomentarios(id_usuario):
+	array=[]
 	rez = Comentarios.objects.filter(id_user=id_usuario)[:5]
 	obj=""
+	noti=""
+	puntuacion = 0;
 	for i in rez:
+		noticia = Noticias.objects.filter(id=i.id_not.id)[0]
+		puntuacion = puntuacion + i.puntuacion
 		obj = obj+'{"comentario":"'+i.dscomentario+'"},'
+		noti = noti+'{"idnoticia":"'+str(noticia.id)+'","dstitular":"'+noticia.dstitular+'"},'
 	obj = obj[0:len(obj)-1]
-	return obj
+	noti = noti[0:len(noti)-1]
+	array.append(str(puntuacion))
+	array.append(obj)
+	array.append(noti)
+	return array
 
 def getnot(request,n_id):
 	noticia = Noticias.objects.filter(id=n_id)
 	if len(noticia) != 0:
 		noticia=noticia[0]
 		obj = ""
-		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+noticia.dstitular.replace('"','\"')+'","cuerpo":"'+noticia.dscuerpo.replace('"','\"')+'","fecha":"'+str(noticia.fecha)+'"}'
+		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+noticia.dstitular.replace('"','\"')+'","cuerpo":"'+noticia.dscuerpo.replace('"','\"')+'","fecha":"'+str(noticia.fecha)+'","url":"'+noticia.url+'"},'
 	else:
 		obj = '{"id_noticia"="No existe esta noticia"}'
 	agregarabd("api/noticias/"+n_id)
@@ -281,9 +298,9 @@ def getcomentarios(request,n_id):
 		for i in rez:
 			obj = obj+'{"id_user":"'+str(i.id_user.id)+'","usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario+'","puntuacion":"'+str(int(i.puntuacion))+'"},'
 		obj = obj[0:(len(obj)-1)]
-		obj = '{"comentarios":['+obj+']}'
+		obj = '{"ncomentarios":"'+str(len(rez))+'","comentarios":['+obj+']}'
 	else:
-		obj = '{"comentarios":"No existen comentarios en esta noticia"}'
+		obj = '{"ncomentarios":"0","comentarios":"No existen comentarios en esta noticia"}'
 	agregarabd("api/noticias/"+n_id)
 	return HttpResponse(obj)
 
@@ -296,7 +313,7 @@ def get_noticias(noticias):
 		if etiqueta != None:
 			categorias=Categoria.objects.filter(id=etiqueta.id)[0]
 			categorias=categorias.dscategoria
-		obj = '"id_noticia":"'+str(n.id)+'","dstitular":"'+n.dstitular.replace('"','\"')+'","dscuerpo":"'+n.dscuerpo.replace('"','\"')+'","resumen":"'+n.resumen.replace('"','\"')+'","url":"'+n.url+'","fecha": "'+str(n.fecha)+'","Categorias":"'+categorias+'"'
+		obj = '"id_noticia":"'+str(n.id)+'","dstitular":"'+n.dstitular.replace('"','\"')+'","dscuerpo":"'+n.dscuerpo.replace('"','\"')+'","resumen":"'+n.resumen.replace('"','\"')+'","url":"'+n.url+'","fecha": "'+str(n.fecha)+'","Categorias":"'+categorias+'","url":"'+n.url+'"'
 		obj = '{'+obj+'},'
 		r=r+obj
 		obj=''
@@ -412,10 +429,10 @@ def busqueda(resques,datos):
 			obj = ''
 			r = ''
 			for s in n:
-				obj='{"noticia_id":"'+str(s.id)+'","titular":"'+s.dstitular+'","fecha":"'+str(s.fecha)+'"},'
+				obj='{"noticia_id":"'+str(s.id)+'","titular":"'+s.dstitular+'","fecha":"'+str(s.fecha)+'","url":"'+s.url+'"},'
 				r = r + obj
 			r = r[0:len(r)-1]
-			r = '{resultado":['+r+']}'
+			r = '{"resultado":['+r+']}'
 			return HttpResponse(r)
 		else:
 			return HttpResponse('{"resultado":"No existe una noticia con esas caracteristicas"}')
@@ -427,7 +444,7 @@ def parseanoticias(n):
 	if len(n) is not 0:
 		obj = ''
 		for s in n:
-			obj='{"noticia_id":"'+str(s.id)+'","titular":"'+s.dstitular+'","fecha":"'+str(s.fecha)+'"},'
+			obj='{"noticia_id":"'+str(s.id)+'","titular":"'+s.dstitular+'","fecha":"'+str(s.fecha)+'","url":"'+s.url+'"},'
 			r = r + obj
 	return r	
 
@@ -442,4 +459,45 @@ def getcomment(kwargs,etiquetas):
 	string = '{"resultado":['+string+']}'
 	return string
 
+def getdeuda(request,p_id):
+	p = Pueblo.objects.filter(id=p_id)[0]
+	obj = '{"id_pueblo":"'+str(p.id)+'","deuda":"'+str(p.deuda)+'","dspueblo":"'+p.dspueblo+'"}'
+	return HttpResponse(obj)
 
+def insertcomment(request,n_id,dsc,u_id):
+	user = Usuario.objects.filter(id=u_id)[0]
+	noticia = Noticias.objects.filter(id=n_id)[0]
+	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc)
+	p.save()
+	return HttpResponse("")
+
+def ulog(request,id_user):
+	user = Usuario.objects.filter(id= id_user)
+	if len(user) != 0:
+		user = user[0]
+		t = user.pueblo.id
+		pob = Pueblo.objects.filter(id = t)[0]
+		noticia = Noticias.objects.filter(pueblo = pob)[0]
+		ret = '{"id":"'+str(user.id)+'","dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":"'+str(pob.id)+'","busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","dstitular":"'+noticia.dstitular+'","notid":"'+str(noticia.id)+'"}'
+	else:
+		ret = '{"id":"este usuario no existe"}'
+	agregarabd("api/usuario/"+id_user)
+	return HttpResponse(ret)
+
+def login(request,user,pass):
+	if "@" in user:
+		user = Usuario.objects.filter(correo = user)
+	else:
+		user = Usuario.objects.filter(dsusuario = user)
+	if len(user) == 0:
+		return HttpResponse('{"Resultado":false,"Message":"El usuario no existe"}')
+	else:
+		if pasw == user.token:
+			return HttpResponse('{"Resultado":true,"Message":"Login Correcto"}')
+		else: 
+			return HttpResponse('{"Resultado":false,"Message":"La contraseña no es correcta"}')
+
+def register(request,user,fn,sn,us,pasw,mail):
+	u = Usuario(dsusuario=user,dsnombre=us,dsapellido1=fn,dsapellido2=sn,token=pasw,correo=mail)
+	u.save();
+	return HttpResponse("")
