@@ -1,0 +1,146 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.semandal.Primera_pantalla$PlaceholderFragment" >
+
+    <Button
+        android:id="@+id/loggin"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignBaseline="@+id/info"
+        android:layout_alignBottom="@+id/info"
+        android:layout_alignParentRight="true"
+        android:enabled="true"
+        android:onClick="loguear"
+        android:text="@string/Log" />
+
+    <Button
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/loggin"
+        android:enabled="true"
+        android:onClick="infor"
+        android:text="@string/Info" />
+
+    <Button
+        android:id="@+id/busqueda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/info"
+        android:layout_alignBottom="@+id/info"
+        android:layout_toLeftOf="@+id/info"
+        android:enabled="true"
+        android:onClick="buscar"
+        android:text="@string/Busqueda" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="400dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/busqueda"
+        android:src="@drawable/bandera_and" />
+
+    <TextView
+        android:id="@+id/lastnew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Noticiaentera"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/titnoticia"
+        android:scrollbars="vertical"
+        android:text="Última noticia"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/lastcomment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/auxiliar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/commentaut"
+		android:scrollbars = "vertical"
+        android:text="UltimoComentario" 
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    <TextView
+        android:id="@+id/commentaut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/textView2"
+        android:layout_alignTop="@+id/TextView01"
+        android:layout_marginTop="24dp"
+        android:text="AutorComent" />
+
+    <TextView
+        android:id="@+id/fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView1"
+        android:text="Fecha"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/notrel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="30dp"
+        android:text="Ver noticia relacionada" />
+
+    <Button
+        android:id="@+id/auxiliar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/TextView01"
+        android:text="Bypass" />
+
+    <TextView
+        android:id="@+id/titnoticia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/fecha"
+        android:scrollbars="vertical"
+        android:text="Titulo"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/Noticiaentera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/TextView01"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="30dp"
+        android:text="Ver Más" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/notrel"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="101dp"
+        android:text="Último Comentario"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:text="Última Noticia"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</RelativeLayout>

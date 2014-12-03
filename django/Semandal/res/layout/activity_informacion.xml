@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+
+ <Button
+        android:id="@+id/loggin"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignBaseline="@+id/info"
+        android:layout_alignBottom="@+id/info"
+        android:enabled="true"
+        android:onClick="loguear"
+        android:layout_alignParentRight="true"
+        android:text="@string/Log" />
+
+    <Button
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:enabled="true"
+        android:onClick="infor"
+        android:layout_toLeftOf="@+id/loggin"
+        android:text="@string/Info" />
+
+    <Button
+        android:id="@+id/busqueda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/info"
+        android:layout_alignBottom="@+id/info"
+        android:enabled="true"
+        android:onClick="buscar"
+        android:layout_toLeftOf="@+id/info"
+        android:text="@string/Busqueda" />
+
+    <ImageView
+        android:layout_width="400dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/busqueda"
+        android:src="@drawable/bandera_and" />
+
+	}
+
+</RelativeLayout>

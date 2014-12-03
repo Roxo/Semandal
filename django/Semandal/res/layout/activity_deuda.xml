@@ -1,0 +1,116 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+ 
+
+    <ImageButton
+        android:id="@+id/Imagebtton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/deuda"
+        android:src="@drawable/ic_launcher" />
+    
+    <Button
+        android:id="@+id/Amigos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="15dp"
+        android:enabled="true"
+        android:onClick="loguear"
+        android:text="@string/Amigos" />
+    
+        <Button
+        android:id="@+id/Noticias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/Amigos"
+        android:layout_alignBottom="@+id/Amigos"
+        android:layout_toLeftOf="@+id/Amigos"
+        android:enabled="true"
+        android:onClick="buscar"
+        android:text="@string/Noticias" />
+
+    <Button
+        android:id="@+id/deuda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/Noticias"
+        android:layout_alignBottom="@+id/Noticias"
+        android:layout_toLeftOf="@+id/Noticias"
+        android:enabled="true"
+        android:onClick="infor"
+        android:text="@string/Deuda" />
+    
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="400dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/Amigos"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/bandera_and" />
+    
+
+    <TextView
+        android:id="@+id/textodeuda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/imageView1"
+        android:layout_marginTop="112dp"
+        android:text="Deuda: Amodificar"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="Deuda obtenida a través del Ministerio"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	<TextView
+	    android:id="@+id/textomunicipio"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:layout_below="@+id/imageView1"
+	    android:layout_marginTop="52dp"
+	    android:text="Municipio:Amodificar"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	<Button
+	    android:id="@+id/button1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/cat"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="14dp"
+	    android:text="@string/Buscar" />
+
+	<Spinner
+	    android:id="@+id/cat"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:layout_below="@+id/textView2"
+	    android:layout_marginTop="17dp"
+	    android:text="@string/Selectpb" />
+
+	<TextView
+	    android:id="@+id/textView2"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:layout_below="@+id/textView1"
+	    android:layout_marginTop="23dp"
+	    android:text="Si deesea realizar una consulta de la deuda de otro pueblo, seleccioneló y posteriormente pulse Buscar!"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+</RelativeLayout>

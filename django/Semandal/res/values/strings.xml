@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Semandal</string>
+    <string name="comment">Ver comentarios!</string>
+    <string name="relacionada">Ver noticia relacionada</string>
+    <string name="Enviar">Enviar!</string>
+    <string name="User">Usuario</string>
+    <string name="confpass">Confirmar Password</string>
+    <string name="Notrec">Noticia más reciente</string>
+    <string name="Deuda">Deuda</string>
+    <string name="Buscador">Buscador</string>
+    <string name="Noticias">Noticias</string>
+    <string name="Amigos">Amigos</string>
+    <string name="Inicio">Inicio</string>
+    <string name="pass">Password</string>
+    <string name="correo">Correo</string>
+    <string name="registrarse">Registrate!</string>
+    <string name="Titular">Titular</string>
+    <string name="Fecha">Fecha</string>
+    <string name="Categoria">Categoria</string>
+    <string name="Ciudad">Ciudad</string>
+    <string name="Buscar">Buscar</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="Log">Entra!</string>
+    <string name="Info">Info</string>
+    <string name="Busqueda">Busca!</string>
+    <string name="title_activity_buscnolog">Buscnolog</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_info">Info</string>
+    <string name="Selectpb">Seleccione Pueblo</string>
+    <string name="Selectcat">Seleccione Categoría</string>
+    <string name="title_activity_registro">Registro</string>
+    <string name="title_activity_logueado">Logueado</string>
+    <string name="title_activity_informacion">Informacion</string>
+    <string name="title_activity_bnolog">Bnolog</string>
+    <string name="title_activity_bnologres">Bnologres</string>
+    <string name="title_activity_listnoticias">Listnoticias</string>
+    <string name="title_activity_lnoticias">Lnoticias</string>
+    <string name="title_activity_blog">Blog</string>
+    <string name="title_activity_display_not_log">Display_not_log</string>
+    <string name="title_activity_comentarios">Comentarios</string>
+    <string name="title_activity_deuda">Deuda</string>
+    <string name="title_activity_amigos">Amigos</string>
+    <string name="title_activity_perfil">Perfil</string>
+    <string name="title_activity_display_not_nolog">Display_not_nolog</string>
+    <string name="title_activity_comentarios_nolog">Comentarios_nolog</string>
+    <string name="title_activity_plantilla__comment">Plantilla_Comment</string>
+    <string name="title_activity_plantilla_dispnot">Plantilla_dispnot</string>
+    <string name="title_activity_plantilla_amigos">Plantilla_amigos</string>
+
+</resources>

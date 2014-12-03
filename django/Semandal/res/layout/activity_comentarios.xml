@@ -1,0 +1,106 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+  
+    <ImageButton
+        android:id="@+id/Imagebtton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/deuda"
+        android:src="@drawable/ic_launcher" />
+    
+    <Button
+        android:id="@+id/Amigos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="15dp"
+        android:enabled="true"
+        android:onClick="loguear"
+        android:text="@string/Amigos" />
+    
+        <Button
+        android:id="@+id/Noticias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/Amigos"
+        android:layout_alignBottom="@+id/Amigos"
+        android:layout_toLeftOf="@+id/Amigos"
+        android:enabled="true"
+        android:onClick="buscar"
+        android:text="@string/Noticias" />
+
+    <Button
+        android:id="@+id/deuda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/Noticias"
+        android:layout_alignBottom="@+id/Noticias"
+        android:layout_toLeftOf="@+id/Noticias"
+        android:enabled="true"
+        android:onClick="infor"
+        android:text="@string/Deuda" />
+    
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="400dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/Amigos"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/bandera_and" />
+
+
+    <Button
+        android:id="@+id/notrel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp"
+        android:text="@string/relacionada" />
+
+    <Button
+        android:id="@+id/enviar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="33dp"
+        android:text="@string/Enviar" />
+
+	<EditText
+	    android:id="@+id/DwEdit"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/enviar"
+	    android:layout_alignParentLeft="true"
+	    android:layout_marginBottom="15dp"
+	    android:ems="10"
+	    android:inputType="textCapSentences"
+	    android:minLines="10"
+	    android:overScrollMode="always"
+	    android:scrollbarStyle="insideInset"
+	    android:scrollbars="vertical" >
+
+	    <requestFocus />
+	</EditText>
+
+	<ListView
+	    android:id="@+id/listacomentarios"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/DwEdit"
+ 		android:scrollbars="vertical"
+		android:scrollbarAlwaysDrawVerticalTrack="true"
+	    android:layout_alignParentLeft="true"
+	    android:layout_below="@+id/notrel" >
+
+	</ListView>
+
+</RelativeLayout>
