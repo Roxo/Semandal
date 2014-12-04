@@ -390,21 +390,29 @@ def vercategorias(request):
 
 def lastnot(request):
 	noti=Noticias.objects.order_by('id').reverse()
-	n=noti[0]
-	i=1
-	while n.dscuerpo == None and n.resumen == "Ampliar Noticias":	
-		n=noti[i]
-	if n.dscuerpo == None:
-		x=n.resumen
+	if len(noti) != 0:
+		n=noti[0]
+		i=1
+		while n.dscuerpo == None and n.resumen == "Ampliar Noticias":	
+			n=noti[i]
+		if n.dscuerpo == None:
+			x=n.resumen
+		else:
+			x=n.dscuerpo
+		obj='{"existe":true,"notid":"'+str(n.id)+'","titular":"'+n.dstitular+'","cuerpo":"'+x+'","fecha":"'+str(n.fecha)+'"}'
+		return HttpResponse(obj)
 	else:
-		x=n.dscuerpo
-	obj='{"notid":"'+str(n.id)+'","titular":"'+n.dstitular+'","cuerpo":"'+x+'","fecha":"'+str(n.fecha)+'"}'
-	return HttpResponse(obj)
+		return HttpResponse('{"existe":false}')
+
 
 def lastcomment(request):
-	c = Comentarios.objects.order_by('id').reverse()[0]
-	obj='{"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'"}'
-	return HttpResponse(obj)
+	c = Comentarios.objects.order_by('id').reverse()
+	if len(c) != 0:
+		c = c[0]
+		obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'"}'
+		return HttpResponse(obj)
+	else:
+		return HttpResponse('{"existe":false}')
 
 def busqueda(resques,datos):
 	kwargs={}
@@ -502,3 +510,36 @@ def register(request,user,fn,sn,us,pas,mail):
 	u = Usuario(dsusuario=user,dsnombre=us,dsapellido1=fn,dsapellido2=sn,token=pas,correo=mail)
 	u.save();
 	return HttpResponse("")
+
+def userview(request,datos):
+	kwargs={}
+	datos = datos[1:len(datos)-1]
+	if datos is not "":
+		datos = datos.split(',')
+		for i in datos:
+			if "p" in i :
+				kwargs['pueblo'] = i.split(':')[1]
+			elif "n" in i:
+				kwargs['dsnombre'] = i.split(':')[1]
+			elif "u" in i:
+				kwargs['dsusuario'] = i.split(':')[1]
+			elif "ap1" in i:
+				kwargs['dsapellido1'] = i.split(':')[1]
+			elif "ap2" in i:
+				kwargs['dsapellido2'] = i.split(':')[1]
+			else:
+				return HttpResponse('{"resultado":"datos erroneos"}')
+		u = Usuario.objects.filter(**kwargs)
+		if len(u) is not 0:
+			obj = ''
+			r = ''
+			for s in u:
+				obj='{"id_amigo":"'+str(s.id)+'","amigo":"'+s.dsusuario+'","nombre":"'+s.dsnombre+'","ap1":"'+s.dsapellido1+'","ap2":"'+s.dsapellido2+'","idpueblo":"'+str(s.pueblo.id)+'","pueblo":"'+s.pueblo.dspueblo+'"},'
+				r = r + obj
+			r = r[0:len(r)-1]
+			r = '{"namigos":"'+str(len(u))+'","amigos":['+r+']}'
+			return HttpResponse(r)
+		else:
+			return HttpResponse('{"resultado":"No existe un usuario con esas caracteristicas"}')
+	else:
+		return HttpResponse('{"resultado":"Debe insertar al menos un campo"}')

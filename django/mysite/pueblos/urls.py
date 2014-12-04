@@ -32,7 +32,8 @@ urlpatterns = patterns('',
     url(r'^api/logginuser/(?P<id_user>\d+)/$',views.ulog,name='ulog'),
     url(r'^api/log/(?P<user>[\w\@\.]*)/(?P<pas>.*)/$',views.log,name='log'),
     url(r'^api/register/(?P<user>[\w\@\.]*)/(?P<fn>[\w\@\.]*)/(?P<sn>[\w\@\.]*)/(?P<usr>[\w\@\.]*)/(?P<pas>.*)/(?P<mail>[\w\@\.]*)/$',views.register,name='register'),
-  # url(r'^pueblos/(?P<p_id>\d+)/noticias/?P<id_noticia>\d+/$', views.idpueblo, name='idpueblo'),
+    url(r'^api/usuario/busqueda/(?P<datos>.*)/$',views.userview, name='userview'),
+ # url(r'^pueblos/(?P<p_id>\d+)/noticias/?P<id_noticia>\d+/$', views.idpueblo, name='idpueblo'),
 
 
 )
