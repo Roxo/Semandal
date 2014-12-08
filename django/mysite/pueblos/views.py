@@ -502,12 +502,13 @@ def log(request,user,pas):
 	else:
 		user = user[0]
 		if pas == user.token:
-			return HttpResponse('{"Resultado":true,"Message":"Login Correcto"}')
+			return HttpResponse('{"Resultado":true,"Message":"Login Correcto","userid":"'+str(user.id)+'"}')
 		else: 
 			return HttpResponse('{"Resultado":false,"Message":"password no es correcta"}')
 
-def register(request,user,fn,sn,us,pas,mail):
-	u = Usuario(dsusuario=user,dsnombre=us,dsapellido1=fn,dsapellido2=sn,token=pas,correo=mail)
+def register(request,user,fn,sn,us,pas,mail,idpueblo):
+	p = Pueblo.objects.filter(id=int(idpueblo))[0]
+	u = Usuario(dsusuario=user,dsnombre=us,dsapellido1=fn,dsapellido2=sn,token=pas,correo=mail,pueblo=p)
 	u.save();
 	return HttpResponse("")
 

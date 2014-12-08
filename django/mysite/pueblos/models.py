@@ -50,13 +50,13 @@ class Noticias(models.Model):
 	etiqueta = models.ForeignKey(Categoria,null=True)
 	
 class Usuario(models.Model):
-	dsusuario =  models.CharField(max_length=100)
+	dsusuario =  models.CharField(max_length=100,unique=True)
 	dsnombre = models.CharField(max_length=100)
 	dsapellido1 = models.CharField(max_length=100)
 	dsapellido2 = models.CharField(max_length=100)
 	pueblo = models.ForeignKey(Pueblo)
 	token = models.CharField(max_length=200)
-	correo = models.CharField(max_length=100,null=True)
+	correo = models.CharField(max_length=100,null=True,unique=True)
 
 class Amigode(models.Model):
 	idamistad = models.ForeignKey(Usuario,related_name='soy_amigo')

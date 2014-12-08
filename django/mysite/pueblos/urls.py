@@ -31,7 +31,7 @@ urlpatterns = patterns('',
     url(r'^api/C_insert/(?P<n_id>\d+]*)/(?P<u_id>\d+]*)/(?P<dsc>.*)$',views.insertcomment, name='insertcomment'),
     url(r'^api/logginuser/(?P<id_user>\d+)/$',views.ulog,name='ulog'),
     url(r'^api/log/(?P<user>[\w\@\.]*)/(?P<pas>.*)/$',views.log,name='log'),
-    url(r'^api/register/(?P<user>[\w\@\.]*)/(?P<fn>[\w\@\.]*)/(?P<sn>[\w\@\.]*)/(?P<usr>[\w\@\.]*)/(?P<pas>.*)/(?P<mail>[\w\@\.]*)/$',views.register,name='register'),
+    url(r'^api/register/(?P<user>.*)/(?P<fn>[\w\@\.]*)/(?P<sn>[\w\@\.]*)/(?P<us>[\w\@\.]*)/(?P<pas>.*)/(?P<mail>[\w\@\.]*)/(?P<idpueblo>\d+]*)$',views.register,name='register'),
     url(r'^api/usuario/busqueda/(?P<datos>.*)/$',views.userview, name='userview'),
  # url(r'^pueblos/(?P<p_id>\d+)/noticias/?P<id_noticia>\d+/$', views.idpueblo, name='idpueblo'),
 
