@@ -1,6 +1,8 @@
 from django.db import models
 from mysite import settings
 from datetime import date
+import datetime
+
 # Create your models here.
 class Provincia(models.Model):
 	dsprovincia = models.CharField(max_length=200,unique = True)
@@ -67,6 +69,7 @@ class Comentarios(models.Model):
 	id_user = models.ForeignKey(Usuario)
 	id_not = models.ForeignKey(Noticias)
 	puntuacion = models.FloatField(default=0)
+	fecha = models.DateTimeField()
 
 class Llamadas(models.Model):
 	llamada = models.CharField(max_length=300)

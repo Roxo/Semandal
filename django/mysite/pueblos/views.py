@@ -9,10 +9,12 @@ from pueblos.models import Llamadas
 from pueblos.models import Categoria
 from pueblos.models import Amigode
 from django.http import Http404
+import datetime
 from django.http import HttpResponse
 import json
 from django.db.models import Q
 from operator import itemgetter
+from django.db.models import Count
 
 def index(request):
     return HttpResponse("Bienvenidos a SEMANDAL")
@@ -284,8 +286,17 @@ def getnot(request,n_id):
 	noticia = Noticias.objects.filter(id=n_id)
 	if len(noticia) != 0:
 		noticia=noticia[0]
+		titular =""
+		cuerpo = ""
+		fecha = ""
+		if noticia.dstitular is not None:
+			titular = noticia.dstitular.replace('"','\"')
+		if noticia.dscuerpo is not None:
+			cuerpo = noticia.dscuerpo.replace('"','\"')
+		if noticia.fecha is not None:
+			fecha = str(noticia.fecha)
 		obj = ""
-		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+noticia.dstitular.replace('"','\"')+'","cuerpo":"'+noticia.dscuerpo.replace('"','\"')+'","fecha":"'+str(noticia.fecha)+'","url":"'+noticia.url+'"},'
+		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'"},'
 	else:
 		obj = '{"id_noticia"="No existe esta noticia"}'
 	agregarabd("api/noticias/"+n_id)
@@ -389,30 +400,23 @@ def vercategorias(request):
 	return HttpResponse(r)
 
 def lastnot(request):
-	noti=Noticias.objects.order_by('id').reverse()
-	if len(noti) != 0:
-		n=noti[0]
-		i=1
-		while n.dscuerpo == None and n.resumen == "Ampliar Noticias":	
-			n=noti[i]
-		if n.dscuerpo == None:
+	n=Noticias.objects.latest("fecha")
+	if n.dscuerpo == None:
 			x=n.resumen
-		else:
-			x=n.dscuerpo
-		obj='{"existe":true,"notid":"'+str(n.id)+'","titular":"'+n.dstitular+'","cuerpo":"'+x+'","fecha":"'+str(n.fecha)+'"}'
-		return HttpResponse(obj)
 	else:
-		return HttpResponse('{"existe":false}')
+		x=n.dscuerpo
+	obj='{"existe":true,"notid":"'+str(n.id)+'","titular":"'+n.dstitular+'","cuerpo":"'+x+'","fecha":"'+str(n.fecha)+'"}'
+	return HttpResponse(obj)
 
 
 def lastcomment(request):
-	c = Comentarios.objects.order_by('id').reverse()
-	if len(c) != 0:
-		c = c[0]
+	try:
+		c = Comentarios.objects.latest("fecha")
 		obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'"}'
 		return HttpResponse(obj)
-	else:
-		return HttpResponse('{"existe":false}')
+	except:
+		obj='{"existe":false}'
+		return HttpResponse(obj)
 
 def busqueda(resques,datos):
 	kwargs={}
@@ -432,7 +436,7 @@ def busqueda(resques,datos):
 				kwargs['fecha'] = i.split(':')[1]
 			else:
 				return HttpResponse('{"Resultado":"datos erroneos"}')
-		n = Noticias.objects.filter(**kwargs)
+		n = Noticias.objects.filter(**kwargs).order_by("fecha").reverse()
 		if len(n) is not 0:
 			obj = ''
 			r = ''
@@ -475,7 +479,7 @@ def getdeuda(request,p_id):
 def insertcomment(request,n_id,dsc,u_id):
 	user = Usuario.objects.filter(id=u_id)[0]
 	noticia = Noticias.objects.filter(id=n_id)[0]
-	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc)
+	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc,fecha=datetime.datetime.today())
 	p.save()
 	return HttpResponse("")
 
