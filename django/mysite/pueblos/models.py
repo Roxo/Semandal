@@ -63,6 +63,8 @@ class Usuario(models.Model):
 class Amigode(models.Model):
 	idamistad = models.ForeignKey(Usuario,related_name='soy_amigo')
 	idamigode = models.ForeignKey(Usuario,related_name='es_mi_amigo')
+	class Meta:
+		unique_together = ('idamistad', 'idamigode',)
 
 class Comentarios(models.Model):
 	dscomentario = models.CharField(max_length=200)
@@ -74,3 +76,9 @@ class Comentarios(models.Model):
 class Llamadas(models.Model):
 	llamada = models.CharField(max_length=300)
 	contabilizacion = models.PositiveIntegerField(default=0)
+
+class SigP(models.Model):
+	id_user = models.ForeignKey(Usuario,unique=True)
+	id_p = models.ForeignKey(Pueblo,unique=True)
+	class Meta:
+		unique_together = ('id_user', 'id_p',)
