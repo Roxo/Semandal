@@ -84,13 +84,7 @@ class SigP(models.Model):
 	class Meta:
 		unique_together = ('id_user', 'id_p')
 
-class SigP(models.Model):
-	id_user = models.ForeignKey(Usuario)
-	id_p = models.ForeignKey(Pueblo)
-	class Meta:
-		unique_together = ('id_user', 'id_p')
-
-class Liked(models.Model):
+class T_Liked(models.Model):
 	id_user = models.ForeignKey(Usuario)
 	id_n = models.ForeignKey(Noticias)
 	class Meta:

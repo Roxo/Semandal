@@ -16,6 +16,7 @@ from django.db.models import Q
 from operator import itemgetter
 from django.db.models import Count
 from pueblos.models import SigP
+from pueblos.models import T_Liked
 
 def index(request):
     return HttpResponse("Bienvenidos a SEMANDAL")
@@ -297,7 +298,7 @@ def getnot(request,n_id):
 		if noticia.fecha is not None:
 			fecha = str(noticia.fecha)
 		obj = ""
-		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'"},'
+		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'"},'
 	else:
 		obj = '{"id_noticia"="No existe esta noticia"}'
 	agregarabd("api/noticias/"+n_id)
@@ -457,7 +458,7 @@ def parseanoticias(n):
 	if len(n) is not 0:
 		obj = ''
 		for s in n:
-			obj='{"noticia_id":"'+str(s.id)+'","titular":"'+s.dstitular+'","fecha":"'+str(s.fecha)+'","url":"'+s.url+'"},'
+			obj='{"noticia_id":"'+str(s.id)+'","titular":"'+s.dstitular+'","fecha":"'+str(s.fecha)+'","url":"'+s.url+'","likeds":"'+str(s.liked)+'"},'
 			r = r + obj
 	return r	
 
@@ -579,3 +580,25 @@ def addsig(request,id_p,id_u):
 	u = SigP(id_user=usuario,id_p=pueblo)
 	u.save()
 	return HttpResponse("agregado")
+
+def addliked(request,id_u,id_n):
+	try:
+		usuario = Usuario.objects.filter(id=id_u)[0]
+		noticia = Noticias.objects.filter(id=id_n)
+		u = T_Liked(id_user=usuario,id_n=noticia[0])
+		u.save()
+		a = noticia[0].liked+1
+		noticia.update(liked = a)
+	except:
+		return HttpResponse("no agregado")
+	return HttpResponse("agregado")
+
+def sign(request,id_n,id_u):
+	sigue = T_Liked.objects.filter(id_user=id_u,id_n = id_n)
+	if len(sigue) != 0:
+		ret = "true"
+		devolver='{"sigue":'+ret+'}'
+	else:
+		ret = "false"
+		devolver='{"sigue":'+ret+'}'
+	return HttpResponse(devolver)
