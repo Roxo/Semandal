@@ -15,6 +15,7 @@ import json
 from django.db.models import Q
 from operator import itemgetter
 from django.db.models import Count
+from pueblos.models import SigP
 
 def index(request):
     return HttpResponse("Bienvenidos a SEMANDAL")
@@ -42,12 +43,12 @@ def consultaprovincia(pbls,pr):
 		opcms = '"false"';
 		if p.opencms == 1:
 			opcms = '"true"'
-		obj = '"id": "'+str(p.id)+'", "nombre" : "'+p.dspueblo+'","coordenadas":{"longitud":"'+str(p.longitud)+'","latitud":"'+str(p.latitud)+'"}, "url":"'+url+'", "opencms":'+opcms+', "habitantes":"'+str(p.habitantes)+'", "deuda":"'+str(p.deuda)+'", "deudaxhab":"'+str(float(p.deuda)/float(p.densidad))+'", "fecha_inscripcion":"'+str(p.fecha_ins)+'", "superficie":"'+str(p.superficie).encode('utf8')+'", "wiki":"'+str(p.wiki)+'"'
+		obj = '"id": "'+str(p.id)+'", "nombre" : "'+str(p.dspueblo.encode("utf8"))+'","coordenadas":{"longitud":"'+str(p.longitud)+'","latitud":"'+str(p.latitud)+'"}, "url":"'+url.encode("utf8")+'", "opencms":'+opcms+', "habitantes":"'+str(p.habitantes)+'", "deuda":"'+str(p.deuda)+'", "deudaxhab":"'+str(float(p.deuda)/float(p.densidad))+'", "fecha_inscripcion":"'+str(p.fecha_ins)+'", "superficie":"'+str(p.superficie).encode('utf8')+'", "wiki":"'+str(p.wiki.encode("utf8"))+'", "cp":"'+str(p.cp)+'"'
 		obj = '{'+obj+'},'
 		r = r+obj
 		obj=''
 	r=r[0:len(r)-1]
-	r = '{"provincia":"'+pr[0].dsprovincia+'","pueblos":['+r+']}'
+	r = '{"provincia":"'+pr[0].dsprovincia.encode("utf8")+'","npueblos":"'+str(len(pbls))+'","pueblos":['+r+']}'
 	return r
 
 def idpueblo(request, p_id):
@@ -489,8 +490,14 @@ def ulog(request,id_user):
 		user = user[0]
 		t = user.pueblo.id
 		pob = Pueblo.objects.filter(id = t)[0]
-		noticia = Noticias.objects.filter(pueblo = pob)[0]
-		ret = '{"id":"'+str(user.id)+'","dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":"'+str(pob.id)+'","busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","dstitular":"'+noticia.dstitular+'","notid":"'+str(noticia.id)+'"}'
+		try:
+			noticia = Noticias.objects.filter(pueblo = pob)[0]
+			dstitular=noticia.dstitular
+			idnot = str(noticia.id)
+		except:
+			dstitular = "No existen noticias en su municipio"
+			idnot = "_"
+		ret = '{"id":"'+str(user.id)+'","dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":"'+str(pob.id)+'","busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","dstitular":"'+dstitular+'","notid":"'+idnot+'"}'
 	else:
 		ret = '{"id":"este usuario no existe"}'
 	agregarabd("api/usuario/"+id_user)
@@ -548,3 +555,27 @@ def userview(request,datos):
 			return HttpResponse('{"resultado":"No existe un usuario con esas caracteristicas"}')
 	else:
 		return HttpResponse('{"resultado":"Debe insertar al menos un campo"}')
+
+def sig(request,id_p,id_u):
+	ret = "false"
+	devolver='{"sigue":'+ret+'}'
+	us = Usuario.objects.filter(id=id_u)
+	if str(us[0].pueblo.id) == str(id_p):
+		ret = "true"
+		devolver='{"sigue":'+ret+'}'
+		return HttpResponse(devolver)
+	sigue = SigP.objects.filter(id_user=id_u,id_p = id_p)
+	if len(sigue) != 0:
+		ret = "true"
+		devolver='{"sigue":'+ret+'}'
+	else:
+		ret = "false"
+		devolver='{"sigue":'+ret+'}'
+	return HttpResponse(devolver)
+
+def addsig(request,id_p,id_u):
+	usuario = Usuario.objects.filter(id=id_u)[0]
+	pueblo = Pueblo.objects.filter(id=id_p)[0]
+	u = SigP(id_user=usuario,id_p=pueblo)
+	u.save()
+	return HttpResponse("agregado")

@@ -50,6 +50,7 @@ class Noticias(models.Model):
 	resumen = models.CharField(max_length=2500,null=True)
 	url = models.CharField(max_length=300,null=True)
 	etiqueta = models.ForeignKey(Categoria,null=True)
+	liked = models.PositiveIntegerField(default=0)
 	
 class Usuario(models.Model):
 	dsusuario =  models.CharField(max_length=100,unique=True)
@@ -64,7 +65,7 @@ class Amigode(models.Model):
 	idamistad = models.ForeignKey(Usuario,related_name='soy_amigo')
 	idamigode = models.ForeignKey(Usuario,related_name='es_mi_amigo')
 	class Meta:
-		unique_together = ('idamistad', 'idamigode',)
+		unique_together = ('idamistad', 'idamigode')
 
 class Comentarios(models.Model):
 	dscomentario = models.CharField(max_length=200)
@@ -78,7 +79,19 @@ class Llamadas(models.Model):
 	contabilizacion = models.PositiveIntegerField(default=0)
 
 class SigP(models.Model):
-	id_user = models.ForeignKey(Usuario,unique=True)
-	id_p = models.ForeignKey(Pueblo,unique=True)
+	id_user = models.ForeignKey(Usuario)
+	id_p = models.ForeignKey(Pueblo)
 	class Meta:
-		unique_together = ('id_user', 'id_p',)
+		unique_together = ('id_user', 'id_p')
+
+class SigP(models.Model):
+	id_user = models.ForeignKey(Usuario)
+	id_p = models.ForeignKey(Pueblo)
+	class Meta:
+		unique_together = ('id_user', 'id_p')
+
+class Liked(models.Model):
+	id_user = models.ForeignKey(Usuario)
+	id_n = models.ForeignKey(Noticias)
+	class Meta:
+		unique_together = ('id_user', 'id_n')
