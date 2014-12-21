@@ -54,21 +54,7 @@
         android:layout_alignTop="@+id/Amigos"
         android:layout_marginTop="32dp"
         android:src="@drawable/bandera_and" />
-
-    <TextView
-        android:id="@+id/Noticia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/comment"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/titular"
-        android:layout_marginTop="14dp"
-        android:maxLines="60000000"
-        android:scrollbars="vertical"
-        android:text="Noticia"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
+    
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
@@ -84,26 +70,76 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:text="@string/comment" />
-
-    <TextView
-        android:id="@+id/fecha"
+    
+        <Button
+        android:id="@+id/button2"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/imageView1"
-        android:text="Fecha"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_below="@+id/imageView1" 
+        android:text="Me gusta" />
 
     <TextView
-        android:id="@+id/titular"
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button2"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_toLeftOf="@+id/button2"
+        android:text="puntuacion"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/fecha"
-        android:maxLines="10"
-        android:scrollbars="vertical"
-        android:text="Titular"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    
+        android:layout_below="@+id/button2" >
+
+        <LinearLayout
+            android:id="@+id/LinearScroll"
+            android:layout_width="match_parent"
+            android:layout_height="388dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/fecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/imageView1"
+                android:text="Fecha"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/titular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/fecha"
+                android:maxLines="10"
+                android:scrollbars="vertical"
+                android:text="Titular"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/Noticia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/comment"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/titular"
+                android:layout_marginTop="14dp"
+                android:maxLines="60000000"
+                android:scrollbars="vertical"
+                android:text="Noticia"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+    </ScrollView>
+
 </RelativeLayout>

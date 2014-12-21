@@ -1,6 +1,8 @@
 package com.example.semandal;
 
 import java.io.BufferedReader;
+
+import com.example.semandal.Logueado.Asinlog;
 import com.example.semandal.aux.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,16 +27,29 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v7.app.ActionBarActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 
-public class Nolog extends Activity {
+public class Nolog extends ActionBarActivity {
 	String idnoticia="",answer = "";
 	String idnoticiacomentario="";
+	private static Nolog backgroundTask;
+	private static ProgressDialog pleaseWaitDialog;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.activity_nolog);
+
+
+		Button b1 = (Button)this.findViewById(R.id.loggin);
+		Button b2 = (Button)this.findViewById(R.id.info);
+		Button b3 = (Button)this.findViewById(R.id.busqueda);
+	//	Button b4 = (Button)this.findViewById(R.id.auxiliar);
+		Button b5 = (Button)this.findViewById(R.id.notrel);
+		Button b6 = (Button)this.findViewById(R.id.Noticiaentera);
+
 		AsincronNolog tarea = null;
 		tarea = new AsincronNolog(this,(TextView) findViewById(R.id.titnoticia),
 				(TextView) findViewById(R.id.lastnew),
@@ -42,16 +57,10 @@ public class Nolog extends Activity {
 				(TextView) findViewById(R.id.lastcomment),
 				(TextView) findViewById(R.id.commentaut),
 				Singleton.url+":8000/api/noticias/ultima/",
-				Singleton.url+":8000/api/comentarios/ultimo"
-				);
+				Singleton.url+":8000/api/comentarios/ultimo",b5
+			);
 		tarea.execute();
-
-		Button b1 = (Button)this.findViewById(R.id.loggin);
-		Button b2 = (Button)this.findViewById(R.id.info);
-		Button b3 = (Button)this.findViewById(R.id.busqueda);
-		Button b4 = (Button)this.findViewById(R.id.auxiliar);
-		Button b5 = (Button)this.findViewById(R.id.notrel);
-		Button b6 = (Button)this.findViewById(R.id.Noticiaentera);
+		
 		ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		if (null != activeNetwork) {
@@ -90,7 +99,7 @@ public class Nolog extends Activity {
 			
 		});		
 		
-		b4.setOnClickListener(new View.OnClickListener() {
+	/*	b4.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -100,7 +109,7 @@ public class Nolog extends Activity {
 				startActivity(i);
 			}
 			
-		});		
+		});		*/
 		
 		
 		b1.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +117,7 @@ public class Nolog extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Nolog.this, LoginActivity.class);
+				Intent i = new Intent(Nolog.this, Log.class);
 				startActivity(i);
 			}
 			
@@ -143,6 +152,7 @@ public class Nolog extends Activity {
 		JSONObject html, Comentario;
 		String urlcomment;
 		String devolver;
+		Button b;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
@@ -150,7 +160,7 @@ public class Nolog extends Activity {
 		
 		public AsincronNolog(Context contexto,TextView titview,TextView cuerpview,
 				TextView dateview,TextView commentview,TextView authview,String url,
-				String urlcomment){
+				String urlcomment,Button b){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -159,7 +169,7 @@ public class Nolog extends Activity {
 			this.authview = authview;
 			this.urlcomment = urlcomment;
 			this.url = url;
-			
+			this.b = b;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -217,7 +227,7 @@ public class Nolog extends Activity {
 		@Override
 		public void onPostExecute(Void result){
 			String titular = "",cuerpo="", fecha = "",user="",comentario="No existen comentarios";
-			if (html!=null&&Comentario!=null){
+				if(html != null && Comentario != null){
 				try{
 					if(html.getBoolean("existe")){
 					titular = html.getString("titular").replace("-","\n");
@@ -230,10 +240,13 @@ public class Nolog extends Activity {
 					comentario=Comentario.getString("cuerpo");
 					idnoticiacomentario=Comentario.getString("notid");
 					}
+					if(comentario=="No existen comentarios")
+						b.setEnabled(false);
+				
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
-				}
 			}
+				}
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);
 		    dateview.setText(fecha);

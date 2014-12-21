@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -22,39 +23,59 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
+import android.support.v7.app.ActionBarActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-public class Deuda extends Activity implements OnItemSelectedListener{
+public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 	String datos,iduser,pid,puebloant,puebloact;
 	private Spinner spinner1;
-	private static AsincBnolog backgroundTask;
+	private static AsinDeuda backgroundTask;
+	private static Asinadd backgroundTask1;
+
 	private static ProgressDialog pleaseWaitDialog;
 	private List<String> lista1,lista1aux;
+	private Deuda a = this;
 	private int posicion;
-
+	boolean fromdatos=false,addpueblo=false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_deuda);
+		// DEFINICIÓN DE LOS BOTONES
 		Button b1 = (Button)this.findViewById(R.id.Amigos);
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
+		Button b6 = (Button)this.findViewById(R.id.button2);
+
+		// DEFINICIÓN DE LOS TEXTVIEW
 		TextView deuda = (TextView)this.findViewById(R.id.textodeuda);
 		TextView municipio = (TextView)this.findViewById(R.id.textomunicipio);
+		TextView provincia = (TextView)this.findViewById(R.id.Provincia);
+		TextView coordenadas = (TextView)this.findViewById(R.id.coordenadas);
+		TextView cp = (TextView)this.findViewById(R.id.cp);
+		final TextView urlweb = (TextView)this.findViewById(R.id.urlweb);
+		TextView habitantes = (TextView)this.findViewById(R.id.habitantes);
+		TextView superficie = (TextView)this.findViewById(R.id.superficie);		
+		final TextView urlwiki = (TextView)this.findViewById(R.id.wikiurl);
+		//////////////////////////////////////////////
 		pid = getIntent().getStringExtra("p_id");
 		iduser = getIntent().getStringExtra("user_id");
 		datos = getIntent().getStringExtra("datos");
@@ -70,23 +91,63 @@ public class Deuda extends Activity implements OnItemSelectedListener{
 			
 		}
 
-		tarea = new AsinDeuda(this,deuda,municipio,
+		tarea = new AsinDeuda(this,deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
+				superficie,urlwiki,
 				Singleton.url+":8000/api/pueblos",
-				Singleton.url+":8000/api/deuda/"+puebloant,this
+				Singleton.url+":8000/api/pueblos/"+puebloant,this,
+				Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6
 				);
 		tarea.execute();
+     
+		urlweb.setOnClickListener(new OnClickListener() {  
+            @Override  
+            public void onClick(View v) {  
+                // TODO Auto-generated method stub  
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlweb.getText().toString()));
+				startActivity(browserIntent);
+            }  
+        });  
+      
+      urlwiki.setOnClickListener(new OnClickListener() {  
+            @Override  
+            public void onClick(View v) {  
+                // TODO Auto-generated method stub  
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlwiki.getText().toString()));
+				startActivity(browserIntent);
+
+            }  
+        });  
+
+		b6.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+					Asinadd tarea = new Asinadd(
+						Singleton.url+":8000/api/addsigue/"+iduser+"/"+puebloant,a
+						);
+					tarea.execute();
+				}
+
+			
+		});		
 
 		b5.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Deuda.this, Deuda.class);
-				i.putExtra("datos", datos);
-				i.putExtra("user_id", iduser);
-				i.putExtra("pb",lista1aux.get(posicion));
-				i.putExtra("p_id", pid);
-				startActivity(i);
+				if(posicion != 0){
+					Intent i = new Intent(Deuda.this, Deuda.class);
+					i.putExtra("datos", datos);
+					i.putExtra("user_id", iduser);
+					i.putExtra("pb",lista1aux.get(posicion));
+					i.putExtra("p_id", pid);
+					startActivity(i);
+				}
+				else{
+					 Toast.makeText(getApplicationContext(), "Necesita seleccionar un pueblo", Toast.LENGTH_LONG).show();
+				}
 			}
 			
 		});		
@@ -158,42 +219,70 @@ public class Deuda extends Activity implements OnItemSelectedListener{
 			if(pleaseWaitDialog != null)
 				pleaseWaitDialog.show();
 		}
+		if((backgroundTask1!=null)&&(backgroundTask1.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
+		}
+
 	}
 	
 	private void onTaskCompleted(Object _response) 
 	{ 
+		if(fromdatos){
 		   spinner1 = (Spinner) findViewById(R.id.cat);
 		   spinner1 = (Spinner) this.findViewById(R.id.cat);
 		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lista1);
 		   adaptador1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		   spinner1.setAdapter(adaptador1);
 		   spinner1.setOnItemSelectedListener(this);
+			fromdatos = false;
+		}
+		if(addpueblo){
+			Intent i = new Intent(Deuda.this, Deuda.class);
+			i.putExtra("datos", datos);
+			i.putExtra("user_id", iduser);
+			i.putExtra("pb",puebloant);
+			i.putExtra("p_id", pid);
+			startActivity(i);
 
+		}
 	}
-	
+
 	public class AsinDeuda extends AsyncTask<Void, Void, Object> {
 		Context contexto;
-		TextView deuda,municipio;
-		String urlpueblos,url;
-		JSONObject pueblos,d;
+		TextView deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
+		superficie,urlwiki;
+		String urlpueblos,url,usuario;
+		JSONObject pueblos,d,usig;
 	    private boolean completed;
 	    private Deuda activity;
 	    private Object _response;
+	    Button b6;
 
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
-		public AsinDeuda(Context contexto,TextView deuda,TextView municipio,String urlpueblos,
-				String url,Deuda activity){
+		public AsinDeuda(Context contexto,TextView deuda,TextView municipio,TextView provincia,
+				TextView coordenadas,TextView cp,TextView urlweb,TextView habitantes,
+				TextView superficie,TextView urlwiki,String urlpueblos,
+				String url,Deuda activity,String usersigue,Button b6){
+			this.usuario = usersigue;
 			this.contexto = contexto;
 			this.deuda = deuda;
 			this.municipio = municipio;
+			this.provincia = provincia;
+			this.coordenadas = coordenadas;
+			this.cp = cp;
+			this.urlweb = urlweb;
+			this.habitantes = habitantes;
+			this.superficie = superficie;
+			this.urlwiki = urlwiki;
 			this.urlpueblos = urlpueblos;
 			this.url = url;
 			this.activity=activity;
-			
+			this.b6 = b6;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -233,6 +322,7 @@ public class Deuda extends Activity implements OnItemSelectedListener{
 				try {
 					leerdatos();
 					leerpueblos();
+					sigueusuario();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -245,12 +335,36 @@ public class Deuda extends Activity implements OnItemSelectedListener{
 		}
 
 
-
+		  public void sigueusuario() throws IOException, JSONException {
+			    InputStream is = new URL(this.usuario).openStream();
+			    try {
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			      String jsonText = readAll(rd);
+			      usig = new JSONObject(jsonText);
+			    } finally {
+			      is.close();
+			    }
+			  }	
+		  
 		@Override
 		public void onPostExecute(Object response){
 			try {
-			deuda.setText("deuda obtenida a día 1/1/2014 \n\n\n\t"+d.getString("deuda"));
-			municipio.setText("Municipio: "+d.getString("dspueblo"));
+			JSONArray p1 = d.getJSONArray("pueblos");
+			JSONObject pueblo = (JSONObject) p1.get(0);
+			deuda.setText("deuda obtenida a día 1/1/2014 \t\t"+pueblo.getString("deuda"));
+			municipio.setText("Municipio: \t\t"+pueblo.getString("nombre"));
+			cp.setText("Código postal: \t\t"+pueblo.getString("cp"));
+			urlweb.setText(pueblo.getString("url"));
+			habitantes.setText("Habitantes: \t\t"+pueblo.getString("habitantes"));
+			provincia.setText("Provincia: \t\t"+d.getString("provincia"));
+			superficie.setText("Superficie: \t\t"+pueblo.getString("superficie"));
+			urlwiki.setText(pueblo.getString("wiki"));
+			JSONObject c=  pueblo.getJSONObject("coordenadas");
+			coordenadas.setText("Longitud: "+c.getString("longitud")+" . Latitud: "+c.getString("latitud"));
+			///////////////////////////////////////////////////////////////////////
+			if(usig.getBoolean("sigue")){
+				b6.setEnabled(false);
+			}
 			int npueblos = pueblos.getInt("npueblos");
 			lista1= new ArrayList<String>();
 			lista1aux= new ArrayList<String>();
@@ -304,6 +418,7 @@ public class Deuda extends Activity implements OnItemSelectedListener{
 	    private void notifyActivityTaskCompleted() 
 	    { 
 	        if ( null != activity ) { 
+	        	fromdatos = true;
 	            activity.onTaskCompleted(_response); 
 	        } 
 	    } 
@@ -319,5 +434,70 @@ public class Deuda extends Activity implements OnItemSelectedListener{
     public void onNothingSelected(AdapterView parent) {
         // Do nothing.
     }
+	public class Asinadd extends AsyncTask<Void, Void, Object> {
+		String url;
+	    private Deuda activity;
+	    private boolean completed;
+	    private Object _response;
 
+		public Asinadd(String url,Deuda activity){
+			this.url=url;
+			this.activity = activity;
+		}
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				actualizar();
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		private void actualizar() throws MalformedURLException, IOException {
+		    InputStream is = new URL(url).openStream();
+		    is.close();
+		}
+		
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Agregando pueblo", 
+	                                                       false);
+
+	    } 
+
+	    public void onPostExecute(Object response){
+            completed = true;
+            _response = response;
+            notifyActivityTaskCompleted();
+        //Close the splash screen
+        if (pleaseWaitDialog != null)
+        {
+            pleaseWaitDialog.dismiss();
+            pleaseWaitDialog = null;
+        }
+	    }
+	    public void setActivity(Deuda activity) 
+	    { 
+	        this.activity = activity; 
+	        if ( completed ) { 
+	            notifyActivityTaskCompleted(); 
+	        } 
+	    } 
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	        	addpueblo=true;
+	            activity.onTaskCompleted(_response); 
+	        } 
+	    } 
+	}
 }

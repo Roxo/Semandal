@@ -105,7 +105,7 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Bnolog.this, LoginActivity.class);
+				Intent i = new Intent(Bnolog.this, Log.class);
 				startActivity(i);
 			}
 			

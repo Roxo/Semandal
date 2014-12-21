@@ -36,7 +36,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-public class Blog extends Activity  implements OnItemSelectedListener {
+public class Blog extends Activity implements OnItemSelectedListener {
 	private String datos,pid,iduser;
 	private static AsincBlog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;

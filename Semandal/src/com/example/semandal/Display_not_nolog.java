@@ -11,15 +11,18 @@ import java.nio.charset.Charset;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.semandal.Display_not_log.AsincronDNN;
 import com.example.semandal.Nolog.AsincronNolog;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +32,9 @@ import android.widget.TextView;
 
 public class Display_not_nolog extends Activity {
 	String notid="",url,url1;
+	private static AsincronDNN backgroundTask;
+	private static ProgressDialog pleaseWaitDialog;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,8 +43,8 @@ public class Display_not_nolog extends Activity {
 		AsincronDNN tarea = null;
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 				(TextView) findViewById(R.id.Noticia),
-				(TextView) findViewById(R.id.fecha),
-				Singleton.url+":8000/api/noticias/"+notid
+				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),
+				Singleton.url+":8000/api/noticias/"+notid,this
 				);
 		tarea.execute();
 
@@ -48,7 +54,18 @@ public class Display_not_nolog extends Activity {
 		Button b2 = (Button)this.findViewById(R.id.info);
 		Button b3 = (Button)this.findViewById(R.id.busqueda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
+		Button b6 = (Button)this.findViewById(R.id.button2);
+	
+		b6.setOnClickListener(new View.OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Display_not_nolog.this, Log.class);
+				startActivity(i);
+			}
+			
+		});	
 		
 		b5.setOnClickListener(new View.OnClickListener() {
 
@@ -66,7 +83,7 @@ public class Display_not_nolog extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Display_not_nolog.this, LoginActivity.class);
+				Intent i = new Intent(Display_not_nolog.this, Log.class);
 				startActivity(i);
 			}
 			
@@ -104,25 +121,48 @@ public class Display_not_nolog extends Activity {
 			
 	});
 	}
-	
-	public class AsincronDNN extends AsyncTask<Void, Void, Void> {
+	public void onPause(){
+		super.onPause();
+		if (pleaseWaitDialog != null)
+			pleaseWaitDialog.dismiss();
+	}
+
+	public void onResume(){
+		super.onResume();
+		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
+		}
+	}
+
+
+
+	private void onTaskCompleted(Object _response){
+	}
+
+	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
-		TextView titview,cuerpview,dateview;
+		TextView titview,cuerpview,dateview,likes;
 		JSONObject html, Comentario;
+	    private Display_not_nolog activity;
+	    private boolean completed;
+	    private Object _response;
+
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-			TextView dateview,String url){
+			TextView dateview,TextView likes,String url,Display_not_nolog activity){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
 			this.dateview = dateview;
 			this.url = url;
-			
+			this.activity = activity;
+			this.likes = likes;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -165,26 +205,66 @@ public class Display_not_nolog extends Activity {
 
 
 		@Override
-		public void onPostExecute(Void result){
-			String titular = "ROTO",cuerpo="ROTO", fecha = "Roto";
+		public void onPostExecute(Object response){
+			String titular = "ROTO",cuerpo="ROTO", fecha = "Roto",like="roto";
 			try {
 				titular = html.getString("titular").replace("-","\n");
 				cuerpo = html.getString("cuerpo").replace("-","\n");
 				fecha = html.getString("fecha");
 				notid = html.getString("id_noticia");
 				url1 = html.getString("url");
+				like = html.getString("liked");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			likes.setText(like);
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);
 		    dateview.setText(fecha);
 		    cuerpview.setMovementMethod(new ScrollingMovementMethod());
-		}	
-		
+	           completed = true;
+	            _response = response;
+	            notifyActivityTaskCompleted();
+	        //Close the splash screen
+	        if (pleaseWaitDialog != null)
+	        {
+	            pleaseWaitDialog.dismiss();
+	            pleaseWaitDialog = null;
+	        }
 
-	}
-	
+			}	
+		    public void setActivity(Display_not_nolog activity) 
+		    { 
+		        this.activity = activity; 
+		        if ( completed ) { 
+		            notifyActivityTaskCompleted(); 
+		        } 
+		    } 
+	    //Pre execution actions
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	            if (pleaseWaitDialog == null)
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Cargando noticia", 
+	                                                       false);
+
+	    } 
+
+	    
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	            activity.onTaskCompleted(_response); 
+	        } 
+	    } 
+
+	//for maintain attached the async task to the activity in phone states changes
+	   //Sets the current activity to the async task
+
+		}
 	
 }

@@ -21,22 +21,28 @@ import com.example.semandal.aux.Noticia;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Amigos extends Activity {
 	private String datos,pid,iduser,url,busqueda ="";
 	LinkedList<String> auxlist=new LinkedList<String>(), auxlistpueblo = new LinkedList<String>();
+	private static AsincA backgroundTask;
+	private static ProgressDialog pleaseWaitDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -152,20 +158,42 @@ public class Amigos extends Activity {
 
 
 	}
-	
-	public class AsincA extends AsyncTask<Void, Void, Void> {
+	public void onPause(){
+		super.onPause();
+		if (pleaseWaitDialog != null)
+			pleaseWaitDialog.dismiss();
+	}
+
+	public void onResume(){
+		super.onResume();
+		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
+		}
+	}
+
+
+	private void onTaskCompleted(Object _response) 
+	{ 
+
+	}
+
+	public class AsincA extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
 		ListView lista;
 		JSONObject Amigos;
-		Activity activity;
+	    private Amigos activity;
+	    private boolean completed;
+	    private Object _response;
+
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
 		public AsincA(Context contexto,
-				String urlcomment,ListView lista,Activity activity){
+				String urlcomment,ListView lista,Amigos activity){
 			this.contexto = contexto;
 			this.url = urlcomment;
 			this.lista = lista;			
@@ -213,7 +241,7 @@ public class Amigos extends Activity {
 		}
 
 		@Override
-		public void onPostExecute(Void result){
+		public void onPostExecute(Object response){
 			List<Amigo> mandar = new ArrayList<Amigo>();
 			Amigo k;
 			try {
@@ -245,9 +273,49 @@ public class Amigos extends Activity {
 			lista.setAdapter(new Plantilla_amigos(activity,mandar));
 
 			
+            completed = true;
+            _response = response;
+            notifyActivityTaskCompleted();
+        //Close the splash screen
+        if (pleaseWaitDialog != null)
+        {
+            pleaseWaitDialog.dismiss();
+            pleaseWaitDialog = null;
+        }
+
 		}	
-		
+	    public void setActivity(Amigos activity) 
+	    { 
+	        this.activity = activity; 
+	        if ( completed ) { 
+	            notifyActivityTaskCompleted(); 
+	        } 
+	    } 
+    //Pre execution actions
+    @Override 
+    protected void onPreExecute() {
+            //Start the splash screen dialog
+            if (pleaseWaitDialog == null)
+                pleaseWaitDialog= ProgressDialog.show(activity, 
+                                                       "Espere un segundo", 
+                                                       "Recopilando pueblos y categorías", 
+                                                       false);
+
+    } 
+
+    
+   //Notify activity of async task completion
+    private void notifyActivityTaskCompleted() 
+    { 
+        if ( null != activity ) { 
+            activity.onTaskCompleted(_response); 
+        } 
+    } 
+
+//for maintain attached the async task to the activity in phone states changes
+   //Sets the current activity to the async task
 
 	}
+
 
 }

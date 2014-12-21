@@ -43,7 +43,20 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/busqueda"
         android:src="@drawable/bandera_and" />
+    
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/Pob"
+        android:layout_below="@+id/imageView1" >
 
+   <LinearLayout
+            android:id="@+id/LinearScroll"
+            android:layout_width="match_parent"
+            android:layout_height="388dp"
+            android:orientation="vertical" >
+    
     <EditText
         android:id="@+id/Usuario"
         android:layout_width="match_parent"
@@ -55,35 +68,6 @@
         android:hint="@string/User"
         android:maxLines="1"
         android:singleLine="true" />
-
-      <EditText
-          android:id="@+id/Correo"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
-          android:layout_below="@+id/pass"
-          android:layout_marginTop="31dp"
-          android:ems="10"
-          android:hint="@string/correo"
-          android:maxLines="1"
-          android:singleLine="true" />
-
-      <Spinner
-          android:id="@+id/spinner1"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
-          android:layout_below="@+id/Correo"
-          android:text="@string/Selectpb" />
-
-      <Button
-          android:id="@+id/button1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_below="@+id/spinner1"
-          android:layout_centerHorizontal="true"
-          android:layout_marginTop="15dp"
-          android:text="@string/registrarse" />
 
       <EditText
           android:id="@+id/pass"
@@ -98,7 +82,7 @@
           android:singleLine="true" />
 
       <EditText
-          android:id="@+id/confpass"
+          android:id="@+id/conpass"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_alignParentLeft="true"
@@ -109,4 +93,71 @@
           android:maxLines="1"
           android:singleLine="true" />
 
+
+      <EditText
+          android:id="@+id/name"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_below="@+id/conpass"
+          android:ems="10"
+          android:hint="Nombre"
+          android:maxLines="1"
+          android:singleLine="true" />
+
+      <EditText
+          android:id="@+id/ap1"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_below="@+id/name"
+          android:ems="10"
+          android:hint="Primer apellido"
+          android:maxLines="1"
+          android:singleLine="true" />
+
+      <EditText
+          android:id="@+id/ap2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_below="@+id/ap1"
+          android:ems="10"
+          android:hint="Segundo apellido"
+          android:maxLines="1"
+          android:singleLine="true" >
+
+      </EditText>
+
+      <EditText
+          android:id="@+id/Correo"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:ems="10"
+          android:hint="@string/correo"
+          android:maxLines="1"
+          android:singleLine="true" >
+
+          <requestFocus />
+      </EditText>
+
+    </LinearLayout>
+    </ScrollView>
+
+      <Button
+          android:id="@+id/button1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true"
+          android:text="@string/registrarse" />
+
+      <Spinner
+          android:id="@+id/Pob"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_above="@+id/button1"
+          android:layout_alignParentLeft="true"
+          android:text="@string/Selectpb" />
+      
 </RelativeLayout>

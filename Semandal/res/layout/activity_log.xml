@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <Button
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/loggin"
+        android:enabled="true"
+        android:onClick="infor"
+        android:text="@string/Info" />
+ 
+    <Button
+        android:id="@+id/loggin"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/imageView1"
+        android:layout_alignParentRight="true"
+        android:enabled="true"
+        android:onClick="loguear"
+        android:text="@string/Log" />
+
+    
+    <Button
+        android:id="@+id/busqueda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/info"
+        android:layout_alignBottom="@+id/info"
+        android:layout_toLeftOf="@+id/info"
+        android:enabled="true"
+        android:onClick="buscar"
+        android:text="@string/Busqueda" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="400dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/busqueda"
+        android:src="@drawable/bandera_and" />
+
+        <ScrollView
+        android:id="@+id/scroll"
+        android:layout_below="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:id="@+id/LinearScroll"
+            android:layout_width="match_parent"
+            android:layout_height="388dp"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/idnombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Usuario o e-mail" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Contraseña"
+                android:inputType="textPassword" >
+
+            </EditText>
+
+            <Button
+                android:id="@+id/entrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Entrar" />
+
+    <Button
+        android:id="@+id/registro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/entrar"
+        android:layout_centerHorizontal="true"
+        android:text="Registrarse" />
+
+    <TextView
+        android:id="@+id/notificacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/registro"
+        android:layout_below="@+id/imageView1"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+        	
+    </LinearLayout>
+    </ScrollView>
+    
+</RelativeLayout>

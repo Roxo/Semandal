@@ -45,26 +45,20 @@
         android:layout_below="@+id/busqueda"
         android:src="@drawable/bandera_and" />
 
-    <TextView
-        android:id="@+id/Noticia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_alignLeft="@+id/titular"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/titular"
-        android:maxLines="60000000"
-        android:scrollbars="vertical"
-        android:text="Noticia"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <ScrollView
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/button1"
+            android:layout_below="@+id/button2" >
 
-    <Button
-        android:id="@+id/comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/comment" />
+        <LinearLayout
+            android:id="@+id/LinearScroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+    
+    
 
     <TextView
         android:id="@+id/fecha"
@@ -86,7 +80,25 @@
         android:scrollbars="vertical"
         android:text="Titular"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    
+        <TextView
+        android:id="@+id/Noticia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_alignLeft="@+id/titular"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/titular"
+        android:maxLines="60000000"
+        android:scrollbars="vertical"
+        android:text="Noticia"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    
+    	 </LinearLayout>
+    </ScrollView>
+    
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
@@ -94,5 +106,32 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:text="Web Noticia" />
+    
+    <Button
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/comment" />
+
+    <Button
+        android:id="@+id/button2"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/imageView1" 
+        android:text="Me gusta" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button2"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_toLeftOf="@+id/button2"
+        android:text="puntuacion"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

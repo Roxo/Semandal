@@ -45,6 +45,19 @@
         android:layout_below="@+id/busqueda"
         android:src="@drawable/bandera_and" />
 
+     <ScrollView
+        android:id="@+id/scroll"
+        android:layout_below="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/button1"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:id="@+id/LinearScroll"
+            android:layout_width="match_parent"
+            android:layout_height="388dp"
+            android:orientation="vertical" >
+    
     <EditText
         android:id="@+id/Fecha_nolog"
         android:layout_width="match_parent"
@@ -55,24 +68,6 @@
         android:hint="Fecha: dd/mm/aaaa"
         android:maxLines="1"
         android:singleLine="true" />
-
-    <Spinner
-        android:id="@+id/cat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/Fecha_nolog"
-        android:text="@string/Selectcat" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/info"
-        android:layout_below="@+id/Pob"
-        android:layout_marginRight="27dp"
-        android:layout_marginTop="31dp"
-        android:text="@string/Buscar" />
 
     <EditText
         android:id="@+id/Tit_nolog"
@@ -87,12 +82,28 @@
         android:singleLine="true" />
 
     <Spinner
+        android:id="@+id/cat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Selectcat" />
+
+    <Spinner
         android:id="@+id/Pob"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/cat"
-        android:layout_alignTop="@+id/cat"
         android:layout_marginTop="45dp"
         android:text="@string/Selectpb" />
+  
+    	 </LinearLayout>
+    </ScrollView>
+    
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="@string/Buscar" />
 
 </RelativeLayout>

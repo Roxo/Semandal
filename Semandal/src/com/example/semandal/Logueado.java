@@ -11,14 +11,17 @@ import java.nio.charset.Charset;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.semandal.Log.loguear;
 import com.example.semandal.Nolog.AsincronNolog;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +32,9 @@ import android.widget.TextView;
 
 public class Logueado extends Activity {
 	String pid="",notid="",iduser="";
+	private static Asinlog backgroundTask;
+	private static ProgressDialog pleaseWaitDialog;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,16 +43,33 @@ public class Logueado extends Activity {
 		Button b1 = (Button)this.findViewById(R.id.Amigos);
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
+		Button b5 = (Button)this.findViewById(R.id.button1);
 		iduser = getIntent().getStringExtra("user_id");
 		TextView bienvenida=(TextView) this.findViewById(R.id.bienvenida);
 		TextView noticia=(TextView) this.findViewById(R.id.noticias);
 		TextView pueblo=(TextView) this.findViewById(R.id.pueblo);
 		Asinlog tarea = null;
-		tarea = new Asinlog(this,bienvenida,noticia,pueblo,
-				Singleton.url+":8000/api/logginuser/"+iduser
+		tarea = new Asinlog(b5,this,bienvenida,noticia,pueblo,
+				Singleton.url+":8000/api/logginuser/"+iduser,this
 				);
 		tarea.execute();
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		
+		b5.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Logueado.this, Display_not_log.class);
+				i.putExtra("user_id", iduser);
+				i.putExtra("datos", "(id_p:"+pid+")");
+				i.putExtra("p_id", pid);
+				i.putExtra("id",notid);
+				startActivity(i);
+			}
+			
+		});		
+	
 		
 		b1.setOnClickListener(new View.OnClickListener() {
 
@@ -55,6 +78,8 @@ public class Logueado extends Activity {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Logueado.this, Amigos.class);
 				i.putExtra("user_id", iduser);
+				i.putExtra("datos", "(id_p:"+pid+")");
+				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -80,6 +105,7 @@ public class Logueado extends Activity {
 				Intent i = new Intent(Logueado.this, Deuda.class);
 				i.putExtra("p_id", pid);
 				i.putExtra("user_id", iduser);
+				i.putExtra("datos", "(id_p:"+pid+")");
 				startActivity(i);
 			}
 			
@@ -93,6 +119,7 @@ public class Logueado extends Activity {
 				Intent i = new Intent(Logueado.this, Logueado.class);
 				i.putExtra("user_id", iduser);
 				i.putExtra("p_id", pid);
+				i.putExtra("datos", "(id_p:"+pid+")");
 				startActivity(i);
 			}
 			
@@ -100,22 +127,49 @@ public class Logueado extends Activity {
 	
 
 	}
-	public class Asinlog extends AsyncTask<Void, Void, Void> {
+	
+	public void onPause(){
+		super.onPause();
+		if (pleaseWaitDialog != null)
+			pleaseWaitDialog.dismiss();
+	}
+
+	public void onResume(){
+		super.onResume();
+		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
+		}
+	}
+
+
+		void onTaskCompleted(Object _response) 
+		{ 
+
+		}
+
+	public class Asinlog extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
 		TextView bienvenida,noticia,pueblo;
 		JSONObject datosuser;
+		Button b5;
+	    private Logueado activity;
+	    private boolean completed;
+	     private Object _response;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
-		public Asinlog(Context contexto,TextView bienvenida,TextView noticia,TextView pueblo,String url){
+		public Asinlog(Button b5, Context contexto,TextView bienvenida,TextView noticia,TextView pueblo,String url,Logueado activity){
+			this.b5 = b5;
 			this.contexto = contexto;
 			this.noticia = noticia;
 			this.url = url;
 			this.bienvenida = bienvenida;
 			this.pueblo = pueblo;
+			this.activity = activity;
 			
 		}
 		
@@ -160,23 +214,65 @@ public class Logueado extends Activity {
 
 
 		@Override
-		public void onPostExecute(Void result){
+		public void onPostExecute(Object response){
 			try {
 				notid=datosuser.getString("notid");
 				pid=datosuser.getString("pid");
 				bienvenida.setText("Bienvenido "+datosuser.getString("dsusuario"));
 			    noticia.setText(datosuser.getString("dstitular"));
-			    pueblo.setText(datosuser.getString("dspueblo"));
+			    pueblo.setText("Municipio:\t\t"+datosuser.getString("dspueblo"));
 			    iduser=datosuser.getString("id");
+			    if(notid.equals("_")){
+			    	b5.setEnabled(false);
+			    }
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}	
-		
+	            completed = true;
+	            _response = response;
+	            notifyActivityTaskCompleted();
+	        //Close the splash screen
+	            
+	        if (pleaseWaitDialog != null)
+	        {
+	            pleaseWaitDialog.dismiss();
+	            pleaseWaitDialog = null;
+	        }
+
+			}	
+		    public void setActivity(Logueado activity) 
+		    { 
+		        this.activity = activity; 
+		        if ( completed ) { 
+		            notifyActivityTaskCompleted(); 
+		        } 
+		    } 
+	    //Pre execution actions
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	            if (pleaseWaitDialog == null)
+	                pleaseWaitDialog= ProgressDialog.show(activity, "Entrando",
+	                                                       "Verificando credenciales", 
+	                                                       false);
+
+	    } 
+
+	    
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	            activity.onTaskCompleted(_response); 
+	        } 
+	    } 
+
+	//for maintain attached the async task to the activity in phone states changes
+	   //Sets the current activity to the async task
+
+		}
+
+
 
 	}
-	
-	
-
-}

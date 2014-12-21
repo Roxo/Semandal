@@ -57,7 +57,7 @@ public class Bnologres extends Activity{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Bnologres.this, LoginActivity.class);
+				Intent i = new Intent(Bnologres.this, Log.class);
 				startActivity(i);
 			}
 			

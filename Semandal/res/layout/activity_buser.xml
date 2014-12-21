@@ -54,18 +54,29 @@
         android:layout_alignTop="@+id/Amigos"
         android:layout_marginTop="32dp"
         android:src="@drawable/bandera_and" />
+   
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_below="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/busc"
+        android:layout_height="match_parent" >
 
-   <EditText
-       android:id="@+id/NUsuario"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:layout_alignParentLeft="true"
-       android:layout_below="@+id/imageView1"
-       android:layout_marginTop="62dp"
-       android:ems="10"
-       android:hint="@string/User"
-       android:maxLines="1"
-       android:singleLine="true" />
+        <LinearLayout
+            android:id="@+id/LinearScroll"
+            android:layout_width="match_parent"
+            android:layout_height="388dp"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/NUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="62dp"
+                android:ems="10"
+                android:hint="@string/User"
+                android:maxLines="1"
+                android:singleLine="true" />
 
    <EditText
        android:id="@+id/Nombre"
@@ -111,14 +122,16 @@
        android:layout_below="@+id/apellido2"
        android:layout_marginTop="17dp"
        android:text="@string/Selectpb" />
+    	 </LinearLayout>
+    </ScrollView>
 
    <Button
        android:id="@+id/busc"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_below="@+id/Pob"
+       android:layout_alignParentBottom="true"
        android:layout_centerHorizontal="true"
-       android:layout_marginTop="22dp"
+       android:layout_marginBottom="51dp"
        android:text="@string/Buscar" />
    
 </RelativeLayout>

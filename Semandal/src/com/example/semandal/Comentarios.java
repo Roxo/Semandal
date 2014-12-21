@@ -44,7 +44,9 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Comentarios extends Activity {
 	String datos,notid,pid,iduser;
-	private static Blog backgroundTask;
+	private static AsincCL backgroundTask;
+	private static Setc backgroundTask1;
+	boolean enviar = false;
 	private static ProgressDialog pleaseWaitDialog;
 
 	@Override
@@ -154,39 +156,48 @@ public class Comentarios extends Activity {
 
 	public void onResume(){
 		super.onResume();
-		//if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
 			if(pleaseWaitDialog != null)
 				pleaseWaitDialog.show();
-		//}
+		}
+		if((backgroundTask1!=null)&&(backgroundTask1.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
+		}
+
 	}
 
 
 
 	private void onTaskCompleted(Object _response){
+		if(enviar == true){
 		Intent i = new Intent(Comentarios.this, Comentarios.class);
 		i.putExtra("datos", datos);
 		i.putExtra("user_id", iduser);
 		i.putExtra("p_id", pid);
 		i.putExtra("id",notid);
 		startActivity(i);
+		}
 
 	}
 	
 
 	
-	public class AsincCL extends AsyncTask<Void, Void, Void> {
+	public class AsincCL extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
 		ListView lista;
 		JSONObject Comentarios;
-		Activity activity;
+		Comentarios activity;
+	    private boolean completed;
+	    private Object _response;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
 		public AsincCL(Context contexto,
-				String urlcomment,ListView lista,Activity activity){
+				String urlcomment,ListView lista,Comentarios activity){
 			this.contexto = contexto;
 			this.url = urlcomment;
 			this.lista = lista;			
@@ -234,7 +245,7 @@ public class Comentarios extends Activity {
 		}
 
 		@Override
-		public void onPostExecute(Void result){
+		public void onPostExecute(Object response){
 			List<Comentario> mandar = new ArrayList<Comentario>();
 			Comentario k;
 			try {
@@ -264,10 +275,51 @@ public class Comentarios extends Activity {
 			lista.setAdapter(new Plantilla_Comment(activity,mandar));
 
 			
-		}	
+	           completed = true;
+	            _response = response;
+	            notifyActivityTaskCompleted();
+	        //Close the splash screen
+	        if (pleaseWaitDialog != null)
+	        {
+	            pleaseWaitDialog.dismiss();
+	            pleaseWaitDialog = null;
+	        }
+
+			}	
+		    public void setActivity(Comentarios activity) 
+		    { 
+		        this.activity = activity; 
+		        if ( completed ) { 
+		            notifyActivityTaskCompleted(); 
+		        } 
+		    } 
+	    //Pre execution actions
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	            if (pleaseWaitDialog == null)
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Cargando comentarios", 
+	                                                       false);
+
+	    } 
+
+	    
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	            activity.onTaskCompleted(_response); 
+	        } 
+	    } 
+
+	//for maintain attached the async task to the activity in phone states changes
+	   //Sets the current activity to the async task
+
+		}
 		
 
-	}
 	public class Setc extends AsyncTask<Void, Void, Object> {
 		String url;
 	    private Comentarios activity;
@@ -294,13 +346,12 @@ public class Comentarios extends Activity {
 
 		private void actualizar() throws MalformedURLException, IOException {
 		    InputStream is = new URL(url).openStream();
-		
+		    is.close();
 		}
 		
 	    @Override 
 	    protected void onPreExecute() {
 	            //Start the splash screen dialog
-	            if (pleaseWaitDialog == null)
 	                pleaseWaitDialog= ProgressDialog.show(activity, 
 	                                                       "Espere un segundo", 
 	                                                       "Enviando comentario", 
@@ -330,6 +381,7 @@ public class Comentarios extends Activity {
 	    private void notifyActivityTaskCompleted() 
 	    { 
 	        if ( null != activity ) { 
+	            enviar = true;
 	            activity.onTaskCompleted(_response); 
 	        } 
 	    } 

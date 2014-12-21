@@ -56,6 +56,18 @@
         android:layout_marginTop="32dp"
         android:src="@drawable/bandera_and" />
 
+     <ScrollView
+         android:id="@+id/scroll"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_above="@+id/blog"
+         android:layout_below="@+id/imageView1" >
+
+        <LinearLayout
+            android:id="@+id/LinearScroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
     
        <EditText
         android:id="@+id/Fecha_nolog"
@@ -68,42 +80,41 @@
         android:maxLines="1"
         android:singleLine="true" />
 
-    <Spinner
-        android:id="@+id/cat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/Fecha_nolog"
-        android:text="@string/Selectcat" />
-
     <EditText
         android:id="@+id/Tit_nolog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/cat"
-        android:layout_below="@+id/imageView1"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/Titular"
         android:maxLines="1"
-        android:singleLine="true" />
+        android:singleLine="true" >
+
+        <requestFocus />
+    </EditText>
 
     <Spinner
         android:id="@+id/Pob"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/cat"
-        android:layout_alignTop="@+id/cat"
         android:layout_marginTop="45dp"
         android:text="@string/Selectpb" />
+
+    <Spinner
+        android:id="@+id/cat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Selectcat" />
+
+  	 </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/blog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Pob"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="31dp"
         android:text="@string/Buscar" />
 
 </RelativeLayout>

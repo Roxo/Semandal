@@ -14,13 +14,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.semandal.Comentarios.AsincCL;
 import com.example.semandal.aux.*;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +34,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class Comentarios_nolog extends Activity {
+	private static AsincCNL backgroundTask;
+	private static ProgressDialog pleaseWaitDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +58,7 @@ public class Comentarios_nolog extends Activity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			Intent i = new Intent(Comentarios_nolog.this, LoginActivity.class);
+			Intent i = new Intent(Comentarios_nolog.this, Log.class);
 			startActivity(i);
 		}
 		
@@ -64,7 +69,7 @@ public class Comentarios_nolog extends Activity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			Intent i = new Intent(Comentarios_nolog.this, LoginActivity.class);
+			Intent i = new Intent(Comentarios_nolog.this, Log.class);
 			startActivity(i);
 		}
 		
@@ -91,19 +96,41 @@ public class Comentarios_nolog extends Activity {
 	});
 	}
 	
-	public class AsincCNL extends AsyncTask<Void, Void, Void> {
+	public void onPause(){
+		super.onPause();
+		if (pleaseWaitDialog != null)
+			pleaseWaitDialog.dismiss();
+	}
+
+	public void onResume(){
+		super.onResume();
+		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
+		}
+	}
+
+
+
+	private void onTaskCompleted(Object _response){
+	}
+
+	
+	public class AsincCNL extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
 		ListView lista;
 		JSONObject Comentarios;
-		Activity activity;
+		Comentarios_nolog activity;
+	    private boolean completed;
+	    private Object _response;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
 		public AsincCNL(Context contexto,
-				String urlcomment,ListView lista,Activity activity){
+				String urlcomment,ListView lista,Comentarios_nolog activity){
 			this.contexto = contexto;
 			this.url = urlcomment;
 			this.lista = lista;			
@@ -151,7 +178,7 @@ public class Comentarios_nolog extends Activity {
 		}
 
 		@Override
-		public void onPostExecute(Void result){
+		public void onPostExecute(Object response){
 			List<Comentario> mandar = new ArrayList<Comentario>();
 			Comentario k;
 			try {
@@ -180,9 +207,50 @@ public class Comentarios_nolog extends Activity {
 			lista.setAdapter(new Plantilla_Comment(activity,mandar));
 
 			
-		}	
-		
+			
+	           completed = true;
+	            _response = response;
+	            notifyActivityTaskCompleted();
+	        //Close the splash screen
+	        if (pleaseWaitDialog != null)
+	        {
+	            pleaseWaitDialog.dismiss();
+	            pleaseWaitDialog = null;
+	        }
 
-	}
+			}	
+		    public void setActivity(Comentarios_nolog activity) 
+		    { 
+		        this.activity = activity; 
+		        if ( completed ) { 
+		            notifyActivityTaskCompleted(); 
+		        } 
+		    } 
+	    //Pre execution actions
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	            if (pleaseWaitDialog == null)
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Cargando comentarios", 
+	                                                       false);
+
+	    } 
+
+	    
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	            activity.onTaskCompleted(_response); 
+	        } 
+	    } 
+
+	//for maintain attached the async task to the activity in phone states changes
+	   //Sets the current activity to the async task
+
+		}
+
 
 }

@@ -54,6 +54,19 @@
         android:layout_marginTop="32dp"
         android:src="@drawable/bandera_and" />
 
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button1"
+        android:layout_below="@+id/imageView1" >
+
+   <LinearLayout
+            android:id="@+id/LinearScroll"
+            android:layout_width="match_parent"
+            android:layout_height="388dp"
+            android:orientation="vertical" >
+
     <TextView
         android:id="@+id/bienvenida"
         android:layout_width="wrap_content"
@@ -92,5 +105,17 @@
         android:layout_below="@+id/textView1"
         android:text="@string/Notrec"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+         	
+    </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Ver noticia" />
 
 </RelativeLayout>

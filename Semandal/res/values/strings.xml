@@ -11,7 +11,7 @@
     <string name="User">Usuario</string>
     <string name="confpass">Confirmar Password</string>
     <string name="Notrec">Noticia más reciente</string>
-    <string name="Deuda">Deuda</string>
+    <string name="Deuda">Pueblo</string>
     <string name="Buscador">Buscador</string>
     <string name="Noticias">Noticias</string>
     <string name="Amigos">Amigos</string>
@@ -52,5 +52,7 @@
     <string name="title_activity_plantilla_dispnot">Plantilla_dispnot</string>
     <string name="title_activity_plantilla_amigos">Plantilla_amigos</string>
     <string name="title_activity_buser">Buser</string>
+    <string name="title_activity_log">Log</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>
