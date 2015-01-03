@@ -236,7 +236,6 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 	{ 
 		if(fromdatos){
 		   spinner1 = (Spinner) findViewById(R.id.cat);
-		   spinner1 = (Spinner) this.findViewById(R.id.cat);
 		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lista1);
 		   adaptador1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		   spinner1.setAdapter(adaptador1);

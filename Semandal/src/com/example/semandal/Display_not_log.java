@@ -57,11 +57,12 @@ public class Display_not_log extends Activity {
 		pid = getIntent().getStringExtra("p_id");
 		iduser = getIntent().getStringExtra("user_id");
 		datos = getIntent().getStringExtra("datos");
+		TextView k = (TextView) findViewById(R.id.categoria);
 		AsincronDNN tarea = null;
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 				(TextView) findViewById(R.id.Noticia),
 				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
-				(TextView) findViewById(R.id.categoria),Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
+				k,Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
 				);
 		tarea.execute();
 		
@@ -70,7 +71,7 @@ public class Display_not_log extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Display_not_log.this, Categoriza.class);
+				Intent i = new Intent(Display_not_log.this, Seman.class);
 				i.putExtra("id", notid);
 				i.putExtra("cat",categoria);
 				i.putExtra("datos", datos);
@@ -309,7 +310,7 @@ public class Display_not_log extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			cat.setText(ca);
+			cat.setText(categoria.replace(" ","_"));
 			puntuacion.setText(likes);
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);

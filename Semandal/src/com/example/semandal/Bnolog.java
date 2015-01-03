@@ -152,7 +152,6 @@ public void onResume(){
 	void onTaskCompleted(Object _response) 
 	{ 
 		   spinner1 = (Spinner) findViewById(R.id.Pob);
-		   spinner1 = (Spinner) this.findViewById(R.id.Pob);
 		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lista1);
 		   adaptador1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		   spinner1.setAdapter(adaptador1);

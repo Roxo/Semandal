@@ -72,8 +72,6 @@
                 android:id="@+id/NUsuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="62dp"
-                android:ems="10"
                 android:hint="@string/User"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -84,7 +82,6 @@
        android:layout_height="wrap_content"
        android:layout_alignParentLeft="true"
        android:layout_below="@+id/NUsuario"
-       android:ems="10"
        android:hint="@string/Nombre"
        android:maxLines="1"
        android:singleLine="true" />
@@ -95,7 +92,6 @@
        android:layout_height="wrap_content"
        android:layout_alignParentLeft="true"
        android:layout_below="@+id/Nombre"
-       android:ems="10"
        android:hint="@string/ap1"
        android:maxLines="1"
        android:singleLine="true" />

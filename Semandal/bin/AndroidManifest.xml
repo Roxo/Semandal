@@ -130,6 +130,10 @@
             android:name=".Categoriza"
             android:label="@string/title_activity_categoriza" >
         </activity>
+        <activity
+            android:name=".Seman"
+            android:label="@string/title_activity_seman" >
+        </activity>
     </application>
 
 </manifest>

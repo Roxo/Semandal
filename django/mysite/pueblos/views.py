@@ -17,6 +17,7 @@ from operator import itemgetter
 from django.db.models import Count
 from pueblos.models import SigP
 from pueblos.models import T_Liked
+from pueblos.models import Classify
 
 def index(request):
     return HttpResponse("Bienvenidos a SEMANDAL")
@@ -623,3 +624,12 @@ def sign(request,id_n,id_u):
 		ret = "false"
 		devolver='{"sigue":'+ret+'}'
 	return HttpResponse(devolver)
+
+def categorizar(request,id_n,id_cact,id_cnew,id_u):
+	n = Noticias.objects.filter(id = id_n)
+	cact = Categoria.objects.filter(id = id_cact)
+	cnew = Categoria.objects.filter(id = id_cnew)
+	u = Usuario.objects.filter(id = id_u)
+	c = Classify(id_n=n[0],id_user=u[0],c_ant=cact[0],c_new=cnew[0])
+	c.save()
+	return HttpResponse('{"agregado":true}')

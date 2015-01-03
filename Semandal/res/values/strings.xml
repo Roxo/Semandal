@@ -56,5 +56,6 @@
     <string name="title_activity_log">Log</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_categoriza">Categoriza</string>
+    <string name="title_activity_seman">Seman</string>
 
 </resources>

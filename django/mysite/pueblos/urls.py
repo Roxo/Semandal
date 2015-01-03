@@ -37,5 +37,6 @@ urlpatterns = patterns('',
     url(r'^api/addsigue/(?P<id_u>\d+)/(?P<id_p>\d+)/$',views.addsig, name='addsig'),
     url(r'^api/nliked/(?P<id_u>\d+)/(?P<id_n>\d+)/$',views.sign, name='sign'),
     url(r'^api/addliked/(?P<id_u>\d+)/(?P<id_n>\d+)/$',views.addliked, name='addliked'),
+    url(r'^api/categoriza/(?P<id_n>\d+)/(?P<id_cact>\d+)/(?P<id_cnew>\d+)/(?P<id_u>\d+)/$',views.categorizar, name='categorizar'),
 # url(r'^pueblos/(?P<p_id>\d+)/noticias/?P<id_noticia>\d+/$', views.idpueblo, name='idpueblo'),
 )

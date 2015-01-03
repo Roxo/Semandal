@@ -62,10 +62,7 @@ public class Blog extends Activity implements OnItemSelectedListener {
 		datos = getIntent().getStringExtra("datos");
 		Titular = (EditText)this.findViewById(R.id.Tit_nolog);
 		fecha = (EditText)this.findViewById(R.id.Fecha_nolog);
-		AsincBlog tarea = new AsincBlog(this,
-				Singleton.url+":8000/api/pueblos",
-				Singleton.url+":8000/api/noticias/categorias/",this
-				);
+		AsincBlog tarea = new AsincBlog(this);
 		tarea.execute();
 		b5.setOnClickListener(new View.OnClickListener() {
 
@@ -196,7 +193,6 @@ public class Blog extends Activity implements OnItemSelectedListener {
 
 	public class AsincBlog extends AsyncTask<Void, Void, Object> {
 		Context contexto;
-		String urlpueblos,urlcategorias;
 		JSONObject pueblos, categorias;
 	    private Blog activity;
 	    private boolean completed;
@@ -206,45 +202,12 @@ public class Blog extends Activity implements OnItemSelectedListener {
 		 * 
 		 * */
 		
-		public AsincBlog(Context contexto,String urlpueblos, String urlcategorias,Blog activity){
-			this.contexto = contexto;
-			this.urlpueblos=urlpueblos;
-			this.urlcategorias=urlcategorias;
+		public AsincBlog(Blog activity){
+			this.contexto = activity;
             this.activity = activity;
 
 		}
 		
-		  private String readAll(Reader rd) throws IOException {
-			    StringBuilder sb = new StringBuilder();
-			    int cp;
-			    while ((cp = rd.read()) != -1) {
-			      sb.append((char) cp);
-			    }
-			    return sb.toString();
-			  }
-
-			  public void leerpueblos() throws IOException, JSONException {
-			    InputStream is = new URL(urlpueblos).openStream();
-			    try {
-			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			      String jsonText = readAll(rd);
-			       pueblos = new JSONObject(jsonText);
-			    } finally {
-			      is.close();
-			    }
-			  }
-			  
-			  public void leercategoria() throws IOException, JSONException {
-				    InputStream is = new URL(urlcategorias).openStream();
-				    try {
-				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-				      String jsonText = readAll(rd);
-				       categorias = new JSONObject(jsonText);
-				    } finally {
-				      is.close();
-				    }
-			  }		  
-
 		@Override
 		protected Void doInBackground(Void... params) {
 				try {
