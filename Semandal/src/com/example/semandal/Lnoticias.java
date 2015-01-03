@@ -244,15 +244,19 @@ public class Lnoticias extends Activity {
 				JSONArray lcoment = Noticias.getJSONArray("resultado");
 				for(int i = 0; i<lcoment.length();i++){
 						JSONObject coment = (JSONObject) lcoment.get(i);
-						String autor = coment.getString("noticia_id");
+						String autor = coment.getString("id_noticia");
 						String comentario = coment.getString("titular");
 						String puntuacion = coment.getString("fecha");
+						String nlikes = coment.getString("liked");
+						String comentarios = coment.getString("ncomentarios");
+						String categoria = coment.getString("categoria");
+						String dspueblo = coment.getString("dspueblo");
 						auxlist.add(autor);
-						k = new Noticia(autor,puntuacion,comentario);
+						k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo);
 						mandar.add(k);
 				}
 				if(lcoment.length()==0){
-					k = new Noticia("","","Su pueblo no dispone de noticias");
+					k = new Noticia("","","Su pueblo no dispone de noticias","","","","");
 					mandar.add(k);
 				}
 			} catch (JSONException e) {

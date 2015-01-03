@@ -62,10 +62,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'djangotest',
-		'USER':'root',
-
-		#'HOST':'84.125.186.179',
-		'HOST':'localhost'
+		'USER':'chinlaco',
+		'PASSWORD':'chetochinlaco',
+		'HOST':'84.125.186.179',
     }
 }
 

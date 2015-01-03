@@ -23,6 +23,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -75,6 +79,8 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 		TextView habitantes = (TextView)this.findViewById(R.id.habitantes);
 		TextView superficie = (TextView)this.findViewById(R.id.superficie);		
 		final TextView urlwiki = (TextView)this.findViewById(R.id.wikiurl);
+		urlwiki.setTextColor(Color.CYAN);
+		urlweb.setTextColor(Color.CYAN);
 		//////////////////////////////////////////////
 		pid = getIntent().getStringExtra("p_id");
 		iduser = getIntent().getStringExtra("user_id");
@@ -365,23 +371,29 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			if(usig.getBoolean("sigue")){
 				b6.setEnabled(false);
 			}
-			int npueblos = pueblos.getInt("npueblos");
-			lista1= new ArrayList<String>();
-			lista1aux= new ArrayList<String>();
-			lista1.add("Pueblos");
-			lista1aux.add("");
-			JSONArray p = pueblos.getJSONArray("pueblos");
 
-			for(int i = 0;i<npueblos;i++){
-				JSONObject f = (JSONObject)p.get(i);
-			   	lista1.add(f.getString("nombre"));
-			   	lista1aux.add(f.getString("idpueblo"));
-			}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
+			
+	        BDClass admin = new BDClass(contexto,"administracion", null, 1);
+		    SQLiteDatabase db = admin.getReadableDatabase();
+			String sql = "SELECT * FROM pueblos" ;
+			Cursor c = db.rawQuery(sql, null);
+			int a = c.getCount();
+			lista1= new ArrayList<String>();
+			lista1aux= new ArrayList<String>();
+	    	lista1.add("Pueblos");
+	    	lista1aux.add("");
+			if (c.moveToFirst()){
+				do{
+					lista1.add(c.getString(1));
+					lista1aux.add(c.getString(0));
+				}while(c.moveToNext());
+			}
+			
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();

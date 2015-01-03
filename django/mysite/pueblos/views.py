@@ -193,7 +193,7 @@ def idprovinciaapi(request, prov_id):
 	agregarabd("api/provincias/"+prov_id)
 	return HttpResponse(var)
 
-def busqueda(request, n_pueblo):
+def busq(request, n_pueblo):
 	devolver = n_pueblo
 	n_pueblo = n_pueblo.split("-")
 	consulta = ""
@@ -275,7 +275,7 @@ def getlastcomentarios(id_usuario):
 	for i in rez:
 		noticia = Noticias.objects.filter(id=i.id_not.id)[0]
 		puntuacion = puntuacion + i.puntuacion
-		obj = obj+'{"comentario":"'+i.dscomentario+'"},'
+		obj = obj+'{"comentario":"'+i.dscomentario.replace(" ","-")+'"},'
 		noti = noti+'{"idnoticia":"'+str(noticia.id)+'","dstitular":"'+noticia.dstitular+'"},'
 	obj = obj[0:len(obj)-1]
 	noti = noti[0:len(noti)-1]
@@ -288,6 +288,7 @@ def getnot(request,n_id):
 	noticia = Noticias.objects.filter(id=n_id)
 	if len(noticia) != 0:
 		noticia=noticia[0]
+		ncomentarios = Comentarios.objects.filter(id_not = noticia)
 		titular =""
 		cuerpo = ""
 		fecha = ""
@@ -298,7 +299,7 @@ def getnot(request,n_id):
 		if noticia.fecha is not None:
 			fecha = str(noticia.fecha)
 		obj = ""
-		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'"},'
+		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":"'+noticia.etiqueta.dscategoria+'"},'
 	else:
 		obj = '{"id_noticia"="No existe esta noticia"}'
 	agregarabd("api/noticias/"+n_id)
@@ -309,7 +310,7 @@ def getcomentarios(request,n_id):
 	if len(rez) != 0:
 		obj=""
 		for i in rez:
-			obj = obj+'{"id_user":"'+str(i.id_user.id)+'","usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario+'","puntuacion":"'+str(int(i.puntuacion))+'"},'
+			obj = obj+'{"id_user":"'+str(i.id_user.id)+'","usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":"'+str(int(i.puntuacion))+'"},'
 		obj = obj[0:(len(obj)-1)]
 		obj = '{"ncomentarios":"'+str(len(rez))+'","comentarios":['+obj+']}'
 	else:
@@ -414,7 +415,7 @@ def lastnot(request):
 def lastcomment(request):
 	try:
 		c = Comentarios.objects.latest("fecha")
-		obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'"}'
+		obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario.replace(" ","-")+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'"}'
 		return HttpResponse(obj)
 	except:
 		obj='{"existe":false}'
@@ -442,8 +443,18 @@ def busqueda(resques,datos):
 		if len(n) is not 0:
 			obj = ''
 			r = ''
-			for s in n:
-				obj='{"noticia_id":"'+str(s.id)+'","titular":"'+s.dstitular+'","fecha":"'+str(s.fecha)+'","url":"'+s.url+'"},'
+			for noticia in n:
+				ncomentarios = Comentarios.objects.filter(id_not = noticia)
+				titular =""
+				cuerpo = ""
+				fecha = ""
+				if noticia.dstitular is not None:
+					titular = noticia.dstitular.replace('"','\"')
+				if noticia.dscuerpo is not None:
+					cuerpo = noticia.dscuerpo.replace('"','\"')
+				if noticia.fecha is not None:
+					fecha = str(noticia.fecha)
+				obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":"'+noticia.etiqueta.dscategoria+'"},'
 				r = r + obj
 			r = r[0:len(r)-1]
 			r = '{"resultado":['+r+']}'
@@ -457,8 +468,18 @@ def parseanoticias(n):
 	r = ''
 	if len(n) is not 0:
 		obj = ''
-		for s in n:
-			obj='{"noticia_id":"'+str(s.id)+'","titular":"'+s.dstitular+'","fecha":"'+str(s.fecha)+'","url":"'+s.url+'","likeds":"'+str(s.liked)+'"},'
+		for noticia in n:
+			ncomentarios = Comentarios.objects.filter(id_not = noticia)
+			titular =""
+			cuerpo = ""
+			fecha = ""
+			if noticia.dstitular is not None:
+				titular = noticia.dstitular.replace('"','\"')
+			if noticia.dscuerpo is not None:
+				cuerpo = noticia.dscuerpo.replace('"','\"')
+			if noticia.fecha is not None:
+				fecha = str(noticia.fecha)
+			obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":"'+noticia.etiqueta.dscategoria+'"},'
 			r = r + obj
 	return r	
 
@@ -467,7 +488,7 @@ def getcomment(kwargs,etiquetas):
 	string = ''
 	for k in t:
 		kwargs['etiqueta_id']=k
-		n = Noticias.objects.filter(**kwargs)
+		n = Noticias.objects.filter(**kwargs).order_by("fecha").reverse()
 		string = string+parseanoticias(n)
 	string =string[0:len(string)-1]
 	string = '{"resultado":['+string+']}'
@@ -481,7 +502,7 @@ def getdeuda(request,p_id):
 def insertcomment(request,n_id,dsc,u_id):
 	user = Usuario.objects.filter(id=u_id)[0]
 	noticia = Noticias.objects.filter(id=n_id)[0]
-	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc,fecha=datetime.datetime.today())
+	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc.replace("-"," "),fecha=datetime.datetime.today())
 	p.save()
 	return HttpResponse("")
 

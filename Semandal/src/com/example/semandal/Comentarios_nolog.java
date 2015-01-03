@@ -188,7 +188,7 @@ public class Comentarios_nolog extends Activity {
 				for(int i = 0; i<lcoment.length();i++){
 						JSONObject coment = (JSONObject) lcoment.get(i);
 						String autor = coment.getString("usuario");
-						String comentario = coment.getString("comentario");
+						String comentario = coment.getString("comentario").replace("-"," ");
 						String puntuacion = coment.getString("puntuacion");
 						k = new Comentario(autor,puntuacion,comentario);
 						mandar.add(k);

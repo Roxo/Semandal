@@ -56,7 +56,14 @@ public class Plantilla_dispnot extends BaseAdapter{
 		textView1.setText(lista.get(position).getFecha());
 		TextView textView2 =(TextView)view.findViewById(R.id.titular);
 		textView2.setText(lista.get(position).getTitular());
-
+		TextView textView3 =(TextView)view.findViewById(R.id.categoria);
+		textView3.setText(lista.get(position).getCategoria());
+		TextView textView4 =(TextView)view.findViewById(R.id.nlikes);
+		textView4.setText(lista.get(position).getNlikes());
+		TextView textView5 =(TextView)view.findViewById(R.id.pueblo);
+		textView5.setText(lista.get(position).getPueblo());
+		TextView textView6 =(TextView)view.findViewById(R.id.ncomentarios);
+		textView6.setText(lista.get(position).getNcomentarios());
 		return view;
 		}
 }

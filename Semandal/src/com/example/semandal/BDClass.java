@@ -16,15 +16,15 @@ public class BDClass extends SQLiteOpenHelper{
 	@Override
 	public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table pueblos(id integer primary key, dspueblo text)");		
-        db.execSQL("create table categorias(id integer primary key, categoria text, subcatid integer)");		
+        db.execSQL("create table categorias(id integer primary key, categoria text)");		
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	        db.execSQL("drop table if exists pueblos");
-	        db.execSQL("create table pueblos(id integer primary key, dspueblo text, busqueda texts)");		
+	        db.execSQL("create table pueblos(id text primary key, dspueblo text, busqueda text)");		
 	        db.execSQL("drop table if exists categorias");
-	        db.execSQL("create table categorias(id integer primary key, categoria text, subcatid integer)");		
+	        db.execSQL("create table categorias(id text primary key, categoria text)");		
 	}
 
 }

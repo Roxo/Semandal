@@ -31,7 +31,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 public class MainActivity extends Activity {
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -129,21 +128,18 @@ public class MainActivity extends Activity {
 			@Override
 			public void onPostExecute(Object response){
 				try {
-			        BDClass admin = new BDClass(contexto,
-			                "administracion", null, 1);
+			        BDClass admin = new BDClass(contexto,"administracion", null, 1);
 			        SQLiteDatabase bd = admin.getWritableDatabase();
+					bd.execSQL("DELETE FROM pueblos");
+					bd.execSQL("DELETE FROM categorias");
 					int npueblos = pueblos.getInt("npueblos");
 					int ncategorias = categorias.getInt("ncategorias");
 					if(npueblos!=0){
 						JSONArray p = pueblos.getJSONArray("pueblos");
-						ContentValues registro = new ContentValues();
 						for(int i = 0;i<npueblos;i++){
 							JSONObject f = (JSONObject)p.get(i);
-							registro.clear();
-							registro.put("id",f.getString("idpueblo"));
-							registro.put("dspueblo",f.getString("nombre"));
+							bd.execSQL("INSERT INTO pueblos VALUES ('"+f.getString("idpueblo")+"', '"+f.getString("nombre")+"')");
 						}
-				        bd.insert("pueblos", null, registro);
 					}
 					if(ncategorias!=0){
 						JSONArray c = categorias.getJSONArray("categorias");
@@ -153,11 +149,11 @@ public class MainActivity extends Activity {
 							JSONArray cat2 = f.getJSONArray("identificadores");
 							for(int j = 0;j<cat2.length();j++){
 								JSONObject k = (JSONObject)cat2.get(j);
-								registro
+								bd.execSQL("INSERT INTO categorias VALUES ('"+k.getString("id")+"', '"+cat+"')");
 							}
-							auxiliar.add(aux);
 						}
 					}
+					bd.close();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

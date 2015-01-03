@@ -81,7 +81,7 @@ public class Comentarios extends Activity {
 				// comentario y posteriormente realizar una consulta en json
 				// para pasarle los datos actualizados
 				String coment= comentario.getText().toString();
-				String prueba = Singleton.url+":8000/api/C_insert/"+notid+"/"+iduser+"/"+coment;
+				String prueba = Singleton.url+":8000/api/C_insert/"+notid+"/"+iduser+"/"+coment.replace(" ","-");
 				Setc cm = new Setc(prueba,k);
 				cm.execute();
 				
@@ -255,7 +255,7 @@ public class Comentarios extends Activity {
 				for(int i = 0; i<lcoment.length();i++){
 						JSONObject coment = (JSONObject) lcoment.get(i);
 						String autor = coment.getString("usuario");
-						String comentario = coment.getString("comentario");
+						String comentario = coment.getString("comentario").replace("-", " ");
 						String puntuacion = coment.getString("puntuacion");
 						k = new Comentario(autor,puntuacion,comentario);
 						mandar.add(k);

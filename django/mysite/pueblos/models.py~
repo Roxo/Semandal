@@ -1,6 +1,8 @@
 from django.db import models
 from mysite import settings
 from datetime import date
+import datetime
+
 # Create your models here.
 class Provincia(models.Model):
 	dsprovincia = models.CharField(max_length=200,unique = True)
@@ -48,26 +50,50 @@ class Noticias(models.Model):
 	resumen = models.CharField(max_length=2500,null=True)
 	url = models.CharField(max_length=300,null=True)
 	etiqueta = models.ForeignKey(Categoria,null=True)
+	liked = models.PositiveIntegerField(default=0)
 	
 class Usuario(models.Model):
-	dsusuario =  models.CharField(max_length=100)
+	dsusuario =  models.CharField(max_length=100,unique=True)
 	dsnombre = models.CharField(max_length=100)
 	dsapellido1 = models.CharField(max_length=100)
 	dsapellido2 = models.CharField(max_length=100)
 	pueblo = models.ForeignKey(Pueblo)
 	token = models.CharField(max_length=200)
-	correo = models.CharField(max_length=100,null=True)
+	correo = models.CharField(max_length=100,null=True,unique=True)
 
 class Amigode(models.Model):
 	idamistad = models.ForeignKey(Usuario,related_name='soy_amigo')
-	idamisgode = models.ForeignKey(Usuario,related_name='es_mi_amigo')
+	idamigode = models.ForeignKey(Usuario,related_name='es_mi_amigo')
+	class Meta:
+		unique_together = ('idamistad', 'idamigode')
 
 class Comentarios(models.Model):
 	dscomentario = models.CharField(max_length=200)
 	id_user = models.ForeignKey(Usuario)
 	id_not = models.ForeignKey(Noticias)
 	puntuacion = models.FloatField(default=0)
+	fecha = models.DateTimeField()
 
 class Llamadas(models.Model):
 	llamada = models.CharField(max_length=300)
 	contabilizacion = models.PositiveIntegerField(default=0)
+
+class SigP(models.Model):
+	id_user = models.ForeignKey(Usuario)
+	id_p = models.ForeignKey(Pueblo)
+	class Meta:
+		unique_together = ('id_user', 'id_p')
+
+class T_Liked(models.Model):
+	id_user = models.ForeignKey(Usuario)
+	id_n = models.ForeignKey(Noticias)
+	class Meta:
+		unique_together = ('id_user', 'id_n')
+
+class Classify(models.Model):
+	id_n = models.ForeignKey(Noticias)
+	id_user = models.ForeignKey(Usuario,None =True)
+	c_ant = models.ForeignKey(Categoria,related_name='anterior')
+	c_new = models.ForeignKey(Categoria,related_name='nueva')
+	class Meta:
+		unique_together = ('id_n', 'id_user', 'c_ant')

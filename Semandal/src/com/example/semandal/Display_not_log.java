@@ -32,7 +32,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class Display_not_log extends Activity {
-	String notid,datos,pid,iduser,url1="";
+	String notid,datos,pid,iduser,url1,categoria="";
 	private static AsincronDNN backgroundTask;
 	private static Set backgroundTask1;
 	private static ProgressDialog pleaseWaitDialog;
@@ -50,6 +50,7 @@ public class Display_not_log extends Activity {
 		Button b5 = (Button)this.findViewById(R.id.comment);
 		Button b6 = (Button)this.findViewById(R.id.button1);
 		Button b7 = (Button)this.findViewById(R.id.button2);
+		Button categoriza = (Button)this.findViewById(R.id.b1);
 		/////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////
 		notid=getIntent().getStringExtra("id");
@@ -60,9 +61,25 @@ public class Display_not_log extends Activity {
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 				(TextView) findViewById(R.id.Noticia),
 				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
-				Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
+				(TextView) findViewById(R.id.categoria),Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
 				);
 		tarea.execute();
+		
+		categoriza.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Display_not_log.this, Categoriza.class);
+				i.putExtra("id", notid);
+				i.putExtra("cat",categoria);
+				i.putExtra("datos", datos);
+				i.putExtra("user_id", iduser);
+				i.putExtra("p_id", pid);
+				startActivity(i);
+			}
+			
+		});				
 
 		b7.setOnClickListener(new View.OnClickListener() {
 
@@ -197,7 +214,7 @@ public class Display_not_log extends Activity {
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url,urlsig;
-		TextView titview,cuerpview,dateview,puntuacion;
+		TextView titview,cuerpview,dateview,puntuacion,cat;
 		Button b7;
 		JSONObject html,sig;
 	    private Display_not_log activity;
@@ -210,7 +227,7 @@ public class Display_not_log extends Activity {
 		 * */
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-			TextView dateview,TextView puntuacion, Button b7,String url,String urlsig,Display_not_log activity){
+			TextView dateview,TextView puntuacion, Button b7,TextView categoria,String url,String urlsig,Display_not_log activity){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -220,6 +237,7 @@ public class Display_not_log extends Activity {
 			this.puntuacion = puntuacion;
 			this.b7 = b7;
 			this.urlsig = urlsig;
+			this.cat=categoria;
 			
 		}
 		
@@ -275,7 +293,7 @@ public class Display_not_log extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			String titular = "ROTO",cuerpo="ROTO", fecha = "Roto",likes="roto";
+			String titular = "ROTO",cuerpo="ROTO", fecha = "Roto",likes="roto",ca="roto";
 			try {
 				titular = html.getString("titular").replace("-","\n");
 				cuerpo = html.getString("cuerpo").replace("-","\n");
@@ -283,12 +301,15 @@ public class Display_not_log extends Activity {
 				notid = html.getString("id_noticia");
 				url1 = html.getString("url");
 				likes = html.getString("liked");
+				ca = html.getString("categoria");
+				categoria = ca;
 				if(sig.getBoolean("sigue"))
 					b7.setEnabled(false);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			cat.setText(ca);
 			puntuacion.setText(likes);
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);

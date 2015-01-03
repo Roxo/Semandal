@@ -64,7 +64,7 @@ DATABASES = {
         'NAME': 'djangotest',
 		'USER':'chinlaco',
 		'PASSWORD':'chetochinlaco',
-		'HOST':'84.125.186.179',
+		'HOST':'95.39.221.207',
     }
 }
 

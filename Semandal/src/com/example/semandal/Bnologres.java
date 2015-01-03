@@ -16,15 +16,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.semandal.Comentarios_nolog.AsincCNL;
+import com.example.semandal.Lnoticias.AsincLN;
 import com.example.semandal.aux.Comentario;
 import com.example.semandal.aux.Noticia;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +38,8 @@ import android.widget.ListView;
 
 public class Bnologres extends Activity{
 	LinkedList<String> auxlist = new LinkedList<String>();
+	private static AsincBNL backgroundTask;
+	private static ProgressDialog pleaseWaitDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,22 +110,45 @@ public class Bnologres extends Activity{
 		
 	}
 	
+	public void onPause(){
+		super.onPause();
+		if (pleaseWaitDialog != null)
+			pleaseWaitDialog.dismiss();
+	}
+
+	public void onResume(){
+		super.onResume();
+		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
+		}
+	}
+	
+	private void onTaskCompleted(Object _response) 
+	{ 
+
+	}
+
+
 	
 
 
-	public class AsincBNL extends AsyncTask<Void, Void, Void> {
+	public class AsincBNL extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
 		ListView lista;
 		JSONObject Noticias;
-		Activity activity;
+		Bnologres activity;
+	    private boolean completed;
+	    private Object _response;
+
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
 		public AsincBNL(Context contexto,
-				String urlcomment,ListView lista,Activity activity){
+				String urlcomment,ListView lista,Bnologres activity){
 			this.contexto = contexto;
 			this.url = urlcomment;
 			this.lista = lista;			
@@ -168,20 +196,29 @@ public class Bnologres extends Activity{
 		}
 
 		@Override
-		public void onPostExecute(Void result){
+		public void onPostExecute(Object response){
 			List<Noticia> mandar = new ArrayList<Noticia>();
 			Noticia k;
 			try {
 				JSONArray lcoment = Noticias.getJSONArray("resultado");
 				for(int i = 0; i<lcoment.length();i++){
 						JSONObject coment = (JSONObject) lcoment.get(i);
-						String autor = coment.getString("noticia_id");
+						String autor = coment.getString("id_noticia");
 						String comentario = coment.getString("titular");
 						String puntuacion = coment.getString("fecha");
+						String nlikes = "likes: "+coment.getString("liked");
+						String comentarios = "Comentarios: "+coment.getString("ncomentarios");
+						String categoria = "categoria:" + coment.getString("categoria");
+						String dspueblo = coment.getString("dspueblo");
 						auxlist.add(autor);
-						k = new Noticia(autor,puntuacion,comentario);
+						k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo);
 						mandar.add(k);
 				}
+				if(lcoment.length()==0){
+					k = new Noticia("","","Su pueblo no dispone de noticias","","","","");
+					mandar.add(k);
+				}
+
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -189,9 +226,49 @@ public class Bnologres extends Activity{
 			lista.setAdapter(new Plantilla_dispnot(activity,mandar));
 
 			
-		}	
-		
+			  completed = true;
+	            _response = response;
+	            notifyActivityTaskCompleted();
+	        //Close the splash screen
+	        if (pleaseWaitDialog != null)
+	        {
+	            pleaseWaitDialog.dismiss();
+	            pleaseWaitDialog = null;
+	        }
 
-	}
+			}	
+		    public void setActivity(Bnologres activity) 
+		    { 
+		        this.activity = activity; 
+		        if ( completed ) { 
+		            notifyActivityTaskCompleted(); 
+		        } 
+		    } 
+	    //Pre execution actions
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	            if (pleaseWaitDialog == null)
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Recopilando las noticias", 
+	                                                       false);
+
+	    } 
+
+	    
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	            activity.onTaskCompleted(_response); 
+	        } 
+	    } 
+
+	//for maintain attached the async task to the activity in phone states changes
+	   //Sets the current activity to the async task
+
+		}
 
 }
+

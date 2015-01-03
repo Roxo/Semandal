@@ -44,6 +44,7 @@ public class Display_not_nolog extends Activity {
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 				(TextView) findViewById(R.id.Noticia),
 				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),
+				(TextView) findViewById(R.id.categoria),
 				Singleton.url+":8000/api/noticias/"+notid,this
 				);
 		tarea.execute();
@@ -143,7 +144,7 @@ public class Display_not_nolog extends Activity {
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
-		TextView titview,cuerpview,dateview,likes;
+		TextView titview,cuerpview,dateview,likes,categoria;
 		JSONObject html, Comentario;
 	    private Display_not_nolog activity;
 	    private boolean completed;
@@ -155,7 +156,7 @@ public class Display_not_nolog extends Activity {
 		 * */
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-			TextView dateview,TextView likes,String url,Display_not_nolog activity){
+			TextView dateview,TextView likes,TextView categoria,String url,Display_not_nolog activity){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -163,6 +164,7 @@ public class Display_not_nolog extends Activity {
 			this.url = url;
 			this.activity = activity;
 			this.likes = likes;
+			this.categoria=categoria;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -206,7 +208,7 @@ public class Display_not_nolog extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			String titular = "ROTO",cuerpo="ROTO", fecha = "Roto",like="roto";
+			String titular = "ROTO",cuerpo="ROTO", fecha = "Roto",like="roto",cat="roto";
 			try {
 				titular = html.getString("titular").replace("-","\n");
 				cuerpo = html.getString("cuerpo").replace("-","\n");
@@ -214,10 +216,12 @@ public class Display_not_nolog extends Activity {
 				notid = html.getString("id_noticia");
 				url1 = html.getString("url");
 				like = html.getString("liked");
+				cat = html.getString("categoria");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			categoria.setText(cat);
 			likes.setText(like);
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);

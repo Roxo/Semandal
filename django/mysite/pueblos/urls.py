@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     # url(r'^pueblos/(?P<n_pueblo>[\w\-\_]*)/$', views.nombre_pueblo, name='nombre_pueblo'),
     # url(r'^provincias/(?P<prov_id>\d+)/$', views.idprovincia, name='idprovincia'),
     # url(r'^provincias/(?P<n_prov>[\w\-\_]*)/$', views.nombre_prov, name='nombre_prov'),
-    url(r'^api/busqueda/(?P<n_pueblo>[\w\-\_]*)/$',views.busqueda,name='busqueda'),
+    url(r'^api/busqueda/(?P<n_pueblo>[\w\-\_]*)/$',views.busq,name='busq'),
     url(r'^api/pueblos/(?P<p_id>\d+]*)/noticias/(?P<ind1>\d+)/(?P<ind2>\d+)$', views.noticias, name='noticias'),
     url(r'^api/noticias/(?P<n_id>\d+]*)/comentarios$', views.getcomentarios, name='getcomentarios'),
     url(r'^api/noticias/(?P<n_id>\d+]*)/$', views.getnot, name='getnot'),
@@ -38,6 +38,4 @@ urlpatterns = patterns('',
     url(r'^api/nliked/(?P<id_u>\d+)/(?P<id_n>\d+)/$',views.sign, name='sign'),
     url(r'^api/addliked/(?P<id_u>\d+)/(?P<id_n>\d+)/$',views.addliked, name='addliked'),
 # url(r'^pueblos/(?P<p_id>\d+)/noticias/?P<id_noticia>\d+/$', views.idpueblo, name='idpueblo'),
-
-
 )

@@ -15,6 +15,8 @@ import json
 from django.db.models import Q
 from operator import itemgetter
 from django.db.models import Count
+from pueblos.models import SigP
+from pueblos.models import T_Liked
 
 def index(request):
     return HttpResponse("Bienvenidos a SEMANDAL")
@@ -42,12 +44,12 @@ def consultaprovincia(pbls,pr):
 		opcms = '"false"';
 		if p.opencms == 1:
 			opcms = '"true"'
-		obj = '"id": "'+str(p.id)+'", "nombre" : "'+p.dspueblo+'","coordenadas":{"longitud":"'+str(p.longitud)+'","latitud":"'+str(p.latitud)+'"}, "url":"'+url+'", "opencms":'+opcms+', "habitantes":"'+str(p.habitantes)+'", "deuda":"'+str(p.deuda)+'", "deudaxhab":"'+str(float(p.deuda)/float(p.densidad))+'", "fecha_inscripcion":"'+str(p.fecha_ins)+'", "superficie":"'+str(p.superficie).encode('utf8')+'", "wiki":"'+str(p.wiki)+'", "cp":"'+str(p.cp)+'"'
+		obj = '"id": "'+str(p.id)+'", "nombre" : "'+str(p.dspueblo.encode("utf8"))+'","coordenadas":{"longitud":"'+str(p.longitud)+'","latitud":"'+str(p.latitud)+'"}, "url":"'+url.encode("utf8")+'", "opencms":'+opcms+', "habitantes":"'+str(p.habitantes)+'", "deuda":"'+str(p.deuda)+'", "deudaxhab":"'+str(float(p.deuda)/float(p.densidad))+'", "fecha_inscripcion":"'+str(p.fecha_ins)+'", "superficie":"'+str(p.superficie).encode('utf8')+'", "wiki":"'+str(p.wiki.encode("utf8"))+'", "cp":"'+str(p.cp)+'"'
 		obj = '{'+obj+'},'
 		r = r+obj
 		obj=''
 	r=r[0:len(r)-1]
-	r = '{"provincia":"'+pr[0].dsprovincia+'","npueblos":"'+len(pbls)+'","pueblos":['+r+']}'
+	r = '{"provincia":"'+pr[0].dsprovincia.encode("utf8")+'","npueblos":"'+str(len(pbls))+'","pueblos":['+r+']}'
 	return r
 
 def idpueblo(request, p_id):
@@ -273,7 +275,7 @@ def getlastcomentarios(id_usuario):
 	for i in rez:
 		noticia = Noticias.objects.filter(id=i.id_not.id)[0]
 		puntuacion = puntuacion + i.puntuacion
-		obj = obj+'{"comentario":"'+i.dscomentario+'"},'
+		obj = obj+'{"comentario":"'+i.dscomentario.replace(" ","-")+'"},'
 		noti = noti+'{"idnoticia":"'+str(noticia.id)+'","dstitular":"'+noticia.dstitular+'"},'
 	obj = obj[0:len(obj)-1]
 	noti = noti[0:len(noti)-1]
@@ -286,6 +288,7 @@ def getnot(request,n_id):
 	noticia = Noticias.objects.filter(id=n_id)
 	if len(noticia) != 0:
 		noticia=noticia[0]
+		ncomentarios = Comentarios.objects.filter(id_not = noticia)
 		titular =""
 		cuerpo = ""
 		fecha = ""
@@ -296,7 +299,7 @@ def getnot(request,n_id):
 		if noticia.fecha is not None:
 			fecha = str(noticia.fecha)
 		obj = ""
-		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'"},'
+		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":"'+noticia.etiqueta.dscategoria+'"},'
 	else:
 		obj = '{"id_noticia"="No existe esta noticia"}'
 	agregarabd("api/noticias/"+n_id)
@@ -307,7 +310,7 @@ def getcomentarios(request,n_id):
 	if len(rez) != 0:
 		obj=""
 		for i in rez:
-			obj = obj+'{"id_user":"'+str(i.id_user.id)+'","usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario+'","puntuacion":"'+str(int(i.puntuacion))+'"},'
+			obj = obj+'{"id_user":"'+str(i.id_user.id)+'","usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":"'+str(int(i.puntuacion))+'"},'
 		obj = obj[0:(len(obj)-1)]
 		obj = '{"ncomentarios":"'+str(len(rez))+'","comentarios":['+obj+']}'
 	else:
@@ -412,7 +415,7 @@ def lastnot(request):
 def lastcomment(request):
 	try:
 		c = Comentarios.objects.latest("fecha")
-		obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'"}'
+		obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario.replace(" ","-")+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'"}'
 		return HttpResponse(obj)
 	except:
 		obj='{"existe":false}'
@@ -440,8 +443,18 @@ def busqueda(resques,datos):
 		if len(n) is not 0:
 			obj = ''
 			r = ''
-			for s in n:
-				obj='{"noticia_id":"'+str(s.id)+'","titular":"'+s.dstitular+'","fecha":"'+str(s.fecha)+'","url":"'+s.url+'"},'
+			for noticia in n:
+				ncomentarios = Comentarios.objects.filter(id_not = noticia)
+				titular =""
+				cuerpo = ""
+				fecha = ""
+				if noticia.dstitular is not None:
+					titular = noticia.dstitular.replace('"','\"')
+				if noticia.dscuerpo is not None:
+					cuerpo = noticia.dscuerpo.replace('"','\"')
+				if noticia.fecha is not None:
+					fecha = str(noticia.fecha)
+				obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":"'+noticia.etiqueta.dscategoria+'"},'
 				r = r + obj
 			r = r[0:len(r)-1]
 			r = '{"resultado":['+r+']}'
@@ -455,8 +468,18 @@ def parseanoticias(n):
 	r = ''
 	if len(n) is not 0:
 		obj = ''
-		for s in n:
-			obj='{"noticia_id":"'+str(s.id)+'","titular":"'+s.dstitular+'","fecha":"'+str(s.fecha)+'","url":"'+s.url+'"},'
+		for noticia in n:
+			ncomentarios = Comentarios.objects.filter(id_not = noticia)
+			titular =""
+			cuerpo = ""
+			fecha = ""
+			if noticia.dstitular is not None:
+				titular = noticia.dstitular.replace('"','\"')
+			if noticia.dscuerpo is not None:
+				cuerpo = noticia.dscuerpo.replace('"','\"')
+			if noticia.fecha is not None:
+				fecha = str(noticia.fecha)
+			obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":"'+noticia.etiqueta.dscategoria+'"},'
 			r = r + obj
 	return r	
 
@@ -479,7 +502,7 @@ def getdeuda(request,p_id):
 def insertcomment(request,n_id,dsc,u_id):
 	user = Usuario.objects.filter(id=u_id)[0]
 	noticia = Noticias.objects.filter(id=n_id)[0]
-	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc,fecha=datetime.datetime.today())
+	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc.replace("-"," "),fecha=datetime.datetime.today())
 	p.save()
 	return HttpResponse("")
 
@@ -489,8 +512,14 @@ def ulog(request,id_user):
 		user = user[0]
 		t = user.pueblo.id
 		pob = Pueblo.objects.filter(id = t)[0]
-		noticia = Noticias.objects.filter(pueblo = pob)[0]
-		ret = '{"id":"'+str(user.id)+'","dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":"'+str(pob.id)+'","busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","dstitular":"'+noticia.dstitular+'","notid":"'+str(noticia.id)+'"}'
+		try:
+			noticia = Noticias.objects.filter(pueblo = pob)[0]
+			dstitular=noticia.dstitular
+			idnot = str(noticia.id)
+		except:
+			dstitular = "No existen noticias en su municipio"
+			idnot = "_"
+		ret = '{"id":"'+str(user.id)+'","dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":"'+str(pob.id)+'","busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","dstitular":"'+dstitular+'","notid":"'+idnot+'"}'
 	else:
 		ret = '{"id":"este usuario no existe"}'
 	agregarabd("api/usuario/"+id_user)
@@ -548,3 +577,49 @@ def userview(request,datos):
 			return HttpResponse('{"resultado":"No existe un usuario con esas caracteristicas"}')
 	else:
 		return HttpResponse('{"resultado":"Debe insertar al menos un campo"}')
+
+def sig(request,id_p,id_u):
+	ret = "false"
+	devolver='{"sigue":'+ret+'}'
+	us = Usuario.objects.filter(id=id_u)
+	if str(us[0].pueblo.id) == str(id_p):
+		ret = "true"
+		devolver='{"sigue":'+ret+'}'
+		return HttpResponse(devolver)
+	sigue = SigP.objects.filter(id_user=id_u,id_p = id_p)
+	if len(sigue) != 0:
+		ret = "true"
+		devolver='{"sigue":'+ret+'}'
+	else:
+		ret = "false"
+		devolver='{"sigue":'+ret+'}'
+	return HttpResponse(devolver)
+
+def addsig(request,id_p,id_u):
+	usuario = Usuario.objects.filter(id=id_u)[0]
+	pueblo = Pueblo.objects.filter(id=id_p)[0]
+	u = SigP(id_user=usuario,id_p=pueblo)
+	u.save()
+	return HttpResponse("agregado")
+
+def addliked(request,id_u,id_n):
+	try:
+		usuario = Usuario.objects.filter(id=id_u)[0]
+		noticia = Noticias.objects.filter(id=id_n)
+		u = T_Liked(id_user=usuario,id_n=noticia[0])
+		u.save()
+		a = noticia[0].liked+1
+		noticia.update(liked = a)
+	except:
+		return HttpResponse("no agregado")
+	return HttpResponse("agregado")
+
+def sign(request,id_n,id_u):
+	sigue = T_Liked.objects.filter(id_user=id_u,id_n = id_n)
+	if len(sigue) != 0:
+		ret = "true"
+		devolver='{"sigue":'+ret+'}'
+	else:
+		ret = "false"
+		devolver='{"sigue":'+ret+'}'
+	return HttpResponse(devolver)

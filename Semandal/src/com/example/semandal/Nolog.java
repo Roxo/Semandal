@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,7 +35,7 @@ import android.view.View;
 public class Nolog extends ActionBarActivity {
 	String idnoticia="",answer = "";
 	String idnoticiacomentario="";
-	private static Nolog backgroundTask;
+	private static AsincronNolog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
 	@Override
@@ -57,7 +58,7 @@ public class Nolog extends ActionBarActivity {
 				(TextView) findViewById(R.id.lastcomment),
 				(TextView) findViewById(R.id.commentaut),
 				Singleton.url+":8000/api/noticias/ultima/",
-				Singleton.url+":8000/api/comentarios/ultimo",b5
+				Singleton.url+":8000/api/comentarios/ultimo",b5,this
 			);
 		tarea.execute();
 		
@@ -87,6 +88,7 @@ public class Nolog extends ActionBarActivity {
 			
 		});	
 		
+		
 		b6.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -98,6 +100,7 @@ public class Nolog extends ActionBarActivity {
 			}
 			
 		});		
+		
 		
 	/*	b4.setOnClickListener(new View.OnClickListener() {
 
@@ -144,8 +147,26 @@ public class Nolog extends ActionBarActivity {
 		});
 		
 	}
-	
-	public class AsincronNolog extends AsyncTask<Void, Void, Void> {
+
+public void onPause(){
+	super.onPause();
+	if (pleaseWaitDialog != null)
+		pleaseWaitDialog.dismiss();
+}
+
+public void onResume(){
+	super.onResume();
+	if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+		if(pleaseWaitDialog != null)
+			pleaseWaitDialog.show();
+	}
+}
+
+private void onTaskCompleted(Object _response) 
+{ 
+
+}
+	public class AsincronNolog extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
 		TextView titview,cuerpview,dateview,commentview,authview;
@@ -153,6 +174,10 @@ public class Nolog extends ActionBarActivity {
 		String urlcomment;
 		String devolver;
 		Button b;
+	    private Nolog activity;
+	    private boolean completed;
+	    private Object _response;
+
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
@@ -160,7 +185,7 @@ public class Nolog extends ActionBarActivity {
 		
 		public AsincronNolog(Context contexto,TextView titview,TextView cuerpview,
 				TextView dateview,TextView commentview,TextView authview,String url,
-				String urlcomment,Button b){
+				String urlcomment,Button b, Nolog activity){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -170,6 +195,7 @@ public class Nolog extends ActionBarActivity {
 			this.urlcomment = urlcomment;
 			this.url = url;
 			this.b = b;
+			this.activity = activity;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -225,7 +251,7 @@ public class Nolog extends ActionBarActivity {
 
 
 		@Override
-		public void onPostExecute(Void result){
+		public void onPostExecute(Object response){
 			String titular = "",cuerpo="", fecha = "",user="",comentario="No existen comentarios";
 				if(html != null && Comentario != null){
 				try{
@@ -237,7 +263,7 @@ public class Nolog extends ActionBarActivity {
 					}
 					if(Comentario.getBoolean("existe")){
 					user = Comentario.getString("autor");
-					comentario=Comentario.getString("cuerpo");
+					comentario=Comentario.getString("cuerpo").replace("-"," ");
 					idnoticiacomentario=Comentario.getString("notid");
 					}
 					if(comentario=="No existen comentarios")
@@ -254,14 +280,53 @@ public class Nolog extends ActionBarActivity {
 		    commentview.setText(comentario);
 		    cuerpview.setMovementMethod(new ScrollingMovementMethod());
 		    commentview.setMovementMethod(new ScrollingMovementMethod());
-		}	
-		
 
-	}
-	
-	
+			  completed = true;
+	            _response = response;
+	            notifyActivityTaskCompleted();
+	        //Close the splash screen
+	        if (pleaseWaitDialog != null)
+	        {
+	            pleaseWaitDialog.dismiss();
+	            pleaseWaitDialog = null;
+	        }
 
-	}
+			}	
+		    public void setActivity(Nolog activity) 
+		    { 
+		        this.activity = activity; 
+		        if ( completed ) { 
+		            notifyActivityTaskCompleted(); 
+		        } 
+		    } 
+	    //Pre execution actions
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	            if (pleaseWaitDialog == null)
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Recopilando las noticias", 
+	                                                       false);
+
+	    } 
+
+	    
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	            activity.onTaskCompleted(_response); 
+	        } 
+	    } 
+
+	//for maintain attached the async task to the activity in phone states changes
+	   //Sets the current activity to the async task
+
+		}
+
+}
+
 	
 
 

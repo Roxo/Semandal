@@ -23,6 +23,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
@@ -156,7 +158,6 @@ public void onResume(){
 		   spinner1.setAdapter(adaptador1);
 
 		   spinner2 = (Spinner) findViewById(R.id.cat);
-		   spinner2 = (Spinner) findViewById(R.id.cat);
 		   ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lista2);
 		   adaptador2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		   spinner2.setAdapter(adaptador2);
@@ -203,51 +204,50 @@ public void onResume(){
 
 		}
 		
-		  private String readAll(Reader rd) throws IOException {
-			    StringBuilder sb = new StringBuilder();
-			    int cp;
-			    while ((cp = rd.read()) != -1) {
-			      sb.append((char) cp);
-			    }
-			    return sb.toString();
-			  }
-
-			  public void leerpueblos() throws IOException, JSONException {
-			    InputStream is = new URL(urlpueblos).openStream();
-			    try {
-			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			      String jsonText = readAll(rd);
-			       pueblos = new JSONObject(jsonText);
-			    } finally {
-			      is.close();
-			    }
-			  }
-			  
-			  public void leercategoria() throws IOException, JSONException {
-				    InputStream is = new URL(urlcategorias).openStream();
-				    try {
-				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-				      String jsonText = readAll(rd);
-				       categorias = new JSONObject(jsonText);
-				    } finally {
-				      is.close();
-				    }
-			  }		  
-
 		@Override
 		protected Void doInBackground(Void... params) {
-
-				try {
-					leerpueblos();
-					leercategoria();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			try {
+		        BDClass admin = new BDClass(contexto,"administracion", null, 1);
+			    SQLiteDatabase db = admin.getReadableDatabase();
+				String sql = "SELECT * FROM pueblos" ;
+				Cursor c = db.rawQuery(sql, null);
+				int a = c.getCount();
+				lista1= new ArrayList<String>();
+				lista1aux= new ArrayList<String>();
+		    	lista1.add("Pueblos");
+		    	lista1aux.add("");
+				if (c.moveToFirst()){
+					do{
+						lista1.add(c.getString(1));
+						lista1aux.add(c.getString(0));
+					}while(c.moveToNext());
 				}
+				sql = "SELECT * FROM categorias" ;
+				c = db.rawQuery(sql, null);
+				a = c.getCount();
+				lista2= new ArrayList<String>();
+				lista2.add("Categorias");
+			   	LinkedList<String> aux = new LinkedList<String>();
+			   	aux = new LinkedList<String>();
+				if (c.moveToFirst()){
+					do{
+						if(busca(lista2,c.getString(1))){
+							aux.add(c.getString(0));
+						}
+						else{
+							auxiliar.add(aux);
+							aux = new LinkedList<String>();
+							lista2.add(c.getString(1));
+							aux.add(c.getString(0));
+						}
+					}while(c.moveToNext());
+				}
+			    db.close();
+			    c.close();
 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return null;
 		}
 
@@ -255,44 +255,9 @@ public void onResume(){
 
 		@Override
 		public void onPostExecute(Object response){
-			try {
-				int npueblos = pueblos.getInt("npueblos");
-				int ncategorias = categorias.getInt("ncategorias");
-				lista1= new ArrayList<String>();
-				lista1aux= new ArrayList<String>();
-				lista2= new ArrayList<String>();
-				lista1.add("Pueblos");
-				lista2.add("Categorias");
-				lista1aux.add("");
-			   	LinkedList<String> aux = new LinkedList<String>();
-			   	auxiliar.add(aux);
-				JSONArray p = pueblos.getJSONArray("pueblos");
-				JSONArray c = categorias.getJSONArray("categorias");
-				for(int i = 0;i<npueblos;i++){
-					JSONObject f = (JSONObject)p.get(i);
-				   	lista1.add(f.getString("nombre"));
-				   	lista1aux.add(f.getString("idpueblo"));
-				}
-				for(int i = 0;i<ncategorias;i++){
-					JSONObject f = (JSONObject)c.get(i);
-				   	lista2.add(f.getString("categoria"));
-				   	JSONObject s = (JSONObject)c.get(i);
-				   	JSONArray cat2 = s.getJSONArray("identificadores");
-				   	aux = new LinkedList<String>();
-				   	for(int j = 0;j<cat2.length();j++){
-						JSONObject k = (JSONObject)cat2.get(j);
-				   		aux.add(k.getString("id"));
-				   	}
-				   	auxiliar.add(aux);
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
-        //Close the splash screen
         if (pleaseWaitDialog != null)
         {
             pleaseWaitDialog.dismiss();
@@ -300,7 +265,19 @@ public void onResume(){
         }
 
 		}	
-	    public void setActivity(Bnolog activity) 
+	    private boolean busca(List<String> lista2, String string) {
+	    	boolean devolver = false;
+	    	int i = 0;
+	    	while (!devolver && i<lista2.size()){
+	    		if(lista2.get(i).equalsIgnoreCase(string)){
+	    			devolver = true;
+	    		}
+	    		else i++;
+	    	}
+	    	return devolver;
+	    }
+
+		public void setActivity(Bnolog activity) 
 	    { 
 	        this.activity = activity; 
 	        if ( completed ) { 

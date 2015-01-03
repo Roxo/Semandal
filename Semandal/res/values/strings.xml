@@ -43,6 +43,7 @@
     <string name="title_activity_blog">Blog</string>
     <string name="title_activity_display_not_log">Display_not_log</string>
     <string name="title_activity_comentarios">Comentarios</string>
+    <string name="title_activity_nolog">Nolog</string>
     <string name="title_activity_deuda">Deuda</string>
     <string name="title_activity_amigos">Amigos</string>
     <string name="title_activity_perfil">Perfil</string>
@@ -54,5 +55,6 @@
     <string name="title_activity_buser">Buser</string>
     <string name="title_activity_log">Log</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_categoriza">Categoriza</string>
 
 </resources>

@@ -57,9 +57,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" >
-    
-    
 
+                        <TextView
+                android:id="@+id/categoria"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Large Text"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <Button
+                android:id="@+id/b1"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¿Categoría equivocada?" />
+            
     <TextView
         android:id="@+id/fecha"
         android:layout_width="wrap_content"
@@ -80,7 +92,6 @@
         android:scrollbars="vertical"
         android:text="Titular"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    
     
         <TextView
         android:id="@+id/Noticia"
