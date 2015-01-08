@@ -227,7 +227,6 @@ def noticias(request,p_id,ind1,ind2):
 	return HttpResponse(var);
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 def amigos(request,id_user):
 	id_amigos = Amigode.objects.filter(idamistad = id_user)
 	if len(id_amigos) != 0:
@@ -242,7 +241,7 @@ def amigos(request,id_user):
 				ap2 = ""
 			retrieveamigos=retrieveamigos+'{"id_amigo":'+str(usuario.idamigode.id)+',"amigo":"'+usuario.idamigode.dsusuario+'","nombre":"'+usuario.idamigode.dsnombre+'","ap1":"'+ap1+'","ap2":"'+ap2+'","pueblo":"'+usuario.idamigode.pueblo.dspueblo+'","idpueblo":'+str(usuario.idamigode.pueblo.id)+'},'
 		retrieveamigos=retrieveamigos[0:len(retrieveamigos)-1]
-		ret='{"namigos":"'+str(len(id_amigos))+'","amigos":['+retrieveamigos+']}'
+		ret='{"namigos":'+str(len(id_amigos))+',"amigos":['+retrieveamigos+']}'
 	else:
 		ret = '{"namigos":0,"amigos":"este usuario no tiene amigos"}'
 	agregarabd("api/usuario/"+id_user+"/amigos/")
@@ -306,9 +305,9 @@ def getnot(request,n_id):
 		if noticia.fecha is not None:
 			fecha = str(noticia.fecha)
 		obj = ""
-		obj = '{"id_noticia"='+str(noticia.id)+',"titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":'+str(len(ncomentarios))+',"categoria":['+getcategorias(noticia)+']},'
+		obj = '{"id_noticia":'+str(noticia.id)+',"titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":'+str(len(ncomentarios))+',"categoria":['+getcategorias(noticia)+']},'
 	else:
-		obj = '{"id_noticia"=0,"titular":"no existe la noticia"}'
+		obj = '{"id_noticia":0,"titular":"no existe la noticia"}'
 	agregarabd("api/noticias/"+n_id)
 	return HttpResponse(obj)
 
@@ -395,22 +394,15 @@ def verpueblo(request):
 
 ##########################################################MODIFICAR CATEGORIAS#######################
 def vercategorias(request):
-	cat = Categoria.objects.all()
-	d = {}
-	for p in cat:
-		if p.dscategoria not in d:
-			d[p.dscategoria]='{"id":"'+str(p.id)+'"}'
-		else:
-			string = d[p.dscategoria] + ',{"id":"'+str(p.id)+'"}'
-			d[p.dscategoria]=string
-	dic=sorted(d)
-	r=''
-	obj=''
-	for c in dic:
-		obj = '{"categoria":"'+c+'","identificadores":['+d[c]+']},'
-		r = r+obj
-	r=r[0:len(r)-1]
-	r='{"ncategorias":"'+str(len(d))+'","categorias":['+r+']}'
+	cat = Categorias_semandal.objects.all()
+	if len(cat) != 0:
+		for c in cat:
+			obj = '{"id_categoria":'+c.id+'dscategoria":"'+c.dscategoria+'"},'
+			r = r+obj
+		r=r[0:len(r)-1]
+		r='{"ncategorias":'+str(len(cat))+',"categorias":['+r+']}'
+	else:
+		r='{"ncategorias":0}'
 	return HttpResponse(r)
 
 
@@ -421,7 +413,7 @@ def lastnot(request):
 			x=n.resumen
 		else:
 			x=n.dscuerpo
-		obj='{"existe":true,"notid":"'+str(n.id)+'","titular":"'+n.dstitular+'","cuerpo":"'+x+'","fecha":"'+str(n.fecha)+'"}'
+		obj='{"existe":true,"notid":'+str(n.id)+'",titular":"'+n.dstitular+'","cuerpo":"'+x+'","fecha":"'+str(n.fecha)+'"}'
 	else:
 		obj='{"existe":false}'
 	return HttpResponse(obj)
@@ -437,7 +429,6 @@ def lastcomment(request):
 		return HttpResponse(obj)
 
 
-####################################### Modificar get Categorias ##############################################
 def busqueda(resques,datos):
 	kwargs={}
 	datos = datos[1:len(datos)-1]
@@ -483,21 +474,19 @@ def filternoticia(n):
 		if noticia.fecha is not None:
 			fecha = str(noticia.fecha)
 		n_categorias = getcategorias(noticia);
-		obj = '{"id_noticia"='+str(noticia.id)+',"titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":'+str(noticia.liked)+',"dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":['+n_categorias+']},'
+		obj = '{"id_noticia":'+str(noticia.id)+',"titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":'+str(noticia.liked)+',"dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":['+n_categorias+']},'
 		r = r + obj
 		r = r[0:len(r)-1]
 	return r
-######################################################################posible modificar#######################
-def getcategorias(noticia):
-	n = Noticias.objects.filter(url=noticia.url)
-	res = ""
+
+def getcategorias(n):
+	n = NC.objects.filter(noticia = n)[0]
 	for k in n:
-		obj = '{"id_categoria":'+str(k.etiqueta.id)+',"dscategoria":"'+k.etiqueta.etiqueta_padre+'"},'
+		obj = '{"id_categoria":'+str(k.categoria.id)+',"dscategoria":"'+k.categoria.dscategoria+'"},'
 		res = res+obj
 	res = res[0:len(res)-1]
 	return res
 
-##########################################modificar get categorias##############################################
 
 def getcomment(kwargs,etiquetas):
 	t=etiquetas.split('-')

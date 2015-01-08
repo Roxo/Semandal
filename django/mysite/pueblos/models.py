@@ -65,7 +65,7 @@ class Noticias(models.Model):
 
 class NC(models.Model):
 	noticia = models.ForeignKey(Noticias)
-	categoria = models.ForeignKey(Categoria)
+	categoria = models.ForeignKey(Categorias_semandal)
 	class Meta:
 		unique_together = ('noticia','categoria')
 
