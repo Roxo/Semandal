@@ -37,9 +37,21 @@ class Pueblo(models.Model):
 	def __str__(self):
 		return self.busqueda
 
+class Usuario(models.Model):
+	dsusuario =  models.CharField(max_length=100,unique=True)
+	dsnombre = models.CharField(max_length=100)
+	dsapellido1 = models.CharField(max_length=100)
+	dsapellido2 = models.CharField(max_length=100)
+	pueblo = models.ForeignKey(Pueblo)
+	token = models.CharField(max_length=200)
+	correo = models.CharField(max_length=100,null=True,unique=True)
+
+class Categorias_semandal(models.Model):
+	dscategoria = models.CharField(max_length=100)
+
 class Categoria(models.Model):
 	dscategoria = models.CharField(max_length=100)
-	etiqueta_padre = models.CharField(max_length=100)
+	etiqueta_padre = models.ForeignKey(Categorias_semandal)
 	etiqueta = models.CharField(max_length=100)
 
 class Noticias(models.Model):
@@ -49,17 +61,29 @@ class Noticias(models.Model):
 	fecha = models.DateField(null=True)
 	resumen = models.CharField(max_length=2500,null=True)
 	url = models.CharField(max_length=300,null=True)
-	etiqueta = models.ForeignKey(Categoria,null=True)
 	liked = models.PositiveIntegerField(default=0)
-	
-class Usuario(models.Model):
-	dsusuario =  models.CharField(max_length=100,unique=True)
-	dsnombre = models.CharField(max_length=100)
-	dsapellido1 = models.CharField(max_length=100)
-	dsapellido2 = models.CharField(max_length=100)
-	pueblo = models.ForeignKey(Pueblo)
-	token = models.CharField(max_length=200)
-	correo = models.CharField(max_length=100,null=True,unique=True)
+
+class NC(models.Model):
+	noticia = models.ForeignKey(Noticias)
+	categoria = models.ForeignKey(Categoria)
+	class Meta:
+		unique_together = ('noticia','categoria')
+
+
+class Classify(models.Model):
+	id_n = models.ForeignKey(Noticias)
+	id_user = models.ForeignKey(Usuario)
+	c_new = models.ForeignKey(Categoria)
+	class Meta:
+		unique_together = ('id_n', 'id_user', 'c_new')
+
+class Votaciones(models.Model):
+	id_n = models.ForeignKey(Noticias)
+	id_user = models.ForeignKey(Usuario)
+	categoria = models.ForeignKey(Categoria)
+	votacion = models.BooleanField()
+	class Meta:
+		unique_together = ('id_n', 'id_user', 'categoria')
 
 class Amigode(models.Model):
 	idamistad = models.ForeignKey(Usuario,related_name='soy_amigo')
@@ -89,11 +113,3 @@ class T_Liked(models.Model):
 	id_n = models.ForeignKey(Noticias)
 	class Meta:
 		unique_together = ('id_user', 'id_n')
-
-class Classify(models.Model):
-	id_n = models.ForeignKey(Noticias)
-	id_user = models.ForeignKey(Usuario)
-	c_ant = models.ForeignKey(Categoria,related_name='anterior')
-	c_new = models.ForeignKey(Categoria,related_name='nueva')
-	class Meta:
-		unique_together = ('id_n', 'id_user', 'c_ant')

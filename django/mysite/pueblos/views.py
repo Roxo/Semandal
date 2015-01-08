@@ -226,6 +226,8 @@ def noticias(request,p_id,ind1,ind2):
 	agregarabd("api/pueblos/"+p_id+"/noticias/")
 	return HttpResponse(var);
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 def amigos(request,id_user):
 	id_amigos = Amigode.objects.filter(idamistad = id_user)
 	if len(id_amigos) != 0:
@@ -238,23 +240,23 @@ def amigos(request,id_user):
 			ap2=usuario.idamigode.dsapellido2
 			if ap2 is None:
 				ap2 = ""
-			retrieveamigos=retrieveamigos+'{"id_amigo":"'+str(usuario.idamigode.id)+'","amigo":"'+usuario.idamigode.dsusuario+'","nombre":"'+usuario.idamigode.dsnombre+'","ap1":"'+ap1+'","ap2":"'+ap2+'","pueblo":"'+usuario.idamigode.pueblo.dspueblo+'","idpueblo":"'+str(usuario.idamigode.pueblo.id)+'"},'
+			retrieveamigos=retrieveamigos+'{"id_amigo":'+str(usuario.idamigode.id)+',"amigo":"'+usuario.idamigode.dsusuario+'","nombre":"'+usuario.idamigode.dsnombre+'","ap1":"'+ap1+'","ap2":"'+ap2+'","pueblo":"'+usuario.idamigode.pueblo.dspueblo+'","idpueblo":'+str(usuario.idamigode.pueblo.id)+'},'
 		retrieveamigos=retrieveamigos[0:len(retrieveamigos)-1]
 		ret='{"namigos":"'+str(len(id_amigos))+'","amigos":['+retrieveamigos+']}'
 	else:
-		ret = '{"amigos":"este usuario no tiene amigos"}'
+		ret = '{"namigos":0,"amigos":"este usuario no tiene amigos"}'
+	agregarabd("api/usuario/"+id_user+"/amigos/")
 	return HttpResponse(ret)
 
 def getperfil(request,id_user):
-	user = Usuario.objects.filter(id= id_user)
+	user = Usuario.objects.filter(id=id_user)
 	if len(user) != 0:
 		user = user[0]
-		t = user.pueblo.id
-		pueblo = Pueblo.objects.filter(id = t)[0]
+		pueblo = Pueblo.objects.filter(id = user.pueblo.id)[0]
 		retrievecomentarios=getlastcomentarios(id_user)
-		ret = '{"id":"'+str(user.id)+'","dsusuario":"'+user.dsusuario+'","dspueblo":"'+pueblo.dspueblo+'","pid":"'+str(pueblo.id)+'","busquedaimagenes":"'+pueblo.busqueda.replace(" ","_")+'","puntuacion":"'+retrievecomentarios[0]+'","comentarios_recientes":['+retrievecomentarios[1]+'],"noticias":['+retrievecomentarios[2]+']}'
+		ret = '{"id":'+str(user.id)+',"dsusuario":"'+user.dsusuario+'","dspueblo":"'+pueblo.dspueblo+'","pid":'+str(pueblo.id)+',"busquedaimagenes":"'+pueblo.busqueda.replace(" ","_")+'","puntuacion":"'+retrievecomentarios[0]+'","comentarios_recientes":['+retrievecomentarios[1]+'],"noticias":['+retrievecomentarios[2]+']}'
 	else:
-		ret = '{"id":"este usuario no existe"}'
+		ret = '{"id":0,"dsusuario":"este usuario no existe"}'
 	agregarabd("api/usuario/"+id_user)
 	return HttpResponse(ret)
 
@@ -265,6 +267,7 @@ def llamadas(request):
 		obj = obj+'{"uri":"'+i.llamada+'","veces":"'+str(i.contabilizacion)+'"},'
 	obj = obj[0:len(obj)-1]
 	obj = '{"llamadas":['+obj+']}'
+	agregarabd("api/busqueda")
 	return HttpResponse(obj)
 
 def getlastcomentarios(id_usuario):
@@ -277,7 +280,7 @@ def getlastcomentarios(id_usuario):
 		noticia = Noticias.objects.filter(id=i.id_not.id)[0]
 		puntuacion = puntuacion + i.puntuacion
 		obj = obj+'{"comentario":"'+i.dscomentario.replace(" ","-")+'"},'
-		noti = noti+'{"idnoticia":"'+str(noticia.id)+'","dstitular":"'+noticia.dstitular+'"},'
+		noti = noti+'{"idnoticia":'+str(noticia.id)+',"dstitular":"'+noticia.dstitular+'"},'
 	obj = obj[0:len(obj)-1]
 	noti = noti[0:len(noti)-1]
 	array.append(str(puntuacion))
@@ -285,6 +288,9 @@ def getlastcomentarios(id_usuario):
 	array.append(noti)
 	return array
 
+
+
+#####################################################MODIFICAR GET NOTICIAS#############################################
 def getnot(request,n_id):
 	noticia = Noticias.objects.filter(id=n_id)
 	if len(noticia) != 0:
@@ -300,25 +306,27 @@ def getnot(request,n_id):
 		if noticia.fecha is not None:
 			fecha = str(noticia.fecha)
 		obj = ""
-		obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":"'+noticia.etiqueta.dscategoria+'"},'
+		obj = '{"id_noticia"='+str(noticia.id)+',"titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":'+str(len(ncomentarios))+',"categoria":['+getcategorias(noticia)+']},'
 	else:
-		obj = '{"id_noticia"="No existe esta noticia"}'
+		obj = '{"id_noticia"=0,"titular":"no existe la noticia"}'
 	agregarabd("api/noticias/"+n_id)
 	return HttpResponse(obj)
+
 
 def getcomentarios(request,n_id):
 	rez = Comentarios.objects.filter(id_not=n_id)
 	if len(rez) != 0:
 		obj=""
 		for i in rez:
-			obj = obj+'{"id_user":"'+str(i.id_user.id)+'","usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":"'+str(int(i.puntuacion))+'"},'
+			obj = obj+'{"id_user":'+str(i.id_user.id)+',"usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":'+str(int(i.puntuacion))+'},'
 		obj = obj[0:(len(obj)-1)]
 		obj = '{"ncomentarios":"'+str(len(rez))+'","comentarios":['+obj+']}'
 	else:
-		obj = '{"ncomentarios":"0","comentarios":"No existen comentarios en esta noticia"}'
+		obj = '{"ncomentarios":0,"comentarios":"No existen comentarios en esta noticia"}'
 	agregarabd("api/noticias/"+n_id)
 	return HttpResponse(obj)
 
+####################################################MODIFICAR GET CATEGORIAS ###########################################
 def get_noticias(noticias):
 	obj = ''
 	r = ''
@@ -328,7 +336,7 @@ def get_noticias(noticias):
 		if etiqueta != None:
 			categorias=Categoria.objects.filter(id=etiqueta.id)[0]
 			categorias=categorias.dscategoria
-		obj = '"id_noticia":"'+str(n.id)+'","dstitular":"'+n.dstitular.replace('"','\"')+'","dscuerpo":"'+n.dscuerpo.replace('"','\"')+'","resumen":"'+n.resumen.replace('"','\"')+'","url":"'+n.url+'","fecha": "'+str(n.fecha)+'","Categorias":"'+categorias+'","url":"'+n.url+'"'
+		obj = '"id_noticia":'+str(n.id)+',"dstitular":"'+n.dstitular.replace('"','\"')+'","dscuerpo":"'+n.dscuerpo.replace('"','\"')+'","resumen":"'+n.resumen.replace('"','\"')+'","url":"'+n.url+'","fecha": "'+str(n.fecha)+'","Categorias":"'+categorias+'","url":"'+n.url+'"'
 		obj = '{'+obj+'},'
 		r=r+obj
 		obj=''
@@ -336,7 +344,6 @@ def get_noticias(noticias):
 	r=r[0:len(r)-1]
 	r = '{"noticias":['+r+']}'
 	return r
-
 
 
 def uri_pueblos(pbls):
@@ -372,18 +379,21 @@ def agregarabd(uri):
 
 def verpueblo(request):
 	pueblos = Pueblo.objects.filter(Q(provincia_id=4)|Q(provincia_id=11)|Q(provincia_id=14)|Q(provincia_id=18)|Q(provincia_id=21)|Q(provincia_id=29)|Q(provincia_id=41)).order_by('dspueblo')
-	obj=''
-	r=''
-	for p in pueblos:
-		obj='"idpueblo":"'+str(p.id)+'","nombre":"'+p.dspueblo+'"'
-		obj = '{'+obj+'},'
-		r=r+obj
+	if len(pueblos) != 0:
 		obj=''
-	r=r[0:len(r)-1]
-	r='{"npueblos":"'+str(len(pueblos))+'","pueblos":['+r+']}'
+		r=''
+		for p in pueblos:
+			obj='"idpueblo":'+str(p.id)+',"nombre":"'+p.dspueblo+'"'
+			obj = '{'+obj+'},'
+			r=r+obj
+			obj=''
+		r=r[0:len(r)-1]
+		r='{"npueblos":'+str(len(pueblos))+',"pueblos":['+r+']}'
+	else:
+		r='{"npueblos"=0}'
 	return HttpResponse(r)
 
-
+##########################################################MODIFICAR CATEGORIAS#######################
 def vercategorias(request):
 	cat = Categoria.objects.all()
 	d = {}
@@ -403,13 +413,17 @@ def vercategorias(request):
 	r='{"ncategorias":"'+str(len(d))+'","categorias":['+r+']}'
 	return HttpResponse(r)
 
+
 def lastnot(request):
 	n=Noticias.objects.latest("fecha")
-	if n.dscuerpo == None:
+	if len(n) != 0:
+		if n.dscuerpo == None:
 			x=n.resumen
+		else:
+			x=n.dscuerpo
+		obj='{"existe":true,"notid":"'+str(n.id)+'","titular":"'+n.dstitular+'","cuerpo":"'+x+'","fecha":"'+str(n.fecha)+'"}'
 	else:
-		x=n.dscuerpo
-	obj='{"existe":true,"notid":"'+str(n.id)+'","titular":"'+n.dstitular+'","cuerpo":"'+x+'","fecha":"'+str(n.fecha)+'"}'
+		obj='{"existe":false}'
 	return HttpResponse(obj)
 
 
@@ -422,6 +436,8 @@ def lastcomment(request):
 		obj='{"existe":false}'
 		return HttpResponse(obj)
 
+
+####################################### Modificar get Categorias ##############################################
 def busqueda(resques,datos):
 	kwargs={}
 	datos = datos[1:len(datos)-1]
@@ -429,60 +445,59 @@ def busqueda(resques,datos):
 		datos = datos.split(',')
 		for i in datos:
 			if "id_p" in i :
-				kwargs['pueblo_id'] = i.split(':')[1]
+				p = Pueblo.objects.filter(id=i.split(':')[1])
+				kwargs['pueblo_id'] = p
 			elif "id_c" in i:
-			#	kwargs['etiqueta_id'] = i.split(':')[1]
-				a = getcomment(kwargs,i.split(':')[1])#
+				a = getcomment(kwargs,i.split(':')[1])
 				return HttpResponse(a)
 			elif "_t" in i:
-				kwargs['dstitular'] = i.split(':')[1]
+				kwargs['dstitular__icontains'] = i.split(':')[1]
 			elif "_d" in i:
 				kwargs['fecha'] = i.split(':')[1]
 			else:
-				return HttpResponse('{"Resultado":"datos erroneos"}')
+				return HttpResponse('{"ret":false,"comentario":"datos por parametros erroneos"}')
 		n = Noticias.objects.filter(**kwargs).order_by("fecha").reverse()
 		if len(n) is not 0:
-			obj = ''
-			r = ''
-			for noticia in n:
-				ncomentarios = Comentarios.objects.filter(id_not = noticia)
-				titular =""
-				cuerpo = ""
-				fecha = ""
-				if noticia.dstitular is not None:
-					titular = noticia.dstitular.replace('"','\"')
-				if noticia.dscuerpo is not None:
-					cuerpo = noticia.dscuerpo.replace('"','\"')
-				if noticia.fecha is not None:
-					fecha = str(noticia.fecha)
-				obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":"'+noticia.etiqueta.dscategoria+'"},'
-				r = r + obj
-			r = r[0:len(r)-1]
-			r = '{"resultado":['+r+']}'
+			r = filternoticia(n)
+
+			r = '{"ret":true,"resultado":['+r+']}'
 			return HttpResponse(r)
 		else:
-			return HttpResponse('{"resultado":"No existe una noticia con esas caracteristicas"}')
+			return HttpResponse('{"ret":false,"comentario":"No existe una noticia con esas caracteristicas"}')
 	else:
-		return HttpResponse('{"resultado":"Debe insertar al menso un campo"}')
+		return HttpResponse('{"ret":false,"comentario":"Debe insertar al menos un campo"}')
 
-def parseanoticias(n):
+def filternoticia(n):
+	obj = ''
 	r = ''
-	if len(n) is not 0:
-		obj = ''
-		for noticia in n:
-			ncomentarios = Comentarios.objects.filter(id_not = noticia)
-			titular =""
-			cuerpo = ""
-			fecha = ""
-			if noticia.dstitular is not None:
-				titular = noticia.dstitular.replace('"','\"')
-			if noticia.dscuerpo is not None:
-				cuerpo = noticia.dscuerpo.replace('"','\"')
-			if noticia.fecha is not None:
-				fecha = str(noticia.fecha)
-			obj = '{"id_noticia"="'+str(noticia.id)+'","titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":"'+str(noticia.liked)+'","dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":"'+noticia.etiqueta.dscategoria+'"},'
-			r = r + obj
-	return r	
+	lista = []
+	for noticia in n:
+		ncomentarios = Comentarios.objects.filter(id_not = noticia)
+		titular =""
+		cuerpo = ""
+		fecha = ""
+		if noticia.dstitular is not None:
+			titular = noticia.dstitular.replace('"','\"')
+		if noticia.dscuerpo is not None:
+			cuerpo = noticia.dscuerpo.replace('"','\"')
+		if noticia.fecha is not None:
+			fecha = str(noticia.fecha)
+		n_categorias = getcategorias(noticia);
+		obj = '{"id_noticia"='+str(noticia.id)+',"titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":'+str(noticia.liked)+',"dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":['+n_categorias+']},'
+		r = r + obj
+		r = r[0:len(r)-1]
+	return r
+######################################################################posible modificar#######################
+def getcategorias(noticia):
+	n = Noticias.objects.filter(url=noticia.url)
+	res = ""
+	for k in n:
+		obj = '{"id_categoria":'+str(k.etiqueta.id)+',"dscategoria":"'+k.etiqueta.etiqueta_padre+'"},'
+		res = res+obj
+	res = res[0:len(res)-1]
+	return res
+
+##########################################modificar get categorias##############################################
 
 def getcomment(kwargs,etiquetas):
 	t=etiquetas.split('-')
@@ -490,14 +505,16 @@ def getcomment(kwargs,etiquetas):
 	for k in t:
 		kwargs['etiqueta_id']=k
 		n = Noticias.objects.filter(**kwargs).order_by("fecha").reverse()
-		string = string+parseanoticias(n)
-	string =string[0:len(string)-1]
-	string = '{"resultado":['+string+']}'
+		string = string+filternoticia(n)
+	string = '{"ret":true,"resultado":['+string+']}'
 	return string
 
 def getdeuda(request,p_id):
-	p = Pueblo.objects.filter(id=p_id)[0]
-	obj = '{"id_pueblo":"'+str(p.id)+'","deuda":"'+str(p.deuda)+'","dspueblo":"'+p.dspueblo+'"}'
+	try:
+		p = Pueblo.objects.filter(id=p_id)[0]
+		obj = '{"id_pueblo":'+str(p.id)+',"deuda":'+str(p.deuda)+',"dspueblo":"'+p.dspueblo+'"}'
+	except:
+		obj = '{"id_pueblo":0}'
 	return HttpResponse(obj)
 
 def insertcomment(request,n_id,dsc,u_id):
@@ -514,13 +531,13 @@ def ulog(request,id_user):
 		t = user.pueblo.id
 		pob = Pueblo.objects.filter(id = t)[0]
 		try:
-			noticia = Noticias.objects.filter(pueblo = pob)[0]
+			noticia = Noticias.objects.filter(pueblo = pob).reverse()[0]
 			dstitular=noticia.dstitular
 			idnot = str(noticia.id)
 		except:
 			dstitular = "No existen noticias en su municipio"
 			idnot = "_"
-		ret = '{"id":"'+str(user.id)+'","dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":"'+str(pob.id)+'","busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","dstitular":"'+dstitular+'","notid":"'+idnot+'"}'
+		ret = '{"id":'+str(user.id)+',"dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":'+str(pob.id)+',"busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","dstitular":"'+dstitular+'","notid":'+idnot+'}'
 	else:
 		ret = '{"id":"este usuario no existe"}'
 	agregarabd("api/usuario/"+id_user)
@@ -563,7 +580,7 @@ def userview(request,datos):
 			elif "ap2" in i:
 				kwargs['dsapellido2'] = i.split(':')[1]
 			else:
-				return HttpResponse('{"resultado":"datos erroneos"}')
+				return HttpResponse('{"ret":false,resultado":"datos erroneos"}')
 		u = Usuario.objects.filter(**kwargs)
 		if len(u) is not 0:
 			obj = ''
@@ -572,12 +589,12 @@ def userview(request,datos):
 				obj='{"id_amigo":"'+str(s.id)+'","amigo":"'+s.dsusuario+'","nombre":"'+s.dsnombre+'","ap1":"'+s.dsapellido1+'","ap2":"'+s.dsapellido2+'","idpueblo":"'+str(s.pueblo.id)+'","pueblo":"'+s.pueblo.dspueblo+'"},'
 				r = r + obj
 			r = r[0:len(r)-1]
-			r = '{"namigos":"'+str(len(u))+'","amigos":['+r+']}'
+			r = '{"ret":true,"namigos":"'+str(len(u))+'","amigos":['+r+']}'
 			return HttpResponse(r)
 		else:
-			return HttpResponse('{"resultado":"No existe un usuario con esas caracteristicas"}')
+			return HttpResponse('{"ret":false,"resultado":"No existe un usuario con esas caracteristicas"}')
 	else:
-		return HttpResponse('{"resultado":"Debe insertar al menos un campo"}')
+		return HttpResponse('{"ret":false,"resultado":"Debe insertar al menos un campo"}')
 
 def sig(request,id_p,id_u):
 	ret = "false"
@@ -625,6 +642,8 @@ def sign(request,id_n,id_u):
 		devolver='{"sigue":'+ret+'}'
 	return HttpResponse(devolver)
 
+
+#######################################################Cambiar posiblemente##############################################
 def categorizar(request,id_n,id_cact,id_cnew,id_u):
 	n = Noticias.objects.filter(id = id_n)
 	cact = Categoria.objects.filter(id = id_cact)
