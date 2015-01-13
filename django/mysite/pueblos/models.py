@@ -63,9 +63,13 @@ class Noticias(models.Model):
 	url = models.CharField(max_length=300,null=True)
 	liked = models.PositiveIntegerField(default=0)
 
+class Status(models.Model):
+	dsstatus = models.CharField(max_length=20)
+
 class NC(models.Model):
 	noticia = models.ForeignKey(Noticias)
 	categoria = models.ForeignKey(Categorias_semandal)
+	confirmada = models.ForeignKey(Status)
 	class Meta:
 		unique_together = ('noticia','categoria')
 
