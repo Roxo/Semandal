@@ -46,7 +46,7 @@ public class Comentarios_nolog extends Activity {
 	Button b1 = (Button)this.findViewById(R.id.loggin);
 	Button b2 = (Button)this.findViewById(R.id.info);
 	Button b3 = (Button)this.findViewById(R.id.busqueda);
-	String notid=getIntent().getStringExtra("id");
+	int notid=getIntent().getIntExtra("id",0);
 	AsincCNL tarea = null;
 	tarea = new AsincCNL(this,
 			Singleton.url+":8000/api/noticias/"+notid+"/comentarios",lista,this
@@ -182,7 +182,7 @@ public class Comentarios_nolog extends Activity {
 			List<Comentario> mandar = new ArrayList<Comentario>();
 			Comentario k;
 			try {
-				int ncomentarios = Integer.parseInt(Comentarios.getString("ncomentarios"));
+				int ncomentarios =Comentarios.getInt("ncomentarios");
 				if (ncomentarios != 0){
 				JSONArray lcoment = Comentarios.getJSONArray("comentarios");
 				for(int i = 0; i<lcoment.length();i++){

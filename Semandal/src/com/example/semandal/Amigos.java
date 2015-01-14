@@ -39,8 +39,9 @@ import android.widget.Spinner;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Amigos extends Activity {
-	private String datos,pid,iduser,url,busqueda ="";
-	LinkedList<String> auxlist=new LinkedList<String>(), auxlistpueblo = new LinkedList<String>();
+	private String datos,url,busqueda ="";
+	private int pid,iduser;
+	LinkedList<Integer> auxlist=new LinkedList<Integer>(), auxlistpueblo = new LinkedList<Integer>();
 	private static AsincA backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
@@ -55,8 +56,8 @@ public class Amigos extends Activity {
 		Button b5 = (Button)this.findViewById(R.id.button1);
 
 		final ListView lista = (ListView)this.findViewById(R.id.listView1);
-		pid = getIntent().getStringExtra("p_id");
-		iduser = getIntent().getStringExtra("user_id");
+		pid = getIntent().getIntExtra("p_id",0);
+		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		AsincA tarea = null;
 		try{
@@ -146,7 +147,7 @@ public class Amigos extends Activity {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
 		        Intent i= new Intent(Amigos.this,Perfil.class);
 		        int k =  (Integer) lista.getAdapter().getItem(pos);
-		        String l = auxlist.get(k);
+		        int l = auxlist.get(k);
 		        i.putExtra("id",l);
 				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
@@ -253,14 +254,14 @@ public class Amigos extends Activity {
 				JSONArray lcoment = Amigos.getJSONArray("amigos");
 				for(int i = 0; i<lcoment.length();i++){
 						JSONObject coment = (JSONObject) lcoment.get(i);
-						String id_friend = coment.getString("id_amigo");
+						int id_friend = coment.getInt("id_amigo");
 						String nombre = coment.getString("nombre");
 						String ap1 = coment.getString("ap1");
 						String ap2 = coment.getString("ap2");
 						String nya = nombre + " " + ap1 + " " + ap2;
 						String usuario = coment.getString("amigo");
 						String pueblo = coment.getString("pueblo");
-						String idpueblo = coment.getString("idpueblo");
+						int idpueblo = coment.getInt("idpueblo");
 						auxlist.add(id_friend);
 						auxlistpueblo.add(idpueblo);
 						k = new Amigo(usuario,nya,pueblo);

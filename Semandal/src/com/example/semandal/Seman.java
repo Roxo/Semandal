@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,22 +36,24 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 
 public class Seman extends Activity implements OnItemSelectedListener {
-	private String idnot,datos,pid,iduser,cat,catactid;
-	private static Asincseman backgroundTask;
+	private String datos;
+	private int idnot,pid,iduser;
+	Asincseman backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	private Spinner spinner1;
 	private int cposicion;
 	private Seman t = this;
 	private List<String> lista2;
 	boolean fromcat = false, fromsend = false;
-	private LinkedList<LinkedList<String>> auxiliar = new LinkedList<LinkedList<String>>();
-
+	private LinkedList<Integer> auxiliar=new LinkedList<Integer>();
+	ListView lista ;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,13 +63,13 @@ public class Seman extends Activity implements OnItemSelectedListener {
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		Button b5 = (Button)this.findViewById(R.id.corregir);
-		idnot = getIntent().getStringExtra("id");
-		pid = getIntent().getStringExtra("p_id");
-		iduser = getIntent().getStringExtra("user_id");
+		idnot = getIntent().getIntExtra("id",0);
+		pid = getIntent().getIntExtra("p_id",0);
+		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
-		cat = getIntent().getStringExtra("cat");
-		TextView categoria = (TextView) this.findViewById(R.id.categoria);
-		Asincseman tarea = new Asincseman(this,categoria);
+		lista = (ListView) this.findViewById(R.id.listView1);
+		final EditText categoriacreada = (EditText)this.findViewById(R.id.editText1);
+		Asincseman tarea = new Asincseman(this,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista);
 		tarea.execute();
 
 		b5.setOnClickListener(new View.OnClickListener() {
@@ -74,14 +77,25 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(cposicion != 0){
-					String cnew=auxiliar.get(cposicion).get(0);
-					String url = Singleton.url+":8000/api/categoriza/"+idnot+"/"+catactid+"/"+cnew+"/"+iduser;
+				
+				if(cposicion != 0 && !categoriacreada.getText().toString().equalsIgnoreCase("")){
+					 String answer = "Puede seleccionar o crear una categoría no a la vez";
+					 Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
+				}
+				else if(cposicion != 0){
+					int cnew=auxiliar.get(cposicion);
+					String url = Singleton.url+":8000/api/categoriza/"+idnot+"/"+cnew+"/"+iduser;
+					Mandar tarea = new Mandar(url,t);
+					tarea.execute();
+				}
+				else if(!categoriacreada.getText().toString().equalsIgnoreCase("")){
+					String cnew = categoriacreada.getText().toString();
+					String url = Singleton.url+":8000/api/noticias/"+idnot+"/"+cnew+"/"+iduser;
 					Mandar tarea = new Mandar(url,t);
 					tarea.execute();
 				}
 				else{
-					 String answer = "Debe seleccionar al menos una categoría";
+					 String answer = "Debe seleccionar o crear una categoría";
 					 Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
 
 				}
@@ -173,42 +187,76 @@ public class Seman extends Activity implements OnItemSelectedListener {
 		   fromcat = false;
 		}
 		if(fromsend){
-			Intent i = new Intent(Seman.this, Display_not_log.class);
-			i.putExtra("datos", datos);
-			i.putExtra("user_id", iduser);
-			i.putExtra("p_id", pid);
-			i.putExtra("id",idnot);
-			startActivity(i);
-
+			Asincseman tarea = new Asincseman(t,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista);
+			tarea.execute();
+			fromsend=false;
 		}
 	}
 
 	
 	public class Asincseman extends AsyncTask<Void, Void, Object> {
 		Context contexto;
-		JSONObject pueblos, categorias;
+		private String url;
+		JSONObject html;
 	    private Seman activity;
 	    private boolean completed;
 	    private Object _response;
-		private TextView categoria;
+		private ListView lv;
+		private String[] listacategorias;
 
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
-		public Asincseman(Seman activity,TextView categoria){
+		public Asincseman(Seman activity,String url,ListView lv){
 			this.contexto = activity;
             this.activity = activity;
-            this.categoria = categoria;
+            this.url = url;
+            this.lv = lv;
 
 		}
 		
-  
+		  private String readAll(Reader rd) throws IOException {
+			    StringBuilder sb = new StringBuilder();
+			    int cp;
+			    while ((cp = rd.read()) != -1) {
+			      sb.append((char) cp);
+			    }
+			    return sb.toString();
+			  }
+
+			  public void leernoticia() throws IOException, JSONException {
+			    InputStream is = new URL(url).openStream();
+			    try {
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			      String jsonText = readAll(rd);
+			       html = new JSONObject(jsonText);
+			    } finally {
+			      is.close();
+			    }
+			  }
+
 
 		@Override
 		protected Void doInBackground(Void... params) {
 				try {
+					LinkedList<Integer> categorias = new LinkedList<Integer>();
+					leernoticia();
+					JSONArray f = html.getJSONArray("categorias");
+					listacategorias=new String[html.length()];
+					if (f.length() != 0){
+						for(int i = 0;i<f.length();i++){
+							JSONObject b = f.getJSONObject(i);
+							categorias.add(b.getInt("id_categoria"));
+							listacategorias[i]= b.getString("dscategoria");
+						}
+					}
+					else{
+						 String answer = "Ha ocurrido un problema en la lectura de categorias";
+						 Toast.makeText(contexto.getApplicationContext(), answer, Toast.LENGTH_LONG).show();
+
+					}						
 			        BDClass admin = new BDClass(contexto,"administracion", null, 1);
 				    SQLiteDatabase db = admin.getReadableDatabase();
 					String sql = "SELECT * FROM categorias" ;
@@ -216,29 +264,17 @@ public class Seman extends Activity implements OnItemSelectedListener {
 					int a = c.getCount();
 					lista2= new ArrayList<String>();
 					lista2.add("Categorias");
-				   	LinkedList<String> aux = new LinkedList<String>();
-				   	aux = new LinkedList<String>();
+					auxiliar.add(0);
 					if (c.moveToFirst()){
 						do{
-							if(!c.getString(1).equalsIgnoreCase(cat)&&!c.getString(0).equalsIgnoreCase("331")){
-								if(busca(lista2,c.getString(1))){
-									aux.add(c.getString(0));
-								}
-								else{
-									auxiliar.add(aux);
-									aux = new LinkedList<String>();
-									lista2.add(c.getString(1));
-									aux.add(c.getString(0));
-								}
-							}
-							else if(c.getString(1).equalsIgnoreCase(cat)){
-								catactid = c.getString(0);
-							}
+							if(!busca(categorias,c.getInt(0))){
+								lista2.add(c.getString(1));
+								auxiliar.add(c.getInt(0));
+							}							
 						}while(c.moveToNext());
 					}
 				    db.close();
 				    c.close();
-				    categoria.setText("Categoría actual: "+cat);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -246,11 +282,11 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			}
 
 
-    private boolean busca(List<String> lista2, String string) {
+    private boolean busca(List<Integer> lista2, int entero) {
     	boolean devolver = false;
     	int i = 0;
     	while (!devolver && i<lista2.size()){
-    		if(lista2.get(i).equalsIgnoreCase(string)){
+    		if(lista2.get(i) == entero){
     			devolver = true;
     		}
     		else i++;
@@ -261,6 +297,9 @@ public class Seman extends Activity implements OnItemSelectedListener {
 
 		@Override
 		public void onPostExecute(Object response){
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto,
+					android.R.layout.simple_list_item_1, listacategorias);
+			lv.setAdapter(adapter);
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
@@ -350,7 +389,7 @@ public class Seman extends Activity implements OnItemSelectedListener {
 	            //Start the splash screen dialog
 	                pleaseWaitDialog= ProgressDialog.show(activity, 
 	                                                       "Espere un segundo", 
-	                                                       "Mandando corrección", 
+	                                                       "Agregando categoria", 
 	                                                       false);
 
 	    } 

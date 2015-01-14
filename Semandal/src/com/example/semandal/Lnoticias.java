@@ -20,9 +20,12 @@ import com.example.semandal.aux.Noticia;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
@@ -38,8 +41,9 @@ import android.widget.Spinner;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Lnoticias extends Activity {
-	LinkedList<String> auxlist = new LinkedList<String>();
-	String datos,iduser,pid,noticia,datosant;
+	LinkedList<Integer> auxlist = new LinkedList<Integer>();
+	String datos,noticia,datosant;
+	int iduser,pid;
 	private static AsincLN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
@@ -52,8 +56,8 @@ public class Lnoticias extends Activity {
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		Button b5 = (Button)this.findViewById(R.id.busc);
-		pid = getIntent().getStringExtra("p_id");
-		iduser = getIntent().getStringExtra("user_id");
+		pid = getIntent().getIntExtra("p_id",0);
+		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		datosant= datos;
 		try{
@@ -244,11 +248,11 @@ public class Lnoticias extends Activity {
 				JSONArray lcoment = Noticias.getJSONArray("resultado");
 				for(int i = 0; i<lcoment.length();i++){
 						JSONObject coment = (JSONObject) lcoment.get(i);
-						String autor = coment.getString("id_noticia");
+						int autor = coment.getInt("id_noticia");
 						String comentario = coment.getString("titular");
 						String puntuacion = coment.getString("fecha");
-						String nlikes = coment.getString("liked");
-						String comentarios = coment.getString("ncomentarios");
+						int nlikes = coment.getInt("liked");
+						int comentarios = coment.getInt("ncomentarios");
 						String categoria = coment.getString("categoria");
 						String dspueblo = coment.getString("dspueblo");
 						auxlist.add(autor);
@@ -256,7 +260,7 @@ public class Lnoticias extends Activity {
 						mandar.add(k);
 				}
 				if(lcoment.length()==0){
-					k = new Noticia("","","Su pueblo no dispone de noticias","","","","");
+					k = new Noticia(0,"","Su pueblo no dispone de noticias",0,0,"","");
 					mandar.add(k);
 				}
 			} catch (JSONException e) {
@@ -310,4 +314,7 @@ public class Lnoticias extends Activity {
 
 		}
 
+
+
+	
 }

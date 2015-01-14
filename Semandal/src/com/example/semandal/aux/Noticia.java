@@ -2,17 +2,17 @@ package com.example.semandal.aux;
 
 public class Noticia {
 	
-	private String id;
+	private int id;
 	private String fecha;
 	private String titular;
-	private String ncomentarios;
-	private String nlikes;
+	private int ncomentarios;
+	private int nlikes;
 	private String categoria;
 	private String dspueblo;
 	
 	
-	public Noticia(String id, String fecha, String titular, String nlikes, 
-			String comentarios, String categoria, String dspueblo){
+	public Noticia(int id, String fecha, String titular,int nlikes, 
+			int comentarios, String categoria, String dspueblo){
 		this.id = id;
 		this.fecha = fecha;
 		this.titular = titular;
@@ -34,21 +34,21 @@ public class Noticia {
 		this.titular = titular;
 	}
 	public String getId() {
-		return id;
+		return ""+id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getNcomentarios() {
-		return ncomentarios;
+		return ""+ncomentarios;
 	}
-	public void setNcomentarios(String ncomentarios) {
+	public void setNcomentarios(int ncomentarios) {
 		this.ncomentarios = ncomentarios;
 	}
 	public String getNlikes() {
-		return nlikes;
+		return ""+nlikes;
 	}
-	public void setNlikes(String nlikes) {
+	public void setNlikes(int nlikes) {
 		this.nlikes = nlikes;
 	}
 	public String getCategoria() {

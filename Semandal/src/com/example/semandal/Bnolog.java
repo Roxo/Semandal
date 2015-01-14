@@ -47,8 +47,8 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 	private Spinner spinner1, spinner2;
 	private int pposicion,cposicion;
 	private EditText Titular, fecha;
-	private List<String> lista1, lista1aux,lista2;
-	private LinkedList<LinkedList<String>> auxiliar = new LinkedList<LinkedList<String>>();
+	private List<String> lista1,lista2;
+	private List<Integer> lista1aux,auxiliar=new LinkedList<Integer>();
 	
 	
 	@Override
@@ -72,28 +72,25 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 			
 			@Override
 			public void onClick(View v) {
-				String titular = "", Fecha = "", idpueblo ="", idcat="";
+				String titular = "", Fecha = "";
+				Integer idcat=0;
+				Integer idpueblo =0;
 				titular = Titular.getText().toString();
 				Fecha = fecha.getText().toString();
 				if(pposicion != 0){
 					idpueblo = lista1aux.get(pposicion);
 				}
 				if(cposicion != 0){
-					for (int i = 0; i<auxiliar.get(cposicion).size();i++){
-						idcat=idcat.concat(auxiliar.get(cposicion).get(i));
-						if(i!=auxiliar.get(cposicion).size()-1){
-							idcat=idcat.concat("-");
-						}
-					}
+					idcat = auxiliar.get(cposicion);
 				}
 				String stringfinal ="";
 				if(!titular.equals(""))
 					stringfinal = stringfinal+"_t:"+titular+",";
 				if(!Fecha.equals(""))
 					stringfinal = stringfinal+"_d:"+Fecha+",";
-				if(!idpueblo.equals(""))
+				if(!idpueblo.equals(0))
 					stringfinal = stringfinal+"id_p:"+idpueblo+",";
-				if(!idcat.equals(""))
+				if(!idcat.equals(0))
 					stringfinal = stringfinal+"id_c:"+idcat+",";
 				stringfinal = stringfinal.substring(0,stringfinal.length()-1);
 				stringfinal = "("+stringfinal+")";
@@ -212,13 +209,13 @@ public void onResume(){
 				Cursor c = db.rawQuery(sql, null);
 				int a = c.getCount();
 				lista1= new ArrayList<String>();
-				lista1aux= new ArrayList<String>();
+				lista1aux= new ArrayList<Integer>();
 		    	lista1.add("Pueblos");
-		    	lista1aux.add("");
+		    	lista1aux.add(0);
 				if (c.moveToFirst()){
 					do{
 						lista1.add(c.getString(1));
-						lista1aux.add(c.getString(0));
+						lista1aux.add(c.getInt(0));
 					}while(c.moveToNext());
 				}
 				sql = "SELECT * FROM categorias" ;
@@ -226,19 +223,12 @@ public void onResume(){
 				a = c.getCount();
 				lista2= new ArrayList<String>();
 				lista2.add("Categorias");
-			   	LinkedList<String> aux = new LinkedList<String>();
-			   	aux = new LinkedList<String>();
+			   	LinkedList<Integer> aux = new LinkedList<Integer>();
+			   	aux = new LinkedList<Integer>();
 				if (c.moveToFirst()){
 					do{
-						if(busca(lista2,c.getString(1))){
-							aux.add(c.getString(0));
-						}
-						else{
-							auxiliar.add(aux);
-							aux = new LinkedList<String>();
-							lista2.add(c.getString(1));
-							aux.add(c.getString(0));
-						}
+						lista2.add(c.getString(1));
+						auxiliar.add(c.getInt(0));
 					}while(c.moveToNext());
 				}
 			    db.close();

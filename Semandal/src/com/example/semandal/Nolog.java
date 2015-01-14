@@ -33,8 +33,8 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 
 public class Nolog extends ActionBarActivity {
-	String idnoticia="",answer = "";
-	String idnoticiacomentario="";
+	int idnoticia=0,idnoticiacomentario=0;
+	String answer = "";
 	private static AsincronNolog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
@@ -58,7 +58,7 @@ public class Nolog extends ActionBarActivity {
 				(TextView) findViewById(R.id.lastcomment),
 				(TextView) findViewById(R.id.commentaut),
 				Singleton.url+":8000/api/noticias/ultima/",
-				Singleton.url+":8000/api/comentarios/ultimo",b5,this
+				Singleton.url+":8000/api/comentarios/ultimo",b5,b6,this
 			);
 		tarea.execute();
 		
@@ -173,7 +173,7 @@ private void onTaskCompleted(Object _response)
 		JSONObject html, Comentario;
 		String urlcomment;
 		String devolver;
-		Button b;
+		Button b,b1;
 	    private Nolog activity;
 	    private boolean completed;
 	    private Object _response;
@@ -185,7 +185,7 @@ private void onTaskCompleted(Object _response)
 		
 		public AsincronNolog(Context contexto,TextView titview,TextView cuerpview,
 				TextView dateview,TextView commentview,TextView authview,String url,
-				String urlcomment,Button b, Nolog activity){
+				String urlcomment,Button b,Button b1, Nolog activity){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -196,6 +196,7 @@ private void onTaskCompleted(Object _response)
 			this.url = url;
 			this.b = b;
 			this.activity = activity;
+			this.b1=b1;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -259,20 +260,32 @@ private void onTaskCompleted(Object _response)
 					titular = html.getString("titular").replace("-","\n");
 					cuerpo = html.getString("cuerpo").replace("-", "\n");
 					fecha = html.getString("fecha");
-					idnoticia = html.getString("notid");
+					idnoticia = html.getInt("notid");
+					}
+					else{
+						b1.setEnabled(false);
 					}
 					if(Comentario.getBoolean("existe")){
 					user = Comentario.getString("autor");
 					comentario=Comentario.getString("cuerpo").replace("-"," ");
-					idnoticiacomentario=Comentario.getString("notid");
+					idnoticiacomentario=Comentario.getInt("notid");
 					}
 					if(comentario=="No existen comentarios")
 						b.setEnabled(false);
-				
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-			}
+					b.setEnabled(false);
+					b1.setEnabled(false);
 				}
+			}
+			if(html==null){		
+					titular = "No existen noticias";
+					b1.setEnabled(false);
+				}
+			
+			if(Comentario==null){
+					b.setEnabled(false);
+				}
+
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);
 		    dateview.setText(fecha);

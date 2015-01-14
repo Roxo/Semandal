@@ -47,13 +47,15 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
-	String datos,iduser,pid,puebloant,puebloact;
+	String datos;
+	int iduser,pid,puebloant,puebloact;
 	private Spinner spinner1;
 	private static AsinDeuda backgroundTask;
 	private static Asinadd backgroundTask1;
 
 	private static ProgressDialog pleaseWaitDialog;
-	private List<String> lista1,lista1aux;
+	private List<String> lista1;
+	private List<Integer> lista1aux;
 	private Deuda a = this;
 	private int posicion;
 	boolean fromdatos=false,addpueblo=false;
@@ -82,15 +84,15 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 		urlwiki.setTextColor(Color.CYAN);
 		urlweb.setTextColor(Color.CYAN);
 		//////////////////////////////////////////////
-		pid = getIntent().getStringExtra("p_id");
-		iduser = getIntent().getStringExtra("user_id");
+		pid = getIntent().getIntExtra("p_id",0);
+		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		AsinDeuda tarea = null;
 		puebloant= pid;
 		try{
-			puebloact = getIntent().getStringExtra("pb");
-			if(puebloact != null){
+			puebloact = getIntent().getIntExtra("pb",0);
+			if(puebloact != 0){
 				puebloant = puebloact;
 			}
 		}catch(Exception e){
@@ -356,16 +358,16 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			try {
 			JSONArray p1 = d.getJSONArray("pueblos");
 			JSONObject pueblo = (JSONObject) p1.get(0);
-			deuda.setText("deuda obtenida a día 1/1/2014 \t\t"+pueblo.getString("deuda"));
+			deuda.setText("deuda obtenida a día 1/1/2014 \t\t"+pueblo.getDouble("deuda"));
 			municipio.setText("Municipio: \t\t"+pueblo.getString("nombre"));
-			cp.setText("Código postal: \t\t"+pueblo.getString("cp"));
+			cp.setText("Código postal: \t\t"+pueblo.getInt("cp"));
 			urlweb.setText(pueblo.getString("url"));
-			habitantes.setText("Habitantes: \t\t"+pueblo.getString("habitantes"));
+			habitantes.setText("Habitantes: \t\t"+pueblo.getInt("habitantes"));
 			provincia.setText("Provincia: \t\t"+d.getString("provincia"));
-			superficie.setText("Superficie: \t\t"+pueblo.getString("superficie"));
+			superficie.setText("Superficie: \t\t"+pueblo.getDouble("superficie"));
 			urlwiki.setText(pueblo.getString("wiki"));
 			JSONObject c=  pueblo.getJSONObject("coordenadas");
-			coordenadas.setText("Longitud: "+c.getString("longitud")+" . Latitud: "+c.getString("latitud"));
+			coordenadas.setText("Longitud: "+c.getDouble("longitud")+" . Latitud: "+c.getDouble("latitud"));
 			///////////////////////////////////////////////////////////////////////
 			if(usig.getBoolean("sigue")){
 				b6.setEnabled(false);
@@ -383,13 +385,13 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			Cursor c = db.rawQuery(sql, null);
 			int a = c.getCount();
 			lista1= new ArrayList<String>();
-			lista1aux= new ArrayList<String>();
+			lista1aux= new ArrayList<Integer>();
 	    	lista1.add("Pueblos");
-	    	lista1aux.add("");
+	    	lista1aux.add(0);
 			if (c.moveToFirst()){
 				do{
 					lista1.add(c.getString(1));
-					lista1aux.add(c.getString(0));
+					lista1aux.add(c.getInt(0));
 				}while(c.moveToNext());
 			}
 			

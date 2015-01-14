@@ -84,7 +84,7 @@ class Classify(models.Model):
 class Votaciones(models.Model):
 	id_n = models.ForeignKey(Noticias)
 	id_user = models.ForeignKey(Usuario)
-	categoria = models.ForeignKey(Categoria)
+	categoria = models.ForeignKey(Categorias_semandal)
 	votacion = models.BooleanField()
 	class Meta:
 		unique_together = ('id_n', 'id_user', 'categoria')

@@ -40,9 +40,9 @@ public class Log extends Activity {
 	private static loguear backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	private Log log=this;
-	private List<String> lista1, lista1aux;
 	boolean logueado = false;
-	String uid = "",message="",mn="";
+	int uid = 0;
+	String message="",mn="";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -219,7 +219,7 @@ public class Log extends Activity {
 				mn = loginfo.getString("Message");
 				logueado = loginfo.getBoolean("Resultado");
 				if(logueado){
-					uid = loginfo.getString("userid");
+					uid = loginfo.getInt("userid");
 				}
 
 			} catch (JSONException e) {

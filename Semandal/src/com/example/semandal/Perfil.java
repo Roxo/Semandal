@@ -32,7 +32,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class Perfil extends Activity {
-	String datos,iduser,pid,id,notid;
+	String datos;
+	int iduser,pid,id,notid;
 	private static Asincperfil backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
@@ -46,9 +47,9 @@ public class Perfil extends Activity {
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		TextView text = (TextView)this.findViewById(R.id.munc);
-		id = getIntent().getStringExtra("id");
-		pid = getIntent().getStringExtra("p_id");
-		iduser = getIntent().getStringExtra("user_id");
+		id = getIntent().getIntExtra("id",0);
+		pid = getIntent().getIntExtra("p_id",0);
+		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		Asincperfil tarea = null;
 		tarea = new Asincperfil(this,(TextView)this.findViewById(R.id.nperfil),
@@ -210,7 +211,7 @@ public class Perfil extends Activity {
 				JSONArray noticias = perfil.getJSONArray("noticias");
 				JSONObject l = noticias.getJSONObject(noticias.length()-1);
 				noticia = l.getString("dstitular");
-				notid = l.getString("idnoticia");
+				notid = l.getInt("idnoticia");
 
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

@@ -37,7 +37,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 public class Bnologres extends Activity{
-	LinkedList<String> auxlist = new LinkedList<String>();
+	LinkedList<Integer> auxlist = new LinkedList<Integer>();
 	private static AsincBNL backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
@@ -203,19 +203,19 @@ public class Bnologres extends Activity{
 				JSONArray lcoment = Noticias.getJSONArray("resultado");
 				for(int i = 0; i<lcoment.length();i++){
 						JSONObject coment = (JSONObject) lcoment.get(i);
-						String autor = coment.getString("id_noticia");
+						int autor = coment.getInt("id_noticia");
 						String comentario = coment.getString("titular");
 						String puntuacion = coment.getString("fecha");
-						String nlikes = "likes: "+coment.getString("liked");
-						String comentarios = "Comentarios: "+coment.getString("ncomentarios");
-						String categoria = "categoria:" + coment.getString("categoria");
+						int nlikes = coment.getInt("liked");
+						int comentarios =coment.getInt("ncomentarios");
+						String categoria = coment.getString("categoria");
 						String dspueblo = coment.getString("dspueblo");
 						auxlist.add(autor);
 						k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo);
 						mandar.add(k);
 				}
 				if(lcoment.length()==0){
-					k = new Noticia("","","Su pueblo no dispone de noticias","","","","");
+					k = new Noticia(0,"","Esa busqueda no tiene resultado",0,0,"","");
 					mandar.add(k);
 				}
 

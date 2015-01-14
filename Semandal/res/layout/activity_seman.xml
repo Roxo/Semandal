@@ -57,43 +57,6 @@
         android:layout_marginTop="32dp"
         android:src="@drawable/bandera_and" />
 
-     <ScrollView
-         android:id="@+id/scroll"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:layout_above="@+id/blog"
-         android:layout_below="@+id/imageView1" >
-
-        <LinearLayout
-            android:id="@+id/LinearScroll"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
-    
-       <TextView
-        android:id="@+id/categoria"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:text="categoria"
-        android:maxLines="2"
-        android:singleLine="true" />
-
-    <TextView
-        android:id="@+id/Tit_nolog"
-        android:layout_width="match_parent"
-        android:layout_height="34dp"
-        android:singleLine="true"
-        android:text="Si piensa que la categoría está equivocada, seleccione una de las que le mostramos a continuación" />
-
-    <Spinner
-        android:id="@+id/cat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/Selectcat" />
-
-  	 </LinearLayout>
-    </ScrollView>
 
     <Button
         android:id="@+id/corregir"
@@ -102,6 +65,47 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:text="Corregir Categoría" />
+
+    <TextView        
+        android:id="@+id/categoria"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/imageView1"
+        android:text="Categorías actuales:"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+  	<EditText
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/corregir"
+        android:layout_alignParentLeft="true"
+        android:hint="Crear nueva categoria"
+        android:layout_alignParentRight="true"
+        android:ems="10" >
+
+      
+    </EditText>
+
+    <Spinner
+        android:id="@+id/cat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/editText1"
+        android:layout_alignParentLeft="true"
+        android:text="@string/Selectcat" />
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/cat"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/categoria" >
+
+    </ListView>
 
 </RelativeLayout>
     

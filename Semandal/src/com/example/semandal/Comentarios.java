@@ -43,7 +43,8 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Comentarios extends Activity {
-	String datos,notid,pid,iduser;
+	String datos;
+	int notid,pid,iduser;
 	private static AsincCL backgroundTask;
 	private static Setc backgroundTask1;
 	boolean enviar = false;
@@ -59,11 +60,11 @@ public class Comentarios extends Activity {
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
-		notid=getIntent().getStringExtra("id");
+		notid=getIntent().getIntExtra("id",0);
 		Button b6 = (Button)this.findViewById(R.id.enviar);
 		final EditText comentario = (EditText)this.findViewById(R.id.DwEdit);
-		pid = getIntent().getStringExtra("p_id");
-		iduser = getIntent().getStringExtra("user_id");
+		pid = getIntent().getIntExtra("p_id",0);
+		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		final Comentarios k = this;
 		AsincCL tarea = null;

@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,12 +27,19 @@ import android.os.AsyncTask.Status;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Display_not_nolog extends Activity {
-	String notid="",url,url1;
+	String url,url1;
+	int notid=0;
 	private static AsincronDNN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
@@ -39,13 +47,12 @@ public class Display_not_nolog extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display_not_nolog);
-		notid=getIntent().getStringExtra("id");
+		notid=getIntent().getIntExtra("id",0);
 		AsincronDNN tarea = null;
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 				(TextView) findViewById(R.id.Noticia),
 				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),
-				(TextView) findViewById(R.id.categoria),
-				Singleton.url+":8000/api/noticias/"+notid,this
+				Singleton.url+":8000/api/noticias/"+notid,this,(ListView) findViewById(R.id.listView1)
 				);
 		tarea.execute();
 
@@ -57,6 +64,7 @@ public class Display_not_nolog extends Activity {
 		Button b5 = (Button)this.findViewById(R.id.button1);
 		Button b6 = (Button)this.findViewById(R.id.button2);
 	
+		
 		b6.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -121,6 +129,18 @@ public class Display_not_nolog extends Activity {
 			}
 			
 	});
+
+		ListView lv = (ListView) findViewById(R.id.listView1);
+		lv.setOnTouchListener(new OnTouchListener() {
+		    // Setting on Touch Listener for handling the touch inside ScrollView
+		    @Override
+		    public boolean onTouch(View v, MotionEvent event) {
+		    // Disallow the touch request for parent scroll on touch of child view
+		    v.getParent().requestDisallowInterceptTouchEvent(true);
+		    return false;
+		    }
+		});
+
 	}
 	public void onPause(){
 		super.onPause();
@@ -144,19 +164,20 @@ public class Display_not_nolog extends Activity {
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
-		TextView titview,cuerpview,dateview,likes,categoria;
+		TextView titview,cuerpview,dateview,likes;
 		JSONObject html, Comentario;
 	    private Display_not_nolog activity;
 	    private boolean completed;
 	    private Object _response;
-
+	    String[] listacategorias;
+	    ListView lv;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-			TextView dateview,TextView likes,TextView categoria,String url,Display_not_nolog activity){
+			TextView dateview,TextView likes,String url,Display_not_nolog activity,ListView lv){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -164,7 +185,7 @@ public class Display_not_nolog extends Activity {
 			this.url = url;
 			this.activity = activity;
 			this.likes = likes;
-			this.categoria=categoria;
+			this.lv = lv;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -197,8 +218,8 @@ public class Display_not_nolog extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					 String answer = "Ha ocurrido un error en el servidor de Semandal";
+					 Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
 				}
 
 			return null;
@@ -208,25 +229,34 @@ public class Display_not_nolog extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			String titular = "ROTO",cuerpo="ROTO", fecha = "Roto",like="roto",cat="roto";
+			String titular,cuerpo, fecha;
+			int like=0;
 			try {
 				titular = html.getString("titular").replace("-","\n");
 				cuerpo = html.getString("cuerpo").replace("-","\n");
 				fecha = html.getString("fecha");
-				notid = html.getString("id_noticia");
+				notid = html.getInt("id_noticia");
 				url1 = html.getString("url");
-				like = html.getString("liked");
-				cat = html.getString("categoria");
+				like = html.getInt("liked");
+				JSONArray cat = html.getJSONArray("categoria");
+				listacategorias =  new String[cat.length()];
+			    for(int i=0;i<cat.length();i++){
+			    	JSONObject j = cat.getJSONObject(i);
+			    	listacategorias[i] = j.getString("dscategoria");
+			    }
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto,
+						android.R.layout.simple_list_item_1, listacategorias);
+				lv.setAdapter(adapter);
+				likes.setText(""+like);
+			    titview.setText(titular);
+			    cuerpview.setText(cuerpo);
+			    dateview.setText(fecha);
+			    cuerpview.setMovementMethod(new ScrollingMovementMethod());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				 String answer = "Ha ocurrido un error en el parseo json";
+				 Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
 			}
-			categoria.setText(cat);
-			likes.setText(like);
-		    titview.setText(titular);
-		    cuerpview.setText(cuerpo);
-		    dateview.setText(fecha);
-		    cuerpview.setMovementMethod(new ScrollingMovementMethod());
 	           completed = true;
 	            _response = response;
 	            notifyActivityTaskCompleted();

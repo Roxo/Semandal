@@ -138,19 +138,17 @@ public class MainActivity extends Activity {
 						JSONArray p = pueblos.getJSONArray("pueblos");
 						for(int i = 0;i<npueblos;i++){
 							JSONObject f = (JSONObject)p.get(i);
-							bd.execSQL("INSERT INTO pueblos VALUES ('"+f.getString("idpueblo")+"', '"+f.getString("nombre")+"')");
+							bd.execSQL("INSERT INTO pueblos VALUES ("+f.getInt("idpueblo")+", '"+f.getString("nombre")+"')");
 						}
 					}
 					if(ncategorias!=0){
 						JSONArray c = categorias.getJSONArray("categorias");
 						for(int i = 0;i<ncategorias;i++){
 							JSONObject f = (JSONObject)c.get(i);
-							String cat = f.getString("categoria");
-							JSONArray cat2 = f.getJSONArray("identificadores");
-							for(int j = 0;j<cat2.length();j++){
-								JSONObject k = (JSONObject)cat2.get(j);
-								bd.execSQL("INSERT INTO categorias VALUES ('"+k.getString("id")+"', '"+cat+"')");
-							}
+							String cat = f.getString("dscategoria");
+							int idcat = f.getInt("id_categoria");
+							if(idcat != 53)
+								bd.execSQL("INSERT INTO categorias VALUES ("+idcat+", '"+cat+"')");
 						}
 					}
 					bd.close();

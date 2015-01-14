@@ -31,7 +31,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class Logueado extends Activity {
-	String pid="",notid="",iduser="";
+	int pid=0,notid=0,iduser=0;
 	private static Asinlog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
@@ -44,7 +44,7 @@ public class Logueado extends Activity {
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
-		iduser = getIntent().getStringExtra("user_id");
+		iduser = getIntent().getIntExtra("user_id",0);
 		TextView bienvenida=(TextView) this.findViewById(R.id.bienvenida);
 		TextView noticia=(TextView) this.findViewById(R.id.noticias);
 		TextView pueblo=(TextView) this.findViewById(R.id.pueblo);
@@ -216,13 +216,13 @@ public class Logueado extends Activity {
 		@Override
 		public void onPostExecute(Object response){
 			try {
-				notid=datosuser.getString("notid");
-				pid=datosuser.getString("pid");
+				notid=datosuser.getInt("notid");
+				pid=datosuser.getInt("pid");
 				bienvenida.setText("Bienvenido "+datosuser.getString("dsusuario"));
 			    noticia.setText(datosuser.getString("dstitular"));
 			    pueblo.setText("Municipio:\t\t"+datosuser.getString("dspueblo"));
-			    iduser=datosuser.getString("id");
-			    if(notid.equals("_")){
+			    iduser=datosuser.getInt("id");
+			    if(notid==0){
 			    	b5.setEnabled(false);
 			    }
 			} catch (JSONException e) {

@@ -14,31 +14,21 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/ncomentarios"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/nlikes"
-        android:text="Comentarios"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/categoria"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/ncomentarios"
-        android:layout_alignBottom="@+id/ncomentarios"
-        android:layout_alignParentLeft="true"
-        android:text="Categorias"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/titular"
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/fecha"
-        android:text="Titular"
+        android:text="Pueblo: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/pueblo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fecha"
+        android:layout_toRightOf="@+id/textView1"
+        android:text="pueblo"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -46,17 +36,66 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/titular"
+        android:layout_alignTop="@+id/TextView01"
         android:text="likes"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/pueblo"
+        android:id="@+id/titular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="pueblo"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="26dp"
+        android:text="Titular"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/TextView03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/categoria"
+        android:layout_alignParentLeft="true"
+        android:text="Categoria: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/categoria"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView01"
+        android:layout_toLeftOf="@+id/TextView02"
+        android:text="Categorias"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titular"
+        android:layout_marginTop="22dp"
+        android:layout_toLeftOf="@+id/fecha"
+        android:text="nLikes: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/ncomentarios"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView01"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="44dp"
+        android:layout_toRightOf="@+id/TextView02"
+        android:text="Comentarios"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/TextView02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/ncomentarios"
+        android:text="Comentarios: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

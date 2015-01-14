@@ -39,11 +39,11 @@ import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Blog extends Activity implements OnItemSelectedListener {
-	private String datos,pid,iduser;
+	private String datos;
 	private static AsincBlog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	private Spinner spinner1, spinner2;
-	private int pposicion,cposicion;
+	private int pposicion,cposicion,pid,iduser;
 	private EditText Titular, fecha;
 	private List<String> lista1, lista1aux,lista2;
 	private LinkedList<LinkedList<String>> auxiliar = new LinkedList<LinkedList<String>>();
@@ -57,8 +57,8 @@ public class Blog extends Activity implements OnItemSelectedListener {
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		Button b5 = (Button)this.findViewById(R.id.blog);
-		pid = getIntent().getStringExtra("p_id");
-		iduser = getIntent().getStringExtra("user_id");
+		pid = getIntent().getIntExtra("p_id",0);
+		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		Titular = (EditText)this.findViewById(R.id.Tit_nolog);
 		fecha = (EditText)this.findViewById(R.id.Fecha_nolog);
