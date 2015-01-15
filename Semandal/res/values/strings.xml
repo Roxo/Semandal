@@ -11,7 +11,7 @@
     <string name="User">Usuario</string>
     <string name="confpass">Confirmar Password</string>
     <string name="Notrec">Noticia más reciente</string>
-    <string name="Deuda">Pueblo</string>
+    <string name="Deuda">Pueblos</string>
     <string name="Buscador">Buscador</string>
     <string name="Noticias">Noticias</string>
     <string name="Amigos">Amigos</string>
@@ -57,5 +57,6 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_categoriza">Categoriza</string>
     <string name="title_activity_seman">Seman</string>
+    <string name="title_activity_lpueblos">LPueblos</string>
 
 </resources>

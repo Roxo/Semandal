@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -69,18 +70,19 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
-		Button b6 = (Button)this.findViewById(R.id.button2);
+		final Button b6 = (Button)this.findViewById(R.id.button2);
 
 		// DEFINICIÓN DE LOS TEXTVIEW
-		TextView deuda = (TextView)this.findViewById(R.id.textodeuda);
-		TextView municipio = (TextView)this.findViewById(R.id.textomunicipio);
-		TextView provincia = (TextView)this.findViewById(R.id.Provincia);
-		TextView coordenadas = (TextView)this.findViewById(R.id.coordenadas);
-		TextView cp = (TextView)this.findViewById(R.id.cp);
+		final TextView deuda = (TextView)this.findViewById(R.id.textodeuda);
+		final TextView municipio = (TextView)this.findViewById(R.id.textomunicipio);
+		final TextView provincia = (TextView)this.findViewById(R.id.Provincia);
+		final TextView coordenadas = (TextView)this.findViewById(R.id.coordenadas);
+		final TextView cp = (TextView)this.findViewById(R.id.cp);
 		final TextView urlweb = (TextView)this.findViewById(R.id.urlweb);
-		TextView habitantes = (TextView)this.findViewById(R.id.habitantes);
-		TextView superficie = (TextView)this.findViewById(R.id.superficie);		
+		final TextView habitantes = (TextView)this.findViewById(R.id.habitantes);
+		final TextView superficie = (TextView)this.findViewById(R.id.superficie);		
 		final TextView urlwiki = (TextView)this.findViewById(R.id.wikiurl);
+		final AutoCompleteTextView autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 		urlwiki.setTextColor(Color.CYAN);
 		urlweb.setTextColor(Color.CYAN);
 		//////////////////////////////////////////////
@@ -101,9 +103,8 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 
 		tarea = new AsinDeuda(this,deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
 				superficie,urlwiki,
-				Singleton.url+":8000/api/pueblos",
 				Singleton.url+":8000/api/pueblos/"+puebloant,this,
-				Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6
+				Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,autotext
 				);
 		tarea.execute();
      
@@ -145,19 +146,41 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(posicion != 0){
-					Intent i = new Intent(Deuda.this, Deuda.class);
-					i.putExtra("datos", datos);
-					i.putExtra("user_id", iduser);
-					i.putExtra("pb",lista1aux.get(posicion));
-					i.putExtra("p_id", pid);
-					startActivity(i);
+				String pueblo = autotext.getText().toString();
+				int p = 0;
+				if(!pueblo.equalsIgnoreCase("")){
+					p = buscapuebloid(pueblo);
+				}
+				int idpueblo = 0;
+				if(p != 0){
+					idpueblo = lista1aux.get(p);
+				}
+				if(idpueblo!= 0){
+					puebloant=idpueblo;
+					AsinDeuda tarea = new AsinDeuda(a,deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
+							superficie,urlwiki,
+							Singleton.url+":8000/api/pueblos/"+puebloant,a,
+							Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,autotext
+							);
+					tarea.execute();
 				}
 				else{
 					 Toast.makeText(getApplicationContext(), "Necesita seleccionar un pueblo", Toast.LENGTH_LONG).show();
 				}
 			}
-			
+			private int buscapuebloid(String pueblo) {
+				boolean encontrado = false;
+				int i = 0;
+				while(!encontrado && i<lista1.size()){
+					if(lista1.get(i).equalsIgnoreCase(pueblo)){
+						encontrado = true;
+						return i;
+					}
+					i++;
+				}
+				return 0;				
+			}
+
 		});		
 
 		b1.setOnClickListener(new View.OnClickListener() {
@@ -191,7 +214,7 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Deuda.this, Deuda.class);
+				Intent i = new Intent(Deuda.this, LPueblos.class);
 				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
 				i.putExtra("p_id", pid);
@@ -236,16 +259,9 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 	
 	private void onTaskCompleted(Object _response) 
 	{ 
-		if(fromdatos){
-		   spinner1 = (Spinner) findViewById(R.id.cat);
-		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lista1);
-		   adaptador1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		   spinner1.setAdapter(adaptador1);
-		   spinner1.setOnItemSelectedListener(this);
-			fromdatos = false;
-		}
+
 		if(addpueblo){
-			Intent i = new Intent(Deuda.this, Deuda.class);
+			Intent i = new Intent(Deuda.this, LPueblos.class);
 			i.putExtra("datos", datos);
 			i.putExtra("user_id", iduser);
 			i.putExtra("pb",puebloant);
@@ -265,6 +281,7 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 	    private Deuda activity;
 	    private Object _response;
 	    Button b6;
+		AutoCompleteTextView pob;
 
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
@@ -273,8 +290,8 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 		
 		public AsinDeuda(Context contexto,TextView deuda,TextView municipio,TextView provincia,
 				TextView coordenadas,TextView cp,TextView urlweb,TextView habitantes,
-				TextView superficie,TextView urlwiki,String urlpueblos,
-				String url,Deuda activity,String usersigue,Button b6){
+				TextView superficie,TextView urlwiki,
+				String url,Deuda activity,String usersigue,Button b6,AutoCompleteTextView t){
 			this.usuario = usersigue;
 			this.contexto = contexto;
 			this.deuda = deuda;
@@ -290,6 +307,7 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			this.url = url;
 			this.activity=activity;
 			this.b6 = b6;
+			this.pob = t;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -312,23 +330,12 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			    }
 			  }
 			  
-			  public void leerpueblos() throws IOException, JSONException {
-				    InputStream is = new URL(urlpueblos).openStream();
-				    try {
-				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-				      String jsonText = readAll(rd);
-				       pueblos = new JSONObject(jsonText);
-				    } finally {
-				      is.close();
-				    }
-				  }		  
 
 		@Override
 		protected Void doInBackground(Void... params) {
 
 				try {
 					leerdatos();
-					leerpueblos();
 					sigueusuario();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -372,6 +379,9 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			if(usig.getBoolean("sigue")){
 				b6.setEnabled(false);
 			}
+			else{
+				b6.setEnabled(true);
+			}
 
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -386,8 +396,6 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			int a = c.getCount();
 			lista1= new ArrayList<String>();
 			lista1aux= new ArrayList<Integer>();
-	    	lista1.add("Pueblos");
-	    	lista1aux.add(0);
 			if (c.moveToFirst()){
 				do{
 					lista1.add(c.getString(1));
@@ -395,6 +403,9 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 				}while(c.moveToNext());
 			}
 			
+			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
+			pob.setAdapter(adaptador1);
+
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();

@@ -117,3 +117,9 @@ class T_Liked(models.Model):
 	id_n = models.ForeignKey(Noticias)
 	class Meta:
 		unique_together = ('id_user', 'id_n')
+
+class Denuncias_C(models.Model):
+	comentario = models.ForeignKey(Comentarios)
+	id_user = models.ForeignKey(Usuario)
+	class Meta:
+		unique_together = ('id_user', 'comentario')

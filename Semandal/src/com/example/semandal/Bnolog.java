@@ -35,6 +35,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,8 +45,8 @@ import android.widget.TextView;
 public class Bnolog extends Activity implements OnItemSelectedListener {
 	private static AsincBnolog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	private Spinner spinner1, spinner2;
-	private int pposicion,cposicion;
+	private Spinner spinner2;
+	private int cposicion;
 	private EditText Titular, fecha;
 	private List<String> lista1,lista2;
 	private List<Integer> lista1aux,auxiliar=new LinkedList<Integer>();
@@ -61,11 +62,9 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 		Button resultado = (Button)this.findViewById(R.id.button1);
 		Titular = (EditText)this.findViewById(R.id.Tit_nolog);
 		fecha = (EditText)this.findViewById(R.id.Fecha_nolog);
+		final AutoCompleteTextView autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 		AsincBnolog tarea = null;
-		tarea = new AsincBnolog(this,
-				Singleton.url+":8000/api/pueblos",
-				Singleton.url+":8000/api/noticias/categorias/",this
-				);
+		tarea = new AsincBnolog(this,autotext);
 		tarea.execute();
 
 		resultado.setOnClickListener(new View.OnClickListener() {
@@ -77,8 +76,13 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 				Integer idpueblo =0;
 				titular = Titular.getText().toString();
 				Fecha = fecha.getText().toString();
-				if(pposicion != 0){
-					idpueblo = lista1aux.get(pposicion);
+				String pueblo = autotext.getText().toString();
+				int p = 0;
+				if(!pueblo.equalsIgnoreCase("")){
+					p = buscapuebloid(pueblo);
+				}
+				if(p != 0){
+					idpueblo = lista1aux.get(p);
 				}
 				if(cposicion != 0){
 					idcat = auxiliar.get(cposicion);
@@ -88,9 +92,9 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 					stringfinal = stringfinal+"_t:"+titular+",";
 				if(!Fecha.equals(""))
 					stringfinal = stringfinal+"_d:"+Fecha+",";
-				if(!idpueblo.equals(0))
+				if(idpueblo != 0)
 					stringfinal = stringfinal+"id_p:"+idpueblo+",";
-				if(!idcat.equals(0))
+				if(idcat != 0)
 					stringfinal = stringfinal+"id_c:"+idcat+",";
 				stringfinal = stringfinal.substring(0,stringfinal.length()-1);
 				stringfinal = "("+stringfinal+")";
@@ -98,7 +102,20 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 				i.putExtra("datos",stringfinal);
 				startActivity(i);
 			}
-		});
+
+			private int buscapuebloid(String pueblo) {
+				boolean encontrado = false;
+				int i = 0;
+				while(!encontrado && i<lista1.size()){
+					if(lista1.get(i).equalsIgnoreCase(pueblo)){
+						encontrado = true;
+						return i;
+					}
+					i++;
+				}
+				return 0;				
+			}
+		}); 
 		b1.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -148,16 +165,10 @@ public void onResume(){
 
 	void onTaskCompleted(Object _response) 
 	{ 
-		   spinner1 = (Spinner) findViewById(R.id.Pob);
-		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lista1);
-		   adaptador1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		   spinner1.setAdapter(adaptador1);
-
 		   spinner2 = (Spinner) findViewById(R.id.cat);
 		   ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lista2);
 		   adaptador2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		   spinner2.setAdapter(adaptador2);
-		   spinner1.setOnItemSelectedListener(this);
 		   spinner2.setOnItemSelectedListener(this);
 
 	}
@@ -184,6 +195,7 @@ public void onResume(){
 		Context contexto;
 		String urlpueblos,urlcategorias;
 		JSONObject pueblos, categorias;
+		AutoCompleteTextView pob;
 	    private Bnolog activity;
 	    private boolean completed;
 	     private Object _response;
@@ -192,12 +204,10 @@ public void onResume(){
 		 * 
 		 * */
 		
-		public AsincBnolog(Context contexto,String urlpueblos, String urlcategorias,Bnolog activity){
+		public AsincBnolog(Context contexto,AutoCompleteTextView pob){
 			this.contexto = contexto;
-			this.urlpueblos=urlpueblos;
-			this.urlcategorias=urlcategorias;
-            this.activity = activity;
-
+            this.activity = (Bnolog) contexto;
+            this.pob = pob;
 		}
 		
 		@Override
@@ -210,8 +220,6 @@ public void onResume(){
 				int a = c.getCount();
 				lista1= new ArrayList<String>();
 				lista1aux= new ArrayList<Integer>();
-		    	lista1.add("Pueblos");
-		    	lista1aux.add(0);
 				if (c.moveToFirst()){
 					do{
 						lista1.add(c.getString(1));
@@ -223,14 +231,13 @@ public void onResume(){
 				a = c.getCount();
 				lista2= new ArrayList<String>();
 				lista2.add("Categorias");
-			   	LinkedList<Integer> aux = new LinkedList<Integer>();
-			   	aux = new LinkedList<Integer>();
 				if (c.moveToFirst()){
 					do{
 						lista2.add(c.getString(1));
 						auxiliar.add(c.getInt(0));
 					}while(c.moveToNext());
 				}
+				
 			    db.close();
 			    c.close();
 
@@ -244,6 +251,9 @@ public void onResume(){
 
 		@Override
 		public void onPostExecute(Object response){
+		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
+	       pob.setAdapter(adaptador1);
+
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
@@ -254,17 +264,7 @@ public void onResume(){
         }
 
 		}	
-	    private boolean busca(List<String> lista2, String string) {
-	    	boolean devolver = false;
-	    	int i = 0;
-	    	while (!devolver && i<lista2.size()){
-	    		if(lista2.get(i).equalsIgnoreCase(string)){
-	    			devolver = true;
-	    		}
-	    		else i++;
-	    	}
-	    	return devolver;
-	    }
+
 
 		public void setActivity(Bnolog activity) 
 	    { 
@@ -304,8 +304,6 @@ public void onResume(){
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 		String selected = parent.getItemAtPosition(pos).toString();
-        if(parent == this.findViewById(R.id.Pob))
-        	pposicion=pos;
         if(parent == this.findViewById(R.id.cat))
         	cposicion=pos;
         

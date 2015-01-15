@@ -171,7 +171,7 @@ public class Display_not_log extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Display_not_log.this, Deuda.class);
+				Intent i = new Intent(Display_not_log.this, LPueblos.class);
 				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
 				i.putExtra("p_id", pid);

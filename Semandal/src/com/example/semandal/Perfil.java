@@ -91,7 +91,7 @@ public class Perfil extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Perfil.this, Deuda.class);
+				Intent i = new Intent(Perfil.this, LPueblos.class);
 				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
 				i.putExtra("p_id", pid);

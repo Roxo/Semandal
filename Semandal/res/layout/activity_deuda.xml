@@ -59,41 +59,37 @@
         android:id="@+id/scroll"
         android:layout_below="@+id/imageView1"
         android:layout_width="match_parent"
-	    android:layout_above="@+id/cat"
+	    android:layout_above="@+id/autoCompleteTextView1"
         android:layout_height="match_parent" >
 
         <LinearLayout
             android:id="@+id/LinearScroll"
             android:layout_width="match_parent"
-            android:layout_height="343dp"
-            android:orientation="vertical" >
+            android:layout_height="wrap_content"
+             android:orientation="vertical" >
 
 	<TextView
 	    android:id="@+id/textomunicipio"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="Municipio:Amodificar"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 	<TextView
 	    android:id="@+id/Provincia"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="Provincia: "
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 	<TextView
 	    android:id="@+id/coordenadas"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="Coordenadas: "
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	<TextView
 	    android:id="@+id/cp"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="Codigo Postal:"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 		
 	<TextView
@@ -107,14 +103,12 @@
 	    android:id="@+id/urlweb"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="urlweb "
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 	<TextView
 	    android:id="@+id/habitantes"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="habitantes: "
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 			
@@ -124,7 +118,6 @@
 	    android:id="@+id/textodeuda"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="Deuda: Amodificar"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	<TextView
@@ -139,7 +132,6 @@
 	    android:id="@+id/superficie"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="Superficie:"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 	<TextView
@@ -153,7 +145,6 @@
 	    android:id="@+id/wikiurl"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="wikiurl:"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 	<TextView
@@ -166,14 +157,6 @@
 	
 		 </LinearLayout>
     </ScrollView>
-	<Spinner
-	    android:id="@+id/cat"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_above="@+id/button1"
-	    android:layout_alignParentLeft="true"
-	    android:text="@string/Selectpb" />
-
 	<Button
 	    android:id="@+id/button1"
 	    android:layout_width="wrap_content"
@@ -190,5 +173,18 @@
 	    android:layout_alignParentRight="true"
 	    android:layout_marginRight="14dp"
 	    android:text="Agregar pueblo!" />
+
+	<AutoCompleteTextView
+	    android:id="@+id/autoCompleteTextView1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/button1"
+	    android:layout_alignParentLeft="true"
+	    android:layout_alignParentRight="true"
+	    android:ems="10"
+	    android:hint="Pueblo" >
+
+	    <requestFocus />
+	</AutoCompleteTextView>
     
 </RelativeLayout>

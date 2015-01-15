@@ -102,7 +102,7 @@ public class Logueado extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Logueado.this, Deuda.class);
+				Intent i = new Intent(Logueado.this, LPueblos.class);
 				i.putExtra("p_id", pid);
 				i.putExtra("user_id", iduser);
 				i.putExtra("datos", "(id_p:"+pid+")");

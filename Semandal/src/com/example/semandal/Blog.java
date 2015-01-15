@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -42,11 +43,12 @@ public class Blog extends Activity implements OnItemSelectedListener {
 	private String datos;
 	private static AsincBlog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	private Spinner spinner1, spinner2;
+	private Spinner  spinner2;
 	private int pposicion,cposicion,pid,iduser;
 	private EditText Titular, fecha;
-	private List<String> lista1, lista1aux,lista2;
-	private LinkedList<LinkedList<String>> auxiliar = new LinkedList<LinkedList<String>>();
+	private List<String> lista1,lista2;
+	private List<Integer> lista1aux;
+	private LinkedList<Integer> auxiliar = new LinkedList<Integer>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,34 +64,36 @@ public class Blog extends Activity implements OnItemSelectedListener {
 		datos = getIntent().getStringExtra("datos");
 		Titular = (EditText)this.findViewById(R.id.Tit_nolog);
 		fecha = (EditText)this.findViewById(R.id.Fecha_nolog);
-		AsincBlog tarea = new AsincBlog(this);
+		final AutoCompleteTextView autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
+		AsincBlog tarea = new AsincBlog(this,autotext);
 		tarea.execute();
 		b5.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				String titular = "", Fecha = "", idpueblo ="", idcat="";
+				String titular = "", Fecha = "";
+				int idpueblo =0,idcat=0;
 				titular = Titular.getText().toString();
 				Fecha = fecha.getText().toString();
-				if(pposicion != 0){
-					idpueblo = lista1aux.get(pposicion);
+				String pueblo = autotext.getText().toString();
+				int p = 0;
+				if(!pueblo.equalsIgnoreCase("")){
+					p = buscapuebloid(pueblo);
+				}
+				if(p != 0){
+					idpueblo = lista1aux.get(p);
 				}
 				if(cposicion != 0){
-					for (int i = 0; i<auxiliar.get(cposicion).size();i++){
-						idcat=idcat.concat(auxiliar.get(cposicion).get(i));
-						if(i!=auxiliar.get(cposicion).size()-1){
-							idcat=idcat.concat("-");
-						}
-					}
+					idcat = auxiliar.get(cposicion);
 				}
 				String stringfinal ="";
 				if(!titular.equals(""))
 					stringfinal = stringfinal+"_t:"+titular+",";
 				if(!Fecha.equals(""))
 					stringfinal = stringfinal+"_d:"+Fecha+",";
-				if(!idpueblo.equals(""))
+				if(idpueblo != 0)
 					stringfinal = stringfinal+"id_p:"+idpueblo+",";
-				if(!idcat.equals(""))
+				if(idcat != 0)
 					stringfinal = stringfinal+"id_c:"+idcat+",";
 				stringfinal = stringfinal.substring(0,stringfinal.length()-1);
 				stringfinal = "("+stringfinal+")";
@@ -100,7 +104,19 @@ public class Blog extends Activity implements OnItemSelectedListener {
 				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
-			
+			private int buscapuebloid(String pueblo) {
+				boolean encontrado = false;
+				int i = 0;
+				while(!encontrado && i<lista1.size()){
+					if(lista1.get(i).equalsIgnoreCase(pueblo)){
+						encontrado = true;
+						return i;
+					}
+					i++;
+				}
+				return 0;				
+			}
+	
 		});		
 
 		b1.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +150,7 @@ public class Blog extends Activity implements OnItemSelectedListener {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Blog.this, Deuda.class);
+				Intent i = new Intent(Blog.this, LPueblos.class);
 				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
 				i.putExtra("p_id", pid);
@@ -175,18 +191,10 @@ public class Blog extends Activity implements OnItemSelectedListener {
 
 	private void onTaskCompleted(Object _response) 
 	{ 
-		   spinner1 = (Spinner) findViewById(R.id.Pob);
-		   spinner1 = (Spinner) this.findViewById(R.id.Pob);
-		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lista1);
-		   adaptador1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		   spinner1.setAdapter(adaptador1);
-
-		   spinner2 = (Spinner) findViewById(R.id.cat);
 		   spinner2 = (Spinner) findViewById(R.id.cat);
 		   ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lista2);
 		   adaptador2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		   spinner2.setAdapter(adaptador2);
-		   spinner1.setOnItemSelectedListener(this);
 		   spinner2.setOnItemSelectedListener(this);
 
 	}
@@ -196,16 +204,18 @@ public class Blog extends Activity implements OnItemSelectedListener {
 		JSONObject pueblos, categorias;
 	    private Blog activity;
 	    private boolean completed;
-	     private Object _response;
+	    private Object _response;
+		AutoCompleteTextView pob;
+
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
-		public AsincBlog(Blog activity){
+		public AsincBlog(Blog activity,AutoCompleteTextView pob){
 			this.contexto = activity;
             this.activity = activity;
-
+            this.pob = pob;
 		}
 		
 		@Override
@@ -217,13 +227,11 @@ public class Blog extends Activity implements OnItemSelectedListener {
 					Cursor c = db.rawQuery(sql, null);
 					int a = c.getCount();
 					lista1= new ArrayList<String>();
-					lista1aux= new ArrayList<String>();
-			    	lista1.add("Pueblos");
-			    	lista1aux.add("");
+					lista1aux= new ArrayList<Integer>();
 					if (c.moveToFirst()){
 						do{
 							lista1.add(c.getString(1));
-							lista1aux.add(c.getString(0));
+							lista1aux.add(c.getInt(0));
 						}while(c.moveToNext());
 					}
 					sql = "SELECT * FROM categorias" ;
@@ -231,21 +239,13 @@ public class Blog extends Activity implements OnItemSelectedListener {
 					a = c.getCount();
 					lista2= new ArrayList<String>();
 					lista2.add("Categorias");
-				   	LinkedList<String> aux = new LinkedList<String>();
-				   	aux = new LinkedList<String>();
 					if (c.moveToFirst()){
 						do{
-							if(busca(lista2,c.getString(1))){
-								aux.add(c.getString(0));
-							}
-							else{
-								auxiliar.add(aux);
-								aux = new LinkedList<String>();
-								lista2.add(c.getString(1));
-								aux.add(c.getString(0));
-							}
+							lista2.add(c.getString(1));
+							auxiliar.add(c.getInt(0));
 						}while(c.moveToNext());
 					}
+					
 				    db.close();
 				    c.close();
 
@@ -271,6 +271,8 @@ public class Blog extends Activity implements OnItemSelectedListener {
 
 		@Override
 		public void onPostExecute(Object response){
+		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
+	       pob.setAdapter(adaptador1);
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();

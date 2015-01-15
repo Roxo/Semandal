@@ -22,7 +22,7 @@ from pueblos.models import Categorias_semandal
 from pueblos.models import NC
 from pueblos.models import Votaciones
 from pueblos.models import Status
-
+from pueblos.models import Denuncias_C
 def index(request):
     return HttpResponse("Bienvenidos a SEMANDAL")
     # pueblos = Pueblo.objects.all().order_by('dspueblo')[:5]
@@ -332,7 +332,7 @@ def getcomentarios(request,n_id):
 	if len(rez) != 0:
 		obj=""
 		for i in rez:
-			obj = obj+'{"id_user":'+str(i.id_user.id)+',"usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":'+str(int(i.puntuacion))+'},'
+			obj = obj+'{"id_comentario":'+str(i.id)+',"id_user":'+str(i.id_user.id)+',"usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":'+str(int(i.puntuacion))+'},'
 		obj = obj[0:(len(obj)-1)]
 		obj = '{"ncomentarios":"'+str(len(rez))+'","comentarios":['+obj+']}'
 	else:
@@ -563,7 +563,7 @@ def ulog(request,id_user):
 		pob = Pueblo.objects.filter(id = t)[0]
 		dstitular = ""
 		try:
-			noticia = Noticias.objects.filter(pueblo = pob).reverse()[0]
+			noticia = Noticias.objects.filter(pueblo = pob).latest("fecha")
 			if noticia.dstitular is not "":
 				dstitular = noticia.dstitular
 			if dstitular == None:
@@ -597,6 +597,8 @@ def log(request,user,pas):
 def register(request,user,fn,sn,us,pas,mail,idpueblo):
 	p = Pueblo.objects.filter(id=int(idpueblo))[0]
 	u = Usuario(dsusuario=user,dsnombre=us,dsapellido1=fn,dsapellido2=sn,token=pas,correo=mail,pueblo=p)
+	sigp = SigP(id_user=u,id_p=p)
+	sigp.save();
 	u.save();
 	return HttpResponse("")
 
@@ -648,6 +650,17 @@ def sig(request,id_p,id_u):
 	else:
 		ret = "false"
 		devolver='{"sigue":'+ret+'}'
+	return HttpResponse(devolver)
+
+def siguiendo(request,id_u):
+	pueblos = SigP.objects.filter(id_user__id = id_u)
+	r=''
+	obj=''
+	for p in pueblos:
+		obj = '{"id_pueblo"='+str(p.id_p.id)+',"dspueblo":"'+p.id_p.dspueblo+'"},'
+		r = r + obj
+	r = r[0:len(r)-1]
+	devolver = '{"pueblos":['+r+']}'
 	return HttpResponse(devolver)
 
 def addsig(request,id_p,id_u):
@@ -710,9 +723,24 @@ def catfromnot(request,id_n):
 		return HttpResponse('{"categorias":[]}')
 
 def nuevacategoria(request,id_n,categoria,id_u):
-	n=Noticias.objects.filter(id=id_n)[0]
-	newcat = Categorias_semandal(dscategoria=categoria)
-	newcat.save()
-	nuevanoticia = NC(noticia = n,categoria=newcat,confirmada=Status.objects.filter(id=1)[0])
-	nuevanoticia.save()	
+	try:
+		n=Noticias.objects.filter(id=id_n)[0]
+		newcat = Categorias_semandal(dscategoria=categoria)
+		newcat.save()
+		nuevanoticia = NC(noticia = n,categoria=newcat,confirmada=Status.objects.filter(id=1)[0])
+		nuevanoticia.save()	
+		return HttpResponse('{"agregado":true}')
+	except:		
+		return HttpResponse('{"agregado":false}')
+
+
+def denuncia(resquest,id_u,id_c):
+	try:
+		u = Usuario.objects.filter(id=id_u)[0]
+		c = Comentarios.objects.filter(id=id_c)[0]
+		d = Denuncias_C(comentario=c,id_user=u)
+		d.save()
+	except:
+		return HttpResponse('{"agregado":false}')
 	return HttpResponse('{"agregado":true}')
+

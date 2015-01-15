@@ -135,7 +135,7 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Seman.this, Deuda.class);
+				Intent i = new Intent(Seman.this, LPueblos.class);
 				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
 				i.putExtra("p_id", pid);

@@ -134,6 +134,10 @@
             android:name=".Seman"
             android:label="@string/title_activity_seman" >
         </activity>
+        <activity
+            android:name=".LPueblos"
+            android:label="@string/title_activity_lpueblos" >
+        </activity>
     </application>
 
 </manifest>
