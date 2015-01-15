@@ -10,6 +10,7 @@ from pueblos.models import Categoria
 from pueblos.models import Amigode
 from django.http import Http404
 import datetime
+import operator
 from django.http import HttpResponse
 import json
 from django.db.models import Q
@@ -332,7 +333,7 @@ def getcomentarios(request,n_id):
 	if len(rez) != 0:
 		obj=""
 		for i in rez:
-			obj = obj+'{"id_comentario":'+str(i.id)+',"id_user":'+str(i.id_user.id)+',"usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":'+str(int(i.puntuacion))+'},'
+			obj = obj+'{"id_comentario":'+str(i.id)+',"id_user":'+str(i.id_user.id)+',"usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":'+str(int(i.puntuacion))+',"fecha":"'+str(i.fecha).split("+")[0]+'"},'
 		obj = obj[0:(len(obj)-1)]
 		obj = '{"ncomentarios":"'+str(len(rez))+'","comentarios":['+obj+']}'
 	else:
@@ -428,7 +429,7 @@ def lastnot(request):
 			x=n.resumen
 		else:
 			x=n.dscuerpo
-		obj='{"existe":true,"notid":'+str(n.id)+',"titular":"'+n.dstitular+'","cuerpo":"'+x+'","fecha":"'+str(n.fecha)+'"}'
+		obj='{"existe":true,"notid":'+str(n.id)+',"titular":"'+n.dstitular+'","cuerpo":"'+x+'","fecha":"'+str(n.fecha)+'","dspueblo":"'+n.pueblo.dspueblo+'","id_pueblo":'+str(n.pueblo.id)+'}'
 	except:
 		obj='{"existe":false}'
 	return HttpResponse(obj)
@@ -437,7 +438,7 @@ def lastnot(request):
 def lastcomment(request):
 	try:
 		c = Comentarios.objects.latest("fecha")
-		obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario.replace(" ","-")+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'"}'
+		obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario.replace(" ","-")+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'","fecha":"'+str(c.fecha).split("+")[0]+'"}'
 		return HttpResponse(obj)
 	except:
 		obj='{"existe":false}'
@@ -502,21 +503,21 @@ def filternoticia(n):
 	r = ''
 	lista = []
 	for noticia in n:
-		if noticia.noticia.id not in lista:
-			ncomentarios = Comentarios.objects.filter(id_not = noticia.noticia)
+		if noticia.id not in lista:
+			ncomentarios = Comentarios.objects.filter(id_not = noticia)
 			titular =""
 			cuerpo = ""
 			fecha = ""
-			if noticia.noticia.dstitular is not None:
-				titular = noticia.noticia.dstitular.replace('"','\"')
-			if noticia.noticia.dscuerpo is not None:
-				cuerpo = noticia.noticia.dscuerpo.replace('"','\"')
-			if noticia.noticia.fecha is not None:
-				fecha = str(noticia.noticia.fecha)
-			n_categorias = getcategorias(noticia.noticia);
-			obj = '{"id_noticia":'+str(noticia.noticia.id)+',"titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.noticia.url+'","liked":'+str(noticia.noticia.liked)+',"dspueblo":"'+noticia.noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":['+n_categorias+']},'
+			if noticia.dstitular is not None:
+				titular = noticia.dstitular.replace('"','\"')
+			if noticia.dscuerpo is not None:
+				cuerpo = noticia.dscuerpo.replace('"','\"')
+			if noticia.fecha is not None:
+				fecha = str(noticia.fecha)
+			n_categorias = getcategorias(noticia);
+			obj = '{"id_noticia":'+str(noticia.id)+',"titular":"'+titular+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":'+str(noticia.liked)+',"dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":['+n_categorias+']},'
 			r = r + obj
-			lista.append(noticia.noticia.id)
+			lista.append(noticia.id)
 	r = r[0:len(r)-1]
 	return r
 
@@ -530,15 +531,6 @@ def getcategorias(n):
 	return res
 
 
-def getcomment(kwargs,etiquetas):
-	t=etiquetas.split('-')
-	string = ''
-	for k in t:
-		kwargs['etiqueta_id']=k
-		n = Noticias.objects.filter(**kwargs).order_by("fecha").reverse()
-		string = string+filternoticia(n)
-	string = '{"ret":true,"resultado":['+string+']}'
-	return string
 
 def getdeuda(request,p_id):
 	try:
@@ -744,3 +736,16 @@ def denuncia(resquest,id_u,id_c):
 		return HttpResponse('{"agregado":false}')
 	return HttpResponse('{"agregado":true}')
 
+#####################EXPERIMENTO 20 NOTICIAS DE TODOS LOS PUEBLOS QUE SIGO
+
+def todosnot(request,id_u):
+	consultas = []
+	sigo = SigP.objects.filter(id_user__id = id_u)
+	for i in sigo:
+		tupla = ('pueblo_id__id',str(i.id_p.id))
+		consultas.append(tupla)
+	mylist = [Q(x) for x in consultas]
+	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[:20]
+	r = filternoticia(n)
+	r = '{"ret":true,"resultado":['+r+']}'
+	return HttpResponse(r)

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -17,8 +18,10 @@ import com.example.semandal.Nolog.AsincronNolog;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -42,7 +45,7 @@ public class Display_not_nolog extends Activity {
 	int notid=0;
 	private static AsincronDNN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-
+	private Display_not_nolog a = this;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,7 +55,8 @@ public class Display_not_nolog extends Activity {
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 				(TextView) findViewById(R.id.Noticia),
 				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),
-				Singleton.url+":8000/api/noticias/"+notid,this,(ListView) findViewById(R.id.listView1)
+				Singleton.url+":8000/api/noticias/"+notid,this,
+				(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment)
 				);
 		tarea.execute();
 
@@ -69,9 +73,7 @@ public class Display_not_nolog extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent i = new Intent(Display_not_nolog.this, Log.class);
-				startActivity(i);
+				showDialog(a,"Advertencia","Para indicar que te gusta una noticia debe entrar o registrarse, ¿Desea usted hacerlo ahora?");
 			}
 			
 		});	
@@ -171,13 +173,15 @@ public class Display_not_nolog extends Activity {
 	    private Object _response;
 	    String[] listacategorias;
 	    ListView lv;
+	    Button comentarios;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-			TextView dateview,TextView likes,String url,Display_not_nolog activity,ListView lv){
+			TextView dateview,TextView likes,String url,Display_not_nolog activity,
+			ListView lv,Button comentarios){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -186,6 +190,7 @@ public class Display_not_nolog extends Activity {
 			this.activity = activity;
 			this.likes = likes;
 			this.lv = lv;
+			this.comentarios = comentarios;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -230,7 +235,7 @@ public class Display_not_nolog extends Activity {
 		@Override
 		public void onPostExecute(Object response){
 			String titular,cuerpo, fecha;
-			int like=0;
+			int like=0,ncomentarios=0;
 			try {
 				titular = html.getString("titular").replace("-","\n");
 				cuerpo = html.getString("cuerpo").replace("-","\n");
@@ -238,6 +243,8 @@ public class Display_not_nolog extends Activity {
 				notid = html.getInt("id_noticia");
 				url1 = html.getString("url");
 				like = html.getInt("liked");
+				ncomentarios = html.getInt("ncomentarios");
+				comentarios.setText("Ver Comentarios ("+ncomentarios+")");
 				JSONArray cat = html.getJSONArray("categoria");
 				listacategorias =  new String[cat.length()];
 			    for(int i=0;i<cat.length();i++){
@@ -300,5 +307,25 @@ public class Display_not_nolog extends Activity {
 	   //Sets the current activity to the async task
 
 		}
+	
+	public void showDialog(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_nolog.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Display_not_nolog.this, Log.class);
+				startActivity(i);
+		    }
+		});
+		b.show();
+	}
+
 	
 }

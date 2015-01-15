@@ -75,15 +75,6 @@
 -->
 
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView1"
-        android:layout_toLeftOf="@+id/loggin"
-        android:text="Última Noticia"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
         android:id="@+id/titnoticia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -94,48 +85,83 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/TextView01"
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Noticiaentera"
+        android:layout_below="@+id/imageView1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Último Comentario"
+        android:text="Última Noticia"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:id="@+id/commentaut"
+        android:id="@+id/dspueblo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/titnoticia"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/TextView01"
-        android:text="AutorComent" />
-
-    <TextView
-        android:id="@+id/lastcomment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/commentaut"
-        android:scrollbars="vertical"
-        android:text="UltimoComentario"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <Button
-        android:id="@+id/notrel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/lastcomment"
-        android:text="Ver noticia relacionada" />
+        android:text="pueblo"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
         android:id="@+id/Noticiaentera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_below="@+id/Noticiaentera"
+        android:layout_below="@+id/titnoticia"
+        android:layout_marginTop="54dp"
         android:text="Ver Más" />
+
+    <TextView
+        android:id="@+id/commentaut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_toRightOf="@+id/textView2"
+        android:text="AutorComent" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/textView2"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/notrel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Ver noticia relacionada" />
+
+    <TextView
+        android:id="@+id/lastcomment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/notrel"
+        android:layout_alignParentLeft="true"
+        android:scrollbars="vertical"
+        android:text="UltimoComentario"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lastcomment"
+        android:layout_alignParentLeft="true"
+        android:text="Autor: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/date"
+        android:layout_centerHorizontal="true"
+        android:text="Último Comentario"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

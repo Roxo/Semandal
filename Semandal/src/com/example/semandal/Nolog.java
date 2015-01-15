@@ -57,6 +57,8 @@ public class Nolog extends ActionBarActivity {
 				(TextView) findViewById(R.id.fecha),
 				(TextView) findViewById(R.id.lastcomment),
 				(TextView) findViewById(R.id.commentaut),
+				(TextView) findViewById(R.id.dspueblo),
+				(TextView) findViewById(R.id.date),
 				Singleton.url+":8000/api/noticias/ultima/",
 				Singleton.url+":8000/api/comentarios/ultimo",b5,b6,this
 			);
@@ -169,7 +171,7 @@ private void onTaskCompleted(Object _response)
 	public class AsincronNolog extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
-		TextView titview,cuerpview,dateview,commentview,authview;
+		TextView titview,cuerpview,dateview,commentview,authview,dspueblo,date;
 		JSONObject html, Comentario;
 		String urlcomment;
 		String devolver;
@@ -184,8 +186,8 @@ private void onTaskCompleted(Object _response)
 		 * */
 		
 		public AsincronNolog(Context contexto,TextView titview,TextView cuerpview,
-				TextView dateview,TextView commentview,TextView authview,String url,
-				String urlcomment,Button b,Button b1, Nolog activity){
+				TextView dateview,TextView commentview,TextView authview,TextView dspueblo,
+				TextView date, String url,	String urlcomment,Button b,Button b1, Nolog activity){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -197,6 +199,8 @@ private void onTaskCompleted(Object _response)
 			this.b = b;
 			this.activity = activity;
 			this.b1=b1;
+			this.dspueblo=dspueblo;
+			this.date = date;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -253,7 +257,7 @@ private void onTaskCompleted(Object _response)
 
 		@Override
 		public void onPostExecute(Object response){
-			String titular = "",cuerpo="", fecha = "",user="",comentario="No existen comentarios";
+			String dat = "",pob = "", titular = "",cuerpo="", fecha = "",user="",comentario="No existen comentarios";
 				if(html != null && Comentario != null){
 				try{
 					if(html.getBoolean("existe")){
@@ -261,6 +265,8 @@ private void onTaskCompleted(Object _response)
 					cuerpo = html.getString("cuerpo").replace("-", "\n");
 					fecha = html.getString("fecha");
 					idnoticia = html.getInt("notid");
+					pob = html.getString("dspueblo");
+					
 					}
 					else{
 						b1.setEnabled(false);
@@ -269,9 +275,20 @@ private void onTaskCompleted(Object _response)
 					user = Comentario.getString("autor");
 					comentario=Comentario.getString("cuerpo").replace("-"," ");
 					idnoticiacomentario=Comentario.getInt("notid");
+					dat = Comentario.getString("fecha");
 					}
 					if(comentario=="No existen comentarios")
 						b.setEnabled(false);
+					date.setText(dat);
+					dspueblo.setText(pob);
+				    titview.setText(titular);
+				    cuerpview.setText(cuerpo);
+				    dateview.setText(fecha);
+				    authview.setText(user);
+				    commentview.setText(comentario);
+				    cuerpview.setMovementMethod(new ScrollingMovementMethod());
+				    commentview.setMovementMethod(new ScrollingMovementMethod());
+
 				} catch (JSONException e) {
 					b.setEnabled(false);
 					b1.setEnabled(false);
@@ -286,13 +303,6 @@ private void onTaskCompleted(Object _response)
 					b.setEnabled(false);
 				}
 
-		    titview.setText(titular);
-		    cuerpview.setText(cuerpo);
-		    dateview.setText(fecha);
-		    authview.setText(user);
-		    commentview.setText(comentario);
-		    cuerpview.setMovementMethod(new ScrollingMovementMethod());
-		    commentview.setMovementMethod(new ScrollingMovementMethod());
 
 			  completed = true;
 	            _response = response;

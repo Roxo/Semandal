@@ -90,6 +90,7 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		Button iranoticias = (Button)this.findViewById(R.id.irnoticias);
 		AsinDeuda tarea = null;
 		puebloant= pid;
 		try{
@@ -100,6 +101,22 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 		}catch(Exception e){
 			
 		}
+		
+		iranoticias.setOnClickListener(new OnClickListener() {  
+            @Override  
+            public void onClick(View v) {  
+                // TODO Auto-generated method stub  
+				Intent i = new Intent(Deuda.this, Lnoticias.class);
+				String stringfinal = "id_p:"+puebloant;
+				stringfinal = "("+stringfinal+")";
+				i.putExtra("datos", stringfinal);
+				i.putExtra("noticia", datos);
+				i.putExtra("user_id", iduser);
+				i.putExtra("p_id", pid);
+				startActivity(i);
+            }  
+        });  
+
 
 		tarea = new AsinDeuda(this,deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
 				superficie,urlwiki,

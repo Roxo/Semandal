@@ -90,6 +90,7 @@
             <ListView
                 android:id="@+id/listView1"
                 android:layout_width="match_parent"
+                android:minHeight="25dp"
                 android:layout_height="match_parent" >
             </ListView>
 

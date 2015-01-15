@@ -18,8 +18,10 @@ import com.example.semandal.Comentarios.AsincCL;
 import com.example.semandal.aux.*;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,6 +38,7 @@ import android.widget.TextView;
 public class Comentarios_nolog extends Activity {
 	private static AsincCNL backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
+	private Comentarios_nolog a = this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +61,7 @@ public class Comentarios_nolog extends Activity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			Intent i = new Intent(Comentarios_nolog.this, Log.class);
-			startActivity(i);
+			showDialog(a,"Advertencia","Para comentar es necesario entrar o registrase, ¿Desea usted hacerlo ahora?");
 		}
 		
 	});		
@@ -190,13 +192,15 @@ public class Comentarios_nolog extends Activity {
 						String autor = coment.getString("usuario");
 						String comentario = coment.getString("comentario").replace("-"," ");
 						String puntuacion = coment.getString("puntuacion");
-						k = new Comentario(autor,puntuacion,comentario);
+						String fecha = coment.getString("fecha");
+						k = new Comentario(autor,puntuacion,comentario,fecha);
 						mandar.add(k);
 				}}else{
 					String autor = "";
 					String comentario = "No existen comentarios para esta noticia. Se el primero!";
 					String puntuacion ="";
-					k = new Comentario(autor,puntuacion,comentario);
+					String fecha = "";
+					k = new Comentario(autor,puntuacion,comentario,fecha);
 					mandar.add(k);
 
 				}
@@ -252,5 +256,22 @@ public class Comentarios_nolog extends Activity {
 
 		}
 
-
+	public void showDialog(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Comentarios_nolog.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Comentarios_nolog.this, Log.class);
+				startActivity(i);
+		    }
+		});
+		b.show();
+	}
 }

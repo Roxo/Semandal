@@ -23,12 +23,31 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/p_autor"
+        android:layout_alignBottom="@+id/p_autor"
+        android:layout_alignParentLeft="true"
+        android:text="Autor: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
         android:id="@+id/p_autor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/p_puntuacion"
+        android:layout_toRightOf="@+id/textView1"
         android:text="Autor"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="fecha"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

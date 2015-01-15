@@ -245,21 +245,23 @@ public class Lnoticias extends Activity {
 			List<Noticia> mandar = new ArrayList<Noticia>();
 			Noticia k;
 			try {
-				JSONArray lcoment = Noticias.getJSONArray("resultado");
-				for(int i = 0; i<lcoment.length();i++){
-						JSONObject coment = (JSONObject) lcoment.get(i);
-						int autor = coment.getInt("id_noticia");
-						String comentario = coment.getString("titular");
-						String puntuacion = coment.getString("fecha");
-						int nlikes = coment.getInt("liked");
-						int comentarios = coment.getInt("ncomentarios");
-						String categoria = coment.getString("categoria");
-						String dspueblo = coment.getString("dspueblo");
-						auxlist.add(autor);
-						k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo);
-						mandar.add(k);
+				if(Noticias.getBoolean("ret")){
+					JSONArray lcoment = Noticias.getJSONArray("resultado");
+					for(int i = 0; i<lcoment.length();i++){
+							JSONObject coment = (JSONObject) lcoment.get(i);
+							int autor = coment.getInt("id_noticia");
+							String comentario = coment.getString("titular");
+							String puntuacion = coment.getString("fecha");
+							int nlikes = coment.getInt("liked");
+							int comentarios = coment.getInt("ncomentarios");
+							String categoria = coment.getString("categoria");
+							String dspueblo = coment.getString("dspueblo");
+							auxlist.add(autor);
+							k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo);
+							mandar.add(k);
+					}
 				}
-				if(lcoment.length()==0){
+				else{
 					k = new Noticia(0,"","Su pueblo no dispone de noticias",0,0,"","");
 					mandar.add(k);
 				}

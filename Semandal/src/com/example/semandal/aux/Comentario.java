@@ -5,11 +5,13 @@ public class Comentario {
 	private String Autor;
 	private String puntuacion;
 	private String Comentario;
+	private String fecha;
 	
-	public Comentario(String Autor, String puntuacion, String Comentario){
+	public Comentario(String Autor, String puntuacion, String Comentario,String fecha){
 		this.setAutor(Autor);
 		this.setpuntuacion(puntuacion);
 		this.setComentario(Comentario);
+		this.setFecha(fecha);
 	}
 
 	public String getAutor() {
@@ -35,4 +37,14 @@ public class Comentario {
 	public void setComentario(String comentario) {
 		Comentario = comentario;
 	}
+
+	public String getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(String fecha) {
+		this.fecha = fecha;
+	}
+
+
 }

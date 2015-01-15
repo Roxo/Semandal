@@ -12,7 +12,7 @@ class Provincia(models.Model):
 )	
 	def __str__(self):
 		return self.id
-			
+
 class Pueblo(models.Model):
 	dspueblo = models.CharField(max_length=200)
 	dsopcional = models.CharField(max_length=200)
@@ -37,6 +37,12 @@ class Pueblo(models.Model):
 	def __str__(self):
 		return self.busqueda
 
+class Pueblo_infoExtra(models.Model):
+	pueblo = models.ForeignKey(Pueblo)
+	contrato_temp = models.PositiveIntegerField()
+	contrato_indef = models.PositiveIntegerField()
+	url_datos = models.CharField(max_length=500)
+		
 class Usuario(models.Model):
 	dsusuario =  models.CharField(max_length=100,unique=True)
 	dsnombre = models.CharField(max_length=100)
@@ -50,7 +56,7 @@ class Categorias_semandal(models.Model):
 	dscategoria = models.CharField(max_length=100)
 
 class Categoria(models.Model):
-	dscategoria = models.CharField(max_length=100)
+
 	etiqueta_padre = models.ForeignKey(Categorias_semandal)
 	etiqueta = models.CharField(max_length=100)
 
@@ -62,7 +68,8 @@ class Noticias(models.Model):
 	resumen = models.CharField(max_length=2500,null=True)
 	url = models.CharField(max_length=300,null=True)
 	liked = models.PositiveIntegerField(default=0)
-
+	fecha_ins = models.DateTimeField()
+	
 class Status(models.Model):
 	dsstatus = models.CharField(max_length=20)
 
@@ -73,11 +80,10 @@ class NC(models.Model):
 	class Meta:
 		unique_together = ('noticia','categoria')
 
-
 class Classify(models.Model):
 	id_n = models.ForeignKey(Noticias)
 	id_user = models.ForeignKey(Usuario)
-	c_new = models.ForeignKey(Categoria)
+	c_new = models.ForeignKey(Categorias_semandal)
 	class Meta:
 		unique_together = ('id_n', 'id_user', 'c_new')
 

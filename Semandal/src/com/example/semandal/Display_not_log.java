@@ -81,7 +81,7 @@ public class Display_not_log extends Activity {
 				(TextView) findViewById(R.id.Noticia),
 				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
 				Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-				,(ListView) findViewById(R.id.listView1));
+				,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment));
 		tarea.execute();
 		
 		categoriza.setOnClickListener(new View.OnClickListener() {
@@ -234,7 +234,7 @@ public class Display_not_log extends Activity {
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1));
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment));
 			tarea.execute();
 
 			set=false;
@@ -251,7 +251,7 @@ public class Display_not_log extends Activity {
 		Context contexto;
 		String url,urlsig;
 		TextView titview,cuerpview,dateview,puntuacion,cat;
-		Button b7;
+		Button b7,comentarios;
 		JSONObject html,sig;
 	    private Display_not_log activity;
 	    private boolean completed;
@@ -265,7 +265,8 @@ public class Display_not_log extends Activity {
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 			TextView dateview,TextView puntuacion, Button b7,
-			String url,String urlsig,Display_not_log activity,ListView lv){
+			String url,String urlsig,Display_not_log activity,ListView lv,
+			Button comentarios){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -276,6 +277,7 @@ public class Display_not_log extends Activity {
 			this.b7 = b7;
 			this.urlsig = urlsig;
 			this.lv = lv;
+			this.comentarios = comentarios;
 			
 		}
 		
@@ -334,6 +336,7 @@ public class Display_not_log extends Activity {
 		@Override
 		public void onPostExecute(Object response){
 			String titular = "ROTO",cuerpo="ROTO", fecha = "Roto",likes="roto",ca="roto";
+			int ncomentarios=0;
 			try {
 				titular = html.getString("titular").replace("-","\n");
 				cuerpo = html.getString("cuerpo").replace("-","\n");
@@ -341,6 +344,8 @@ public class Display_not_log extends Activity {
 				notid = html.getInt("id_noticia");
 				url1 = html.getString("url");
 				likes = html.getString("liked");
+				ncomentarios = html.getInt("ncomentarios");
+				comentarios.setText("Ver Comentarios ("+ncomentarios+")");
 				JSONArray cat = html.getJSONArray("categoria");
 				String[] listacategorias = new String[cat.length()];
 			    for(int i=0;i<cat.length();i++){

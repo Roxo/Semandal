@@ -52,7 +52,8 @@ public class Plantilla_Comment extends BaseAdapter{
 		textView2.setText(lista.get(position).getpuntuacion());
 		TextView textView3 =(TextView)view.findViewById(R.id.p_comentario);
 		textView3.setText(lista.get(position).getComentario());
-		
+		TextView textView4 =(TextView)view.findViewById(R.id.fecha);
+		textView4.setText(lista.get(position).getFecha());
 		return view;
 		}
 }
