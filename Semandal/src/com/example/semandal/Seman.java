@@ -20,8 +20,10 @@ import com.example.semandal.Blog.AsincBlog;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -39,12 +41,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 
 public class Seman extends Activity implements OnItemSelectedListener {
-	private String datos;
-	private int idnot,pid,iduser;
+	private int idnot,indice,iduser;
 	Asincseman backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	private Spinner spinner1;
@@ -52,8 +54,9 @@ public class Seman extends Activity implements OnItemSelectedListener {
 	private Seman t = this;
 	private List<String> lista2;
 	boolean fromcat = false, fromsend = false;
-	private LinkedList<Integer> auxiliar=new LinkedList<Integer>();
+	private LinkedList<Integer> auxiliar=new LinkedList<Integer>(),categorias;
 	ListView lista ;
+	boolean votado = false,from=false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,9 +67,8 @@ public class Seman extends Activity implements OnItemSelectedListener {
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		Button b5 = (Button)this.findViewById(R.id.corregir);
 		idnot = getIntent().getIntExtra("id",0);
-		pid = getIntent().getIntExtra("p_id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
-		datos = getIntent().getStringExtra("datos");
+		indice = getIntent().getIntExtra("indice",0);
 		lista = (ListView) this.findViewById(R.id.listView1);
 		final EditText categoriacreada = (EditText)this.findViewById(R.id.editText1);
 		Asincseman tarea = new Asincseman(this,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista);
@@ -110,9 +112,8 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Seman.this, Amigos.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -123,9 +124,8 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Seman.this, Lnoticias.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -136,9 +136,8 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Seman.this, LPueblos.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -150,15 +149,21 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Seman.this, Logueado.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
 		});
 
+		lista.setOnItemClickListener(new OnItemClickListener() {
+		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
+		    	showDialog(t,"Confimarcion","¿Confirma que la categoría es erronea?",categorias.get(pos));
+		    }
+		});
 	}
+
+	
 	
 	public void onPause(){
 		super.onPause();
@@ -190,6 +195,12 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			Asincseman tarea = new Asincseman(t,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista);
 			tarea.execute();
 			fromsend=false;
+		}
+		if(from){
+			String answer =  votado ?   "Su votación se ha realizado" :  "Usted ya ha votado esta categoria para esta noticia";
+			Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
+			votado = false;
+			from = false;
 		}
 	}
 
@@ -241,10 +252,10 @@ public class Seman extends Activity implements OnItemSelectedListener {
 		@Override
 		protected Void doInBackground(Void... params) {
 				try {
-					LinkedList<Integer> categorias = new LinkedList<Integer>();
+					categorias = new LinkedList<Integer>();
 					leernoticia();
 					JSONArray f = html.getJSONArray("categorias");
-					listacategorias=new String[html.length()];
+					listacategorias=new String[f.length()];
 					if (f.length() != 0){
 						for(int i = 0;i<f.length();i++){
 							JSONObject b = f.getJSONObject(i);
@@ -421,5 +432,123 @@ public class Seman extends Activity implements OnItemSelectedListener {
 	        } 
 	    } 
 	}
+	
+	
+	
+	
+	public class wrong_cat extends AsyncTask<Void, Void, Object> {
+		String url;
+	    private Seman activity;
+	    private boolean completed;
+	    private Object _response;
+	    private JSONObject html;
+
+		public wrong_cat(String url,Seman t){
+			this.url=url;
+			this.activity = t;
+		}
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				try {
+					actualizar();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		  private String readAll(Reader rd) throws IOException {
+			    StringBuilder sb = new StringBuilder();
+			    int cp;
+			    while ((cp = rd.read()) != -1) {
+			      sb.append((char) cp);
+			    }
+			    return sb.toString();
+			  }
+
+			  public void actualizar() throws IOException, JSONException {
+			    InputStream is = new URL(url).openStream();
+			    try {
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			      String jsonText = readAll(rd);
+			       html = new JSONObject(jsonText);
+			    } finally {
+			      is.close();
+			    }
+			  }
+		
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Enviando corrección", 
+	                                                       false);
+
+	    } 
+
+	    public void onPostExecute(Object response){
+	    	try {
+				votado = html.getBoolean("agregado");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            completed = true;
+            _response = response;
+            notifyActivityTaskCompleted();
+        //Close the splash screen
+        if (pleaseWaitDialog != null)
+        {
+            pleaseWaitDialog.dismiss();
+            pleaseWaitDialog = null;
+        }
+	    }
+	    public void setActivity(Seman activity) 
+	    { 
+	        this.activity = activity; 
+	        if ( completed ) { 
+	            from = true;
+	            notifyActivityTaskCompleted(); 
+	        } 
+	    } 
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	            activity.onTaskCompleted(_response); 
+	        } 
+	    } 
+	}
+
+	public void showDialog(Activity activity, String title, CharSequence message,final int c) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Seman.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	wrong_cat k = new wrong_cat(Singleton.url+":8000/api/votacion/"+idnot+"/"+iduser+"/"+c+"/",t);
+		    	k.execute();
+		    }
+		});
+		b.show();
+	}	
+	
+
 
 }

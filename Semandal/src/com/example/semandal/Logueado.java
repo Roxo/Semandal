@@ -7,7 +7,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.LinkedList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,6 +21,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
@@ -34,12 +37,10 @@ public class Logueado extends Activity {
 	int pid=0,notid=0,iduser=0;
 	private static Asinlog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_logueado);
-		
 		Button b1 = (Button)this.findViewById(R.id.Amigos);
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
@@ -49,6 +50,7 @@ public class Logueado extends Activity {
 		TextView noticia=(TextView) this.findViewById(R.id.noticias);
 		TextView pueblo=(TextView) this.findViewById(R.id.pueblo);
 		Asinlog tarea = null;
+		final int indice = getIntent().getIntExtra("indice", 0);
 		tarea = new Asinlog(b5,this,bienvenida,noticia,pueblo,
 				Singleton.url+":8000/api/logginuser/"+iduser,this
 				);
@@ -62,9 +64,8 @@ public class Logueado extends Activity {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Logueado.this, Display_not_log.class);
 				i.putExtra("user_id", iduser);
-				i.putExtra("datos", "(id_p:"+pid+")");
-				i.putExtra("p_id", pid);
 				i.putExtra("id",notid);
+				i.putExtra("indice",indice);
 				startActivity(i);
 			}
 			
@@ -78,8 +79,7 @@ public class Logueado extends Activity {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Logueado.this, Amigos.class);
 				i.putExtra("user_id", iduser);
-				i.putExtra("datos", "(id_p:"+pid+")");
-				i.putExtra("p_id", pid);
+				i.putExtra("indice",indice);
 				startActivity(i);
 			}
 			
@@ -90,9 +90,8 @@ public class Logueado extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Logueado.this, Lnoticias.class);
-				i.putExtra("datos", "(id_p:"+pid+")");
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice",indice);
 				startActivity(i);
 			}
 			
@@ -103,9 +102,8 @@ public class Logueado extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Logueado.this, LPueblos.class);
-				i.putExtra("p_id", pid);
 				i.putExtra("user_id", iduser);
-				i.putExtra("datos", "(id_p:"+pid+")");
+				i.putExtra("indice",indice);
 				startActivity(i);
 			}
 			
@@ -118,8 +116,7 @@ public class Logueado extends Activity {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Logueado.this, Logueado.class);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
-				i.putExtra("datos", "(id_p:"+pid+")");
+				i.putExtra("indice",indice);
 				startActivity(i);
 			}
 			
@@ -216,6 +213,27 @@ public class Logueado extends Activity {
 		@Override
 		public void onPostExecute(Object response){
 			try {
+		        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
+		        SQLiteDatabase bd = admin.getWritableDatabase();
+		        try{
+		        	admin.onCreate(bd);
+		        }catch(Exception e){}
+				bd.execSQL("DELETE FROM siguiendo");
+		        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Todos"+"')");
+				try {
+					JSONArray psig = datosuser.getJSONArray("siguiendo");
+					for (int i = 0;i<psig.length(); i++){
+						JSONObject f = psig.getJSONObject(i);
+						bd.execSQL("INSERT INTO siguiendo VALUES ("+f.getInt("id_pueblo")+", '"+f.getString("dspueblo")+"')");
+					}
+				bd.close();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				notid=datosuser.getInt("notid");
 				pid=datosuser.getInt("pid");
 				bienvenida.setText("Bienvenido "+datosuser.getString("dsusuario"));

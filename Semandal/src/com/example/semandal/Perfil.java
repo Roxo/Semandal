@@ -32,8 +32,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class Perfil extends Activity {
-	String datos;
-	int iduser,pid,id,notid;
+	int iduser,indice,id,notid;
 	private static Asincperfil backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
@@ -48,9 +47,8 @@ public class Perfil extends Activity {
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		TextView text = (TextView)this.findViewById(R.id.munc);
 		id = getIntent().getIntExtra("id",0);
-		pid = getIntent().getIntExtra("p_id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
-		datos = getIntent().getStringExtra("datos");
+		indice = getIntent().getIntExtra("indice",0);
 		Asincperfil tarea = null;
 		tarea = new Asincperfil(this,(TextView)this.findViewById(R.id.nperfil),
 				text,
@@ -66,9 +64,8 @@ public class Perfil extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Perfil.this, Amigos.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -79,9 +76,8 @@ public class Perfil extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Perfil.this, Lnoticias.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -92,9 +88,8 @@ public class Perfil extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Perfil.this, LPueblos.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -106,9 +101,8 @@ public class Perfil extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Perfil.this, Logueado.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			

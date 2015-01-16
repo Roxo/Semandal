@@ -47,10 +47,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
-	String datos;
+public class Deuda extends ActionBarActivity{
 	int iduser,pid,puebloant,puebloact;
-	private Spinner spinner1;
 	private static AsinDeuda backgroundTask;
 	private static Asinadd backgroundTask1;
 
@@ -58,7 +56,7 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 	private List<String> lista1;
 	private List<Integer> lista1aux;
 	private Deuda a = this;
-	private int posicion;
+	private int indice;
 	boolean fromdatos=false,addpueblo=false;
 	
 	@Override
@@ -86,9 +84,8 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 		urlwiki.setTextColor(Color.CYAN);
 		urlweb.setTextColor(Color.CYAN);
 		//////////////////////////////////////////////
-		pid = getIntent().getIntExtra("p_id",0);
+		indice = getIntent().getIntExtra("indice",0);
 		iduser = getIntent().getIntExtra("user_id",0);
-		datos = getIntent().getStringExtra("datos");
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		Button iranoticias = (Button)this.findViewById(R.id.irnoticias);
 		AsinDeuda tarea = null;
@@ -110,7 +107,8 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 				String stringfinal = "id_p:"+puebloant;
 				stringfinal = "("+stringfinal+")";
 				i.putExtra("datos", stringfinal);
-				i.putExtra("noticia", datos);
+				i.putExtra("busqueda",true);
+				i.putExtra("pueblito", municipio.getText().toString());
 				i.putExtra("user_id", iduser);
 				i.putExtra("p_id", pid);
 				startActivity(i);
@@ -206,9 +204,8 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Deuda.this, Amigos.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -219,9 +216,8 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Deuda.this, Lnoticias.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -232,9 +228,8 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Deuda.this, LPueblos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -246,9 +241,8 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Deuda.this, Logueado.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -279,7 +273,6 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 
 		if(addpueblo){
 			Intent i = new Intent(Deuda.this, LPueblos.class);
-			i.putExtra("datos", datos);
 			i.putExtra("user_id", iduser);
 			i.putExtra("pb",puebloant);
 			i.putExtra("p_id", pid);
@@ -292,7 +285,7 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 		Context contexto;
 		TextView deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
 		superficie,urlwiki;
-		String urlpueblos,url,usuario;
+		String url,usuario;
 		JSONObject pueblos,d,usig;
 	    private boolean completed;
 	    private Deuda activity;
@@ -320,7 +313,6 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 			this.habitantes = habitantes;
 			this.superficie = superficie;
 			this.urlwiki = urlwiki;
-			this.urlpueblos = urlpueblos;
 			this.url = url;
 			this.activity=activity;
 			this.b6 = b6;
@@ -466,11 +458,7 @@ public class Deuda extends ActionBarActivity implements OnItemSelectedListener{
 	
 	}
 	
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-		String selected = parent.getItemAtPosition(pos).toString();
-        	posicion=pos;
-        
-    }
+  
 
     public void onNothingSelected(AdapterView parent) {
         // Do nothing.

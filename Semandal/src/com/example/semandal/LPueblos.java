@@ -40,8 +40,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class LPueblos extends Activity {
-	private int iduser,pid;
-	private String datos;
+	private int iduser,indice;
 	private static AsinLpueblo backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	private List<String> lista1,lista2;
@@ -58,10 +57,9 @@ public class LPueblos extends Activity {
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		Button busqueda = (Button)this.findViewById(R.id.button1);
-		pid = getIntent().getIntExtra("p_id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
-		datos = getIntent().getStringExtra("datos");
 		lv = (ListView)this.findViewById(R.id.listView1);
+		indice = getIntent().getIntExtra("indice",0);
 		pob = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 		AsinLpueblo tarea = new AsinLpueblo(this,Singleton.url+":8000/api/usuario/seguimiento/"+iduser,lv,pob,this);
 		tarea.execute();
@@ -84,9 +82,8 @@ public class LPueblos extends Activity {
 				}
 				if(idpueblo!= 0){
 					Intent i = new Intent(LPueblos.this, Deuda.class);
-					i.putExtra("datos", datos);
 					i.putExtra("user_id", iduser);
-					i.putExtra("p_id", pid);
+					i.putExtra("indice",indice);
 					i.putExtra("pb",idpueblo );
 					startActivity(i);
 				}
@@ -116,9 +113,8 @@ public class LPueblos extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(LPueblos.this, Amigos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -129,9 +125,8 @@ public class LPueblos extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(LPueblos.this, Lnoticias.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -142,9 +137,8 @@ public class LPueblos extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(LPueblos.this, LPueblos.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -156,9 +150,8 @@ public class LPueblos extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(LPueblos.this, Logueado.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -169,9 +162,8 @@ public class LPueblos extends Activity {
 		        Intent i= new Intent(LPueblos.this,Deuda.class);
 		        int k =  lista2aux.get(pos);
 		        i.putExtra("pb",k);
-				i.putExtra("datos", datos);
+				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 		        finish();                       
 		    }

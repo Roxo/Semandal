@@ -12,18 +12,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.semandal.Bnolog.AsincBnolog;
-import com.example.semandal.Comentarios_nolog.AsincCNL;
-import com.example.semandal.Display_not_log.wrong_cat;
 import com.example.semandal.aux.Comentario;
 import com.example.semandal.aux.Singleton;
 
@@ -36,8 +28,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -45,11 +35,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Comentarios extends Activity {
-	String datos;
-	int notid,pid,iduser;
+	int notid,iduser,indice;
 	private static AsincCL backgroundTask;
 	private static Setc backgroundTask1;
 	boolean enviar = false,votado=false;
@@ -70,9 +58,8 @@ public class Comentarios extends Activity {
 		notid=getIntent().getIntExtra("id",0);
 		Button b6 = (Button)this.findViewById(R.id.enviar);
 		final EditText comentario = (EditText)this.findViewById(R.id.DwEdit);
-		pid = getIntent().getIntExtra("p_id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
-		datos = getIntent().getStringExtra("datos");
+		indice = getIntent().getIntExtra("indice",0);
 		final Comentarios k = this;
 		AsincCL tarea = null;
 		tarea = new AsincCL(this,
@@ -105,10 +92,8 @@ public class Comentarios extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Comentarios.this, Amigos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
-
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -119,9 +104,8 @@ public class Comentarios extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Comentarios.this, Lnoticias.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -132,9 +116,8 @@ public class Comentarios extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Comentarios.this, LPueblos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -146,9 +129,8 @@ public class Comentarios extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Comentarios.this, Logueado.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 
 				startActivity(i);
 			}
@@ -187,9 +169,8 @@ public class Comentarios extends Activity {
 	private void onTaskCompleted(Object _response){
 		if(enviar == true){
 		Intent i = new Intent(Comentarios.this, Comentarios.class);
-		i.putExtra("datos", datos);
+		i.putExtra("indice", indice);
 		i.putExtra("user_id", iduser);
-		i.putExtra("p_id", pid);
 		i.putExtra("id",notid);
 		startActivity(i);
 		}

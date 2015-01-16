@@ -43,12 +43,11 @@ import android.widget.AdapterView.OnItemClickListener;
 public class Display_not_log extends Activity {
 	int notid;
 	String datos,url1;
-	int pid;
-	int iduser;
+	int iduser,indice;
 	private static AsincronDNN backgroundTask;
 	private static Set backgroundTask1;
 	private static ProgressDialog pleaseWaitDialog;
-	private boolean set=false,from=false,votado=false;
+	private boolean set=false;
 	private Display_not_log a = this;
 	Button b7;
 	ListView lista ;
@@ -69,11 +68,10 @@ public class Display_not_log extends Activity {
 		b7 = (Button)this.findViewById(R.id.button2);
 		Button categoriza = (Button)this.findViewById(R.id.b1);
 		lista = (ListView) this.findViewById(R.id.listView1);
-		idcats = new LinkedList<Integer>();
 		/////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////
 		notid=getIntent().getIntExtra("id",0);
-		pid = getIntent().getIntExtra("p_id",0);
+		indice = getIntent().getIntExtra("indice",0);
 		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		AsincronDNN tarea = null;
@@ -91,9 +89,8 @@ public class Display_not_log extends Activity {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Display_not_log.this, Seman.class);
 				i.putExtra("id", notid);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -130,9 +127,8 @@ public class Display_not_log extends Activity {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Display_not_log.this, Comentarios.class);
 				i.putExtra("id", notid);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -144,10 +140,8 @@ public class Display_not_log extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Display_not_log.this, Amigos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
-
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -158,10 +152,8 @@ public class Display_not_log extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Display_not_log.this, Lnoticias.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
-
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -174,8 +166,7 @@ public class Display_not_log extends Activity {
 				Intent i = new Intent(Display_not_log.this, LPueblos.class);
 				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
-
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -187,9 +178,8 @@ public class Display_not_log extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Display_not_log.this, Logueado.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -197,7 +187,14 @@ public class Display_not_log extends Activity {
 		
 		lista.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
-		    	showDialog(a,"Confimarcion","¿Confirma que la categoría es erronea?",idcats.get(pos));
+				Intent i = new Intent(Display_not_log.this, Lnoticias.class);
+				String stringfinal = "id_c:"+idcats.get(pos);
+				stringfinal = "("+stringfinal+")";
+				i.putExtra("datos", stringfinal);
+				i.putExtra("busqueda", true);
+				i.putExtra("noticia", datos);
+				i.putExtra("indice", indice);
+				startActivity(i);
 		    }
 		});
 	}
@@ -239,12 +236,7 @@ public class Display_not_log extends Activity {
 
 			set=false;
 		}
-		if(from){
-			String answer =  votado ?   "Su votación se ha realizado" :  "Usted ya ha votado esta categoria para esta noticia";
-			Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
-			votado = false;
-			from = false;
-		}
+
 	}
 
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
@@ -338,6 +330,7 @@ public class Display_not_log extends Activity {
 			String titular = "ROTO",cuerpo="ROTO", fecha = "Roto",likes="roto",ca="roto";
 			int ncomentarios=0;
 			try {
+				idcats = new LinkedList<Integer>();
 				titular = html.getString("titular").replace("-","\n");
 				cuerpo = html.getString("cuerpo").replace("-","\n");
 				fecha = html.getString("fecha");
@@ -479,118 +472,6 @@ public class Display_not_log extends Activity {
 	    } 
 	}
 	
-	public void showDialog(Activity activity, String title, CharSequence message,final int c) {
-		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
-		final AlertDialog builder = b.create();
-		b.setTitle(title);
-		b.setMessage(message);
-		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-		    	builder.cancel();
-		    }
-		});
-		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-		    	wrong_cat k = new wrong_cat(Singleton.url+":8000/api/votacion/"+notid+"/"+iduser+"/"+c+"/",a);
-		    	k.execute();
-		    }
-		});
-		b.show();
-	}
 
-	
-	public class wrong_cat extends AsyncTask<Void, Void, Object> {
-		String url;
-	    private Display_not_log activity;
-	    private boolean completed;
-	    private Object _response;
-	    private JSONObject html;
-
-		public wrong_cat(String url,Display_not_log activity){
-			this.url=url;
-			this.activity = activity;
-		}
-		@Override
-		protected Void doInBackground(Void... params) {
-			try {
-				try {
-					actualizar();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		  private String readAll(Reader rd) throws IOException {
-			    StringBuilder sb = new StringBuilder();
-			    int cp;
-			    while ((cp = rd.read()) != -1) {
-			      sb.append((char) cp);
-			    }
-			    return sb.toString();
-			  }
-
-			  public void actualizar() throws IOException, JSONException {
-			    InputStream is = new URL(url).openStream();
-			    try {
-			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			      String jsonText = readAll(rd);
-			       html = new JSONObject(jsonText);
-			    } finally {
-			      is.close();
-			    }
-			  }
-		
-	    @Override 
-	    protected void onPreExecute() {
-	            //Start the splash screen dialog
-	                pleaseWaitDialog= ProgressDialog.show(activity, 
-	                                                       "Espere un segundo", 
-	                                                       "Enviando corrección", 
-	                                                       false);
-
-	    } 
-
-	    public void onPostExecute(Object response){
-	    	try {
-				votado = html.getBoolean("agregado");
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            completed = true;
-            _response = response;
-            notifyActivityTaskCompleted();
-        //Close the splash screen
-        if (pleaseWaitDialog != null)
-        {
-            pleaseWaitDialog.dismiss();
-            pleaseWaitDialog = null;
-        }
-	    }
-	    public void setActivity(Display_not_log activity) 
-	    { 
-	        this.activity = activity; 
-	        if ( completed ) { 
-	            from = true;
-	            notifyActivityTaskCompleted(); 
-	        } 
-	    } 
-	   //Notify activity of async task completion
-	    private void notifyActivityTaskCompleted() 
-	    { 
-	        if ( null != activity ) { 
-	            activity.onTaskCompleted(_response); 
-	        } 
-	    } 
-	}
 
 }

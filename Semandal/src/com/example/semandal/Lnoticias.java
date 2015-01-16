@@ -25,6 +25,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,11 +41,16 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 
 public class Lnoticias extends Activity {
 	LinkedList<Integer> auxlist = new LinkedList<Integer>();
-	String datos,noticia,datosant;
-	int iduser,pid;
+	ArrayList<String> lista1= new ArrayList<String>();
+	LinkedList<Integer> aux1list = new LinkedList<Integer>();
+	String datos,pueblonuevo;
+	
+	int iduser,pid,indice;
+	boolean fbusqueda=false;
 	private static AsincLN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
@@ -59,33 +66,67 @@ public class Lnoticias extends Activity {
 		pid = getIntent().getIntExtra("p_id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
-		datosant= datos;
+		pueblonuevo = getIntent().getStringExtra("pueblito");
+		if(pueblonuevo==null)
+			pueblonuevo = "";
+		TextView fl = (TextView)this.findViewById(R.id.fl);
+		TextView fr = (TextView)this.findViewById(R.id.fr);
+		TextView resultados = (TextView)this.findViewById(R.id.resultados);
 		try{
-			noticia = getIntent().getStringExtra("noticia");
-			if(noticia != null){
-				datos = noticia;
-			}
+			indice = getIntent().getIntExtra("indice",0);
+			fbusqueda = getIntent().getBooleanExtra("busqueda",false);
 		}catch(Exception e){
 			
 		}
 		
 		final ListView lista = (ListView)this.findViewById(R.id.listView1);
 		AsincLN tarea = null;
-		tarea = new AsincLN(this,
-				Singleton.url+":8000/api/busqueda/"+datosant,lista, this
+		tarea = new AsincLN(this,resultados,
+				Singleton.url+":8000/api/busqueda/"+datos,lista, this
 				);
 		tarea.execute();
 
+		fr.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(indice == lista1.size()-1)
+					indice = 0;
+				else
+					indice += 1;
+				Intent i = new Intent(Lnoticias.this, Lnoticias.class);
+				i.putExtra("indice", indice);
+				i.putExtra("user_id", iduser);
+				startActivity(i);
+			}
+			
+		});	
 		
+		fl.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(indice == 0)
+					indice = lista1.size()-1;
+				else
+					indice -= 1;
+				Intent i = new Intent(Lnoticias.this, Lnoticias.class);
+				i.putExtra("indice", indice);
+				i.putExtra("user_id", iduser);
+				startActivity(i);
+			}
+			
+		});			
+		
+
 		b1.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Lnoticias.this, Amigos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -96,9 +137,8 @@ public class Lnoticias extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Lnoticias.this, Lnoticias.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice",indice);
 				startActivity(i);
 			}
 			
@@ -109,9 +149,7 @@ public class Lnoticias extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Lnoticias.this, LPueblos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -123,9 +161,8 @@ public class Lnoticias extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Lnoticias.this, Logueado.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice",indice);
 				startActivity(i);
 			}
 			
@@ -137,9 +174,7 @@ public class Lnoticias extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Lnoticias.this, Blog.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -150,11 +185,8 @@ public class Lnoticias extends Activity {
 		        Intent i= new Intent(Lnoticias.this,Display_not_log.class);
 		        int k =  (Integer) lista.getAdapter().getItem(pos);
 		        i.putExtra("id",auxlist.get(k));
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
-		        finish();                       
 		    }
 		});
 
@@ -184,6 +216,7 @@ public class Lnoticias extends Activity {
 		String url;
 		ListView lista;
 		JSONObject Noticias;
+		TextView resultados;
 	    private Lnoticias activity;
 	    private boolean completed;
 	    private Object _response;
@@ -192,12 +225,13 @@ public class Lnoticias extends Activity {
 		 * 
 		 * */
 		
-		public AsincLN(Context contexto,
+		public AsincLN(Context contexto,TextView resultados,
 				String urlcomment,ListView lista,Lnoticias activity){
 			this.contexto = contexto;
 			this.url = urlcomment;
 			this.lista = lista;			
 			this.activity = activity;
+			this.resultados = resultados;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -228,6 +262,24 @@ public class Lnoticias extends Activity {
 
 		@Override
 		protected Void doInBackground(Void... params) {
+			BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
+		    SQLiteDatabase db = admin.getReadableDatabase();
+			String sql = "SELECT * FROM siguiendo " ;
+			Cursor c = db.rawQuery(sql, null);
+			int a = c.getCount();
+			lista1= new ArrayList<String>();
+			if (c.moveToFirst()){
+				do{
+					lista1.add(c.getString(1));
+					aux1list.add(c.getInt(0));
+				}while(c.moveToNext());
+			}
+			db.close();
+			if(indice == 0 && !fbusqueda)
+				url = Singleton.url+":8000/api/"+iduser+"/noticias";
+			else if(!fbusqueda)
+				url = Singleton.url+":8000/api/busqueda/"+"(id_p:"+aux1list.get(indice)+")";
+			
 			try {
 				leercomentario();
 			} catch (IOException e) {
@@ -237,11 +289,20 @@ public class Lnoticias extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			
 			return null;
 		}
 
 		@Override
 		public void onPostExecute(Object response){
+			if(indice == 0 && !fbusqueda)
+				resultados.setText("Noticias de Mis Pueblos");
+			else if(!fbusqueda)
+				resultados.setText(lista1.get(indice));
+			if(!pueblonuevo.equalsIgnoreCase(""))
+				resultados.setText(pueblonuevo);
+
 			List<Noticia> mandar = new ArrayList<Noticia>();
 			Noticia k;
 			try {

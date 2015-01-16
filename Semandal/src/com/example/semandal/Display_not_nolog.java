@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.LinkedList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,12 +34,14 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class Display_not_nolog extends Activity {
 	String url,url1;
@@ -46,6 +49,8 @@ public class Display_not_nolog extends Activity {
 	private static AsincronDNN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	private Display_not_nolog a = this;
+	LinkedList<Integer> idcats;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -132,7 +137,22 @@ public class Display_not_nolog extends Activity {
 			
 	});
 
+		
+		
 		ListView lv = (ListView) findViewById(R.id.listView1);
+		
+		
+		lv.setOnItemClickListener(new OnItemClickListener() {
+		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
+				Intent i = new Intent(Display_not_nolog.this, Bnologres.class);
+				String stringfinal = "id_c:"+idcats.get(pos);
+				stringfinal = "("+stringfinal+")";
+				i.putExtra("datos", stringfinal);
+				startActivity(i);
+		    }
+		});
+
+		
 		lv.setOnTouchListener(new OnTouchListener() {
 		    // Setting on Touch Listener for handling the touch inside ScrollView
 		    @Override
@@ -237,6 +257,7 @@ public class Display_not_nolog extends Activity {
 			String titular,cuerpo, fecha;
 			int like=0,ncomentarios=0;
 			try {
+				idcats = new LinkedList<Integer>();
 				titular = html.getString("titular").replace("-","\n");
 				cuerpo = html.getString("cuerpo").replace("-","\n");
 				fecha = html.getString("fecha");
@@ -250,6 +271,7 @@ public class Display_not_nolog extends Activity {
 			    for(int i=0;i<cat.length();i++){
 			    	JSONObject j = cat.getJSONObject(i);
 			    	listacategorias[i] = j.getString("dscategoria");
+			    	idcats.add(j.getInt("id_categoria"));
 			    }
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto,
 						android.R.layout.simple_list_item_1, listacategorias);

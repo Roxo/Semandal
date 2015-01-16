@@ -554,6 +554,7 @@ def ulog(request,id_user):
 		t = user.pueblo.id
 		pob = Pueblo.objects.filter(id = t)[0]
 		dstitular = ""
+		sig = SigP.objects.filter(id_user = user)
 		try:
 			noticia = Noticias.objects.filter(pueblo = pob).latest("fecha")
 			if noticia.dstitular is not "":
@@ -566,11 +567,20 @@ def ulog(request,id_user):
 		except:
 			dstitular = "No existen noticias en su municipio"
 			idnot = "0"
-		ret = '{"id":'+str(user.id)+',"dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":'+str(pob.id)+',"busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","dstitular":"'+dstitular+'","notid":'+idnot+'}'
+		seguir = follow(sig)
+		ret = '{"id":'+str(user.id)+',"dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":'+str(pob.id)+',"busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","dstitular":"'+dstitular+'","notid":'+idnot+',"siguiendo":['+seguir+']}'
 	else:
 		ret = '{"id":"este usuario no existe"}'
 	agregarabd("api/usuario/"+id_user)
 	return HttpResponse(ret)
+
+def follow(sig):
+	r = ""
+	for i in sig:
+		obj = '{"id_pueblo"='+str(i.id_p.id)+',"dspueblo":"'+i.id_p.dspueblo+'"},'
+		r = r+obj
+	r = r[0:len(r)-1]
+	return r
 
 def log(request,user,pas):
 	if "@" in user:

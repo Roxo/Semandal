@@ -37,8 +37,7 @@ import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Buser extends Activity  implements OnItemSelectedListener{
-	String pid,iduser,datos;
-	int upos = 0;
+	int upos = 0,indice=0,iduser=0;
 	private List<String> lista1,lista1aux;
 	private Spinner spinner1;
 	private static AsincBlog backgroundTask;
@@ -56,9 +55,8 @@ public class Buser extends Activity  implements OnItemSelectedListener{
 		final EditText nombre = (EditText)this.findViewById(R.id.Nombre);
 		final EditText ap1 = (EditText)this.findViewById(R.id.apellido1);
 		final EditText ap2 = (EditText)this.findViewById(R.id.apellido2);
-		pid = getIntent().getStringExtra("p_id");
-		iduser = getIntent().getStringExtra("user_id");
-		datos = getIntent().getStringExtra("datos");
+		indice = getIntent().getIntExtra("indice",0);
+		iduser = getIntent().getIntExtra("user_id",0);
 		Button b5 = (Button)this.findViewById(R.id.busc);
 		AsincBuser tarea = new AsincBuser(this,
 				Singleton.url+":8000/api/pueblos",this
@@ -95,8 +93,7 @@ public class Buser extends Activity  implements OnItemSelectedListener{
 				Intent i = new Intent(Buser.this, Amigos.class);
 				i.putExtra("busqueda",stringfinal);
 				i.putExtra("user_id", iduser);
-				i.putExtra("datos", datos);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -108,9 +105,8 @@ public class Buser extends Activity  implements OnItemSelectedListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Buser.this, Amigos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -121,9 +117,8 @@ public class Buser extends Activity  implements OnItemSelectedListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Buser.this, Lnoticias.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -134,9 +129,8 @@ public class Buser extends Activity  implements OnItemSelectedListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Buser.this, LPueblos.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			
@@ -148,9 +142,8 @@ public class Buser extends Activity  implements OnItemSelectedListener{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Buser.this, Logueado.class);
-				i.putExtra("datos", datos);
+				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 			}
 			

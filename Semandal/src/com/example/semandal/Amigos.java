@@ -39,8 +39,8 @@ import android.widget.Spinner;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Amigos extends Activity {
-	private String datos,url,busqueda ="";
-	private int pid,iduser;
+	private String url,busqueda ="";
+	private int iduser,indice;
 	LinkedList<Integer> auxlist=new LinkedList<Integer>(), auxlistpueblo = new LinkedList<Integer>();
 	private static AsincA backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
@@ -56,9 +56,8 @@ public class Amigos extends Activity {
 		Button b5 = (Button)this.findViewById(R.id.button1);
 
 		final ListView lista = (ListView)this.findViewById(R.id.listView1);
-		pid = getIntent().getIntExtra("p_id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
-		datos = getIntent().getStringExtra("datos");
+		indice = getIntent().getIntExtra("indice",0);
 		AsincA tarea = null;
 		try{
 			busqueda = getIntent().getStringExtra("busqueda");
@@ -81,9 +80,8 @@ public class Amigos extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Amigos.this, Buser.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -95,9 +93,8 @@ public class Amigos extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Amigos.this, Amigos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -108,9 +105,8 @@ public class Amigos extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Amigos.this, Lnoticias.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -121,9 +117,8 @@ public class Amigos extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Amigos.this, LPueblos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -135,9 +130,8 @@ public class Amigos extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Amigos.this, Logueado.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -149,9 +143,8 @@ public class Amigos extends Activity {
 		        int k =  (Integer) lista.getAdapter().getItem(pos);
 		        int l = auxlist.get(k);
 		        i.putExtra("id",l);
-				i.putExtra("datos", datos);
+				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
 				startActivity(i);
 				 finish();
 		    }

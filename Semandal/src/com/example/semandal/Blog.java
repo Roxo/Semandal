@@ -40,11 +40,10 @@ import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Blog extends Activity implements OnItemSelectedListener {
-	private String datos;
 	private static AsincBlog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	private Spinner  spinner2;
-	private int pposicion,cposicion,pid,iduser;
+	private Spinner spinner2;
+	private int indice,cposicion,iduser;
 	private EditText Titular, fecha;
 	private List<String> lista1,lista2;
 	private List<Integer> lista1aux;
@@ -59,14 +58,14 @@ public class Blog extends Activity implements OnItemSelectedListener {
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		Button b5 = (Button)this.findViewById(R.id.blog);
-		pid = getIntent().getIntExtra("p_id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
-		datos = getIntent().getStringExtra("datos");
+		indice = getIntent().getIntExtra("indice",0);
 		Titular = (EditText)this.findViewById(R.id.Tit_nolog);
 		fecha = (EditText)this.findViewById(R.id.Fecha_nolog);
 		final AutoCompleteTextView autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 		AsincBlog tarea = new AsincBlog(this,autotext);
 		tarea.execute();
+		
 		b5.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -99,9 +98,9 @@ public class Blog extends Activity implements OnItemSelectedListener {
 				stringfinal = "("+stringfinal+")";
 				Intent i = new Intent(Blog.this, Lnoticias.class);
 				i.putExtra("datos",stringfinal);
-				i.putExtra("noticia",datos);
+				i.putExtra("busqueda", true);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice",indice);
 				startActivity(i);
 			}
 			private int buscapuebloid(String pueblo) {
@@ -125,9 +124,8 @@ public class Blog extends Activity implements OnItemSelectedListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Blog.this, Amigos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -138,9 +136,8 @@ public class Blog extends Activity implements OnItemSelectedListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Blog.this, Lnoticias.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -151,9 +148,8 @@ public class Blog extends Activity implements OnItemSelectedListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Blog.this, LPueblos.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -165,9 +161,8 @@ public class Blog extends Activity implements OnItemSelectedListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Blog.this, Logueado.class);
-				i.putExtra("datos", datos);
 				i.putExtra("user_id", iduser);
-				i.putExtra("p_id", pid);
+				i.putExtra("indice", indice);
 				startActivity(i);
 			}
 			
@@ -256,19 +251,6 @@ public class Blog extends Activity implements OnItemSelectedListener {
 			}
 
 
-    private boolean busca(List<String> lista2, String string) {
-    	boolean devolver = false;
-    	int i = 0;
-    	while (!devolver && i<lista2.size()){
-    		if(lista2.get(i).equalsIgnoreCase(string)){
-    			devolver = true;
-    		}
-    		else i++;
-    	}
-    	return devolver;
-    }
-
-
 		@Override
 		public void onPostExecute(Object response){
 		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
@@ -322,8 +304,6 @@ public class Blog extends Activity implements OnItemSelectedListener {
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 		String selected = parent.getItemAtPosition(pos).toString();
-        if(parent == this.findViewById(R.id.Pob))
-        	pposicion=pos;
         if(parent == this.findViewById(R.id.cat))
         	cposicion=pos;
     }
