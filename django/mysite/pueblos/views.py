@@ -656,11 +656,6 @@ def userview(request,datos):
 def sig(request,id_p,id_u):
 	ret = "false"
 	devolver='{"sigue":'+ret+'}'
-	us = Usuario.objects.filter(id=id_u)
-	if str(us[0].pueblo.id) == str(id_p):
-		ret = "true"
-		devolver='{"sigue":'+ret+'}'
-		return HttpResponse(devolver)
 	sigue = SigP.objects.filter(id_user=id_u,id_p = id_p)
 	if len(sigue) != 0:
 		ret = "true"
@@ -678,7 +673,7 @@ def siguiendo(request,id_u):
 		obj = '{"id_pueblo"='+str(p.id_p.id)+',"dspueblo":"'+p.id_p.dspueblo+'"},'
 		r = r + obj
 	r = r[0:len(r)-1]
-	devolver = '{"pueblos":['+r+']}'
+	devolver = '{"npueblos":'+str(len(pueblos))+',pueblos":['+r+']}'
 	return HttpResponse(devolver)
 
 def addsig(request,id_p,id_u):
