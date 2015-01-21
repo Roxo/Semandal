@@ -53,10 +53,9 @@ class Usuario(models.Model):
 	correo = models.CharField(max_length=100,null=True,unique=True)
 
 class Categorias_semandal(models.Model):
-	dscategoria = models.CharField(max_length=100)
+	dscategoria = models.CharField(max_length=100,unique = True)
 
 class Categoria(models.Model):
-
 	etiqueta_padre = models.ForeignKey(Categorias_semandal)
 	etiqueta = models.CharField(max_length=100)
 
