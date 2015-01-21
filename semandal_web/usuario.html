@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
+<meta charset="UTF-8">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"> 
+<head> 
+<title>XHTML Example Page</title> 
+
+<style>
+#submit {
+    background-color: black;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius:6px;
+    color: white;
+    font-family: 'Oswald';
+    font-size: 20px;
+    text-decoration: none;
+    cursor: pointer;
+    border:none;
+}
+
+
+
+#submit:hover {
+    border: none;
+    background: black;
+	color: #adff2f;
+    box-shadow: 0px 0px 1px #777;
+}<
+</style>
+
+
+<script type="text/javascript"> 
+// <![CDATA[ 
+var oContentArea = null; 
+var sRootPath = null; 
+var bHasScrollStyle = false; 
+
+function initialize() { 
+oContentArea = document.getElementById("contentarea"); 
+initializeContentArea(); 
+} 
+
+function initializeContentArea() { 
+
+sRootPath = oContentArea.data.replace(/[^\/]*$/, ""); 
+
+// Check if object has scrollbar with changeable style. 
+if ((oContentArea.body != null) 
+&& (oContentArea.body.scroll != null)) { 
+bHasScrollStyle = true; 
+} 
+
+setContentAreaStyle(); 
+} 
+
+// Set style for object tag. 
+function setContentAreaStyle() { 
+if (bHasScrollStyle) { 
+if ((oContentArea.body != null) 
+&& (oContentArea.body.scroll != null)) { 
+bHasScrollStyle = true; 
+oContentArea.body.scroll = "auto"; 
+oContentArea.body.style.scrollbarFaceColor = "#005A9C"; 
+oContentArea.body.style.scrollbarArrowColor = "#005A9C"; 
+oContentArea.body.style.scrollbarTrackColor = "#005A9C"; 
+oContentArea.body.style.scrollbarShadowColor = "#005A9C"; 
+oContentArea.body.style.scrollbarHighlightColor = "#005A9C"; 
+oContentArea.body.style.scrollbar3dlightColor = "#005A9C"; 
+oContentArea.body.style.scrollbarDarkshadowColor = "#005A9C"; 
+} else { 
+setTimeout("setContentAreaStyle();", 10); 
+} 
+} 
+} 
+
+function openContent(page) { 
+var oClone = oContentArea.cloneNode(true); 
+oClone.data = sRootPath + page + ".html"; 
+var oPlaceHolder = document.getElementById("pueblosid"); 
+oPlaceHolder.removeChild(oContentArea); 
+oPlaceHolder.appendChild(oClone); 
+oContentArea = oClone; 
+setContentAreaStyle(); 
+return false; 
+} 
+// ]]> 
+</script> 
+
+</head> 
+
+<body onload="initialize();"> 
+
+<table border="0" cellspacing="0" cellpadding="0"> 
+<tr> 
+<td> 
+<table border="0" cellspacing="0" cellpadding="0"> 
+
+<!-- Menu --> 
+<tr> 
+<td> 
+<input type="button" name="submit" value="/api/usuario/{ID}" id="submit" onclick="openContent('user')"/>
+
+<input type="button" name="submit" value="/api/usuario/{ID}/amigos" id="submit" onclick="openContent('amigos')"/>
+
+
+<input type="button" name="submit" value="/api/usuario/seguimiento/{ID}" id="submit" onclick="openContent('siguiendo')"/>
+
+<input type="button" name="submit" value="/api/usuario/seguimiento/{ID_P}/{ID_U}" id="submit" onclick="openContent('sigue')"/>
+
+<tr>
+<td id="pueblosid"> 
+<object width="1000" height="1000"  id="contentarea" data="blanco.html" type="text/html"> 
+</object> 
+</td> 
+</tr>
+</table> 
+</td> 
+</tr> 
+</table> 
+</body> 
+</meta>
+</html>

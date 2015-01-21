@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<meta charset="UTF-8">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es"> 
+<head> 
+<title>XHTML Example Page</title> 
+
+<style>
+#submit {
+    background-color: black;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius:6px;
+    color: white;
+    font-family: 'Oswald';
+    font-size: 20px;
+    text-decoration: none;
+    cursor: pointer;
+    border:none;
+}
+
+
+
+#submit:hover {
+    border: none;
+    background: black;
+    color: #adff2f;
+    box-shadow: 0px 0px 1px #777;
+}<
+</style>
+
+<script type="text/javascript"> 
+    function updatephp(){
+    	var j = document.getElementById('formid');
+    	var name = j.value;
+        var newurl = 'http://95.39.221.207:8000/api/usuario/seguimiento/'+name
+        var xhr = new XMLHttpRequest();
+        var k = xhr.open('get', 'prueba.php?uno='+newurl);
+        xhr.onreadystatechange = function(){
+        // Ready state 4 means the request is done
+        if(xhr.readyState === 4){
+            // 200 is a successful return
+            if(xhr.status === 200){
+              document.getElementById('actualizar').innerHTML=xhr.responseText;
+              document.getElementById('ipllamada').innerHTML=newurl;
+              // alert(xhr.responseText); // 'This is the returned text.'
+            }else{
+                alert('Error: '+xhr.status); // An error occurred during the request
+            }
+        }
+    }
+     xhr.send(null);
+    }
+</script>
+</head> 
+
+<body>
+<p>
+GET METHOD
+</p>
+Devuelve los pueblos (id y nombre) que sigue el usuario con el ID que le especifiquemos 
+<p>
+ESTRUCTURA DEVUELTA
+</p>
+
+
+{
+<ul name = "tipos" style="list-style: none;">
+  <li>npueblos:"integer",</li>
+  <li>pueblos:[</li>
+    <ul style="list-style: none;">  
+        {
+        <li>id_pueblo:"int",</li>
+        <li>dspueblo:"string",</li>
+
+  </ul>
+  ]
+</ul>
+}
+
+<p>
+<form name ="subscribe" id="subscribe_frm" action="#">
+ID: <input id="formid" idtype="text" name="id_insert" autofocus required />
+<input type="button" name="submit" value="Pruébalo!" id="submit" onclick="updatephp()"/>
+</form>
+</p>
+<div id ="ipllamada"></div>
+<p>
+</p>
+<div id ="actualizar"></div>
+</body> 
+</meta>
+</html>
