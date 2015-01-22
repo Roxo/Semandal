@@ -58,5 +58,6 @@
     <string name="title_activity_categoriza">Categoriza</string>
     <string name="title_activity_seman">Seman</string>
     <string name="title_activity_lpueblos">LPueblos</string>
+    <string name="title_activity_plantilla_dispnotnula">Plantilla_dispnotnula</string>
 
 </resources>

@@ -92,7 +92,8 @@ public class Seman extends Activity implements OnItemSelectedListener {
 				}
 				else if(!categoriacreada.getText().toString().equalsIgnoreCase("")){
 					String cnew = categoriacreada.getText().toString();
-					String url = Singleton.url+":8000/api/noticias/"+idnot+"/"+cnew+"/"+iduser;
+					cnew = cnew.replace(" ","_");
+					String url = Singleton.url+":8000/api/noticias/"+idnot+"/addcat/"+cnew+"/";
 					Mandar tarea = new Mandar(url,t);
 					tarea.execute();
 				}

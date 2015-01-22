@@ -31,7 +31,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
-import android.support.v7.app.ActionBarActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,7 +46,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-public class Deuda extends ActionBarActivity{
+public class Deuda extends Activity{
 	int iduser,pid,puebloant,puebloact;
 	private static AsinDeuda backgroundTask;
 	private static Asinadd backgroundTask1;
@@ -81,8 +80,8 @@ public class Deuda extends ActionBarActivity{
 		final TextView superficie = (TextView)this.findViewById(R.id.superficie);		
 		final TextView urlwiki = (TextView)this.findViewById(R.id.wikiurl);
 		final AutoCompleteTextView autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
-		urlwiki.setTextColor(Color.CYAN);
-		urlweb.setTextColor(Color.CYAN);
+		urlwiki.setTextColor(Color.BLUE);
+		urlweb.setTextColor(Color.BLUE);
 		//////////////////////////////////////////////
 		indice = getIntent().getIntExtra("indice",0);
 		iduser = getIntent().getIntExtra("user_id",0);
@@ -375,7 +374,7 @@ public class Deuda extends ActionBarActivity{
 			JSONArray p1 = d.getJSONArray("pueblos");
 			JSONObject pueblo = (JSONObject) p1.get(0);
 			deuda.setText("deuda obtenida a día 1/1/2014 \t\t"+pueblo.getDouble("deuda"));
-			municipio.setText("Municipio: \t\t"+pueblo.getString("nombre"));
+			municipio.setText("Municipio: \t\t"+pueblo.getString("dspueblo"));
 			cp.setText("Código postal: \t\t"+pueblo.getInt("cp"));
 			urlweb.setText(pueblo.getString("url"));
 			habitantes.setText("Habitantes: \t\t"+pueblo.getInt("habitantes"));

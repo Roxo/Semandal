@@ -62,7 +62,7 @@ public class Display_not_nolog extends Activity {
 				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),
 				Singleton.url+":8000/api/noticias/"+notid,this,
 				(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment)
-				);
+				,(TextView) findViewById(R.id.pueblos));
 		tarea.execute();
 
 		
@@ -194,6 +194,7 @@ public class Display_not_nolog extends Activity {
 	    String[] listacategorias;
 	    ListView lv;
 	    Button comentarios;
+	    TextView pueblo;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
@@ -201,7 +202,7 @@ public class Display_not_nolog extends Activity {
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 			TextView dateview,TextView likes,String url,Display_not_nolog activity,
-			ListView lv,Button comentarios){
+			ListView lv,Button comentarios,TextView pueblo){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -211,6 +212,7 @@ public class Display_not_nolog extends Activity {
 			this.likes = likes;
 			this.lv = lv;
 			this.comentarios = comentarios;
+			this.pueblo = pueblo;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -254,7 +256,7 @@ public class Display_not_nolog extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			String titular,cuerpo, fecha;
+			String titular="",cuerpo="", fecha="",p="";
 			int like=0,ncomentarios=0;
 			try {
 				idcats = new LinkedList<Integer>();
@@ -267,6 +269,7 @@ public class Display_not_nolog extends Activity {
 				ncomentarios = html.getInt("ncomentarios");
 				comentarios.setText("Ver Comentarios ("+ncomentarios+")");
 				JSONArray cat = html.getJSONArray("categoria");
+				p = html.getString("dspueblo");
 				listacategorias =  new String[cat.length()];
 			    for(int i=0;i<cat.length();i++){
 			    	JSONObject j = cat.getJSONObject(i);
@@ -278,6 +281,7 @@ public class Display_not_nolog extends Activity {
 				lv.setAdapter(adapter);
 				likes.setText(""+like);
 			    titview.setText(titular);
+			    pueblo.setText(p);
 			    cuerpview.setText(cuerpo);
 			    dateview.setText(fecha);
 			    cuerpview.setMovementMethod(new ScrollingMovementMethod());

@@ -138,6 +138,10 @@
             android:name=".LPueblos"
             android:label="@string/title_activity_lpueblos" >
         </activity>
+        <activity
+            android:name=".Plantilla_dispnotnula"
+            android:label="@string/title_activity_plantilla_dispnotnula" >
+        </activity>
     </application>
 
 </manifest>

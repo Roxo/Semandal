@@ -79,7 +79,8 @@ public class Display_not_log extends Activity {
 				(TextView) findViewById(R.id.Noticia),
 				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
 				Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-				,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment));
+				,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
+				(TextView) findViewById(R.id.pueblos));
 		tarea.execute();
 		
 		categoriza.setOnClickListener(new View.OnClickListener() {
@@ -231,7 +232,7 @@ public class Display_not_log extends Activity {
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment));
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.pueblos));
 			tarea.execute();
 
 			set=false;
@@ -249,7 +250,7 @@ public class Display_not_log extends Activity {
 	    private boolean completed;
 	    private Object _response;
 	    ListView lv;
-
+	    TextView pueblo;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
@@ -258,7 +259,7 @@ public class Display_not_log extends Activity {
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 			TextView dateview,TextView puntuacion, Button b7,
 			String url,String urlsig,Display_not_log activity,ListView lv,
-			Button comentarios){
+			Button comentarios,TextView pueblo){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -270,6 +271,7 @@ public class Display_not_log extends Activity {
 			this.urlsig = urlsig;
 			this.lv = lv;
 			this.comentarios = comentarios;
+			this.pueblo = pueblo;
 			
 		}
 		
@@ -327,7 +329,7 @@ public class Display_not_log extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			String titular = "ROTO",cuerpo="ROTO", fecha = "Roto",likes="roto",ca="roto";
+			String p = "",titular = "ROTO",cuerpo="ROTO", fecha = "Roto",likes="roto",ca="roto";
 			int ncomentarios=0;
 			try {
 				idcats = new LinkedList<Integer>();
@@ -337,6 +339,7 @@ public class Display_not_log extends Activity {
 				notid = html.getInt("id_noticia");
 				url1 = html.getString("url");
 				likes = html.getString("liked");
+				p = html.getString("dspueblo");
 				ncomentarios = html.getInt("ncomentarios");
 				comentarios.setText("Ver Comentarios ("+ncomentarios+")");
 				JSONArray cat = html.getJSONArray("categoria");
@@ -360,6 +363,7 @@ public class Display_not_log extends Activity {
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);
 		    dateview.setText(fecha);
+		    pueblo.setText(p);
 		    cuerpview.setMovementMethod(new ScrollingMovementMethod());
 	           completed = true;
 	            _response = response;

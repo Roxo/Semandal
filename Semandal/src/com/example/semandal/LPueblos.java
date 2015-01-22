@@ -165,7 +165,7 @@ public class LPueblos extends Activity {
 				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
 				startActivity(i);
-		        finish();                       
+		                                
 		    }
 		});
 
@@ -253,25 +253,24 @@ public class LPueblos extends Activity {
 		@Override
 		public void onPostExecute(Object response){
 			lista2= new ArrayList<String>();
-			lista2aux= new ArrayList<Integer>();			
-			try {
-				JSONArray p1 = d.getJSONArray("pueblos");
-				for(int i =0;i<p1.length();i++){
-					JSONObject aux = p1.getJSONObject(i);
-					lista2.add(aux.getString("dspueblo"));
-					lista2aux.add(aux.getInt("id_pueblo"));
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-
-	        BDClass admin = new BDClass(contexto,"administracion", null, 1);
+			lista2aux= new ArrayList<Integer>();	
+	        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
 		    SQLiteDatabase db = admin.getReadableDatabase();
-			String sql = "SELECT * FROM pueblos" ;
+			String sql = "SELECT * FROM siguiendo" ;
 			Cursor c = db.rawQuery(sql, null);
 			int a = c.getCount();
+			if (c.moveToFirst()){
+				c.moveToNext();
+				do{
+					lista2.add(c.getString(1));
+					lista2aux.add(c.getInt(0));
+				}while(c.moveToNext());
+			}
+	        BDClass pueblos = new BDClass(contexto,"administracion", null, 1);
+	        db = pueblos.getReadableDatabase();
+			sql = "SELECT * FROM pueblos" ;
+			c = db.rawQuery(sql, null);
+			a = c.getCount();
 			lista1= new ArrayList<String>();
 			lista1aux= new ArrayList<Integer>();
 			if (c.moveToFirst()){

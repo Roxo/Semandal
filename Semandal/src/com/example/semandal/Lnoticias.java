@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
+import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +43,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Lnoticias extends Activity {
 	LinkedList<Integer> auxlist = new LinkedList<Integer>();
@@ -50,7 +52,7 @@ public class Lnoticias extends Activity {
 	String datos,pueblonuevo;
 	
 	int iduser,pid,indice;
-	boolean fbusqueda=false;
+	boolean fbusqueda=false,noeffect;
 	private static AsincLN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 
@@ -182,11 +184,20 @@ public class Lnoticias extends Activity {
 		
 		lista.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
-		        Intent i= new Intent(Lnoticias.this,Display_not_log.class);
+		        if (!noeffect) {
+		    	Intent i= new Intent(Lnoticias.this,Display_not_log.class);
 		        int k =  (Integer) lista.getAdapter().getItem(pos);
 		        i.putExtra("id",auxlist.get(k));
 				i.putExtra("user_id", iduser);
 				startActivity(i);
+				noeffect = true;
+
+				}
+		        else{
+		        	String string = "No existen noticias con estas características" +
+		        			"realice una búsqueda con otras especificaciones.";
+		        	Toast.makeText(getApplicationContext(), string, Time.SECOND).show();
+		        }
 		    }
 		});
 
@@ -300,8 +311,11 @@ public class Lnoticias extends Activity {
 				resultados.setText("Noticias de Mis Pueblos");
 			else if(!fbusqueda)
 				resultados.setText(lista1.get(indice));
-			if(!pueblonuevo.equalsIgnoreCase(""))
+			else if(!pueblonuevo.equalsIgnoreCase(""))
 				resultados.setText(pueblonuevo);
+			else
+				resultados.setText("resultados");
+
 
 			List<Noticia> mandar = new ArrayList<Noticia>();
 			Noticia k;
@@ -315,22 +329,25 @@ public class Lnoticias extends Activity {
 							String puntuacion = coment.getString("fecha");
 							int nlikes = coment.getInt("liked");
 							int comentarios = coment.getInt("ncomentarios");
-							String categoria = coment.getString("categoria");
+							//String categoria = coment.getString("categoria");
+							String categoria = "";
 							String dspueblo = coment.getString("dspueblo");
 							auxlist.add(autor);
 							k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo);
 							mandar.add(k);
 					}
+					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
 				}
 				else{
-					k = new Noticia(0,"","Su pueblo no dispone de noticias",0,0,"","");
+					noeffect = true;
+					k = new Noticia(0,"","Esta consulta no tiene noticias",0,0,"","");
 					mandar.add(k);
+					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			lista.setAdapter(new Plantilla_dispnot(activity,mandar));
 
 			
 			  completed = true;

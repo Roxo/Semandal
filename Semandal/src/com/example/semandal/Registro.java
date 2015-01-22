@@ -23,6 +23,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
@@ -31,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -45,7 +48,8 @@ public class Registro extends Activity  implements OnItemSelectedListener{
 	Registro k=this;
 	boolean loadp = false;
 	private EditText usuario, pass, correo, conpass,name,ap1,ap2;
-	private List<String> lista1, lista1aux;
+	private List<String> lista1;
+	List<Integer> lista1aux;
 
 
 	@Override
@@ -63,9 +67,10 @@ public class Registro extends Activity  implements OnItemSelectedListener{
 				name = (EditText)this.findViewById(R.id.name);
 				ap1= (EditText)this.findViewById(R.id.ap1);
 				ap2 = (EditText)this.findViewById(R.id.ap2);
+				final AutoCompleteTextView autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 				AsincReg tarea = null;
 				tarea = new AsincReg(this,
-						Singleton.url+":8000/api/pueblos",this
+						Singleton.url+":8000/api/pueblos",this,autotext
 						);
 				tarea.execute();
 
@@ -76,7 +81,7 @@ public class Registro extends Activity  implements OnItemSelectedListener{
 					public void onClick(View v) {
 						String u= usuario.getText().toString();
 						String p= pass.getText().toString();
-						String pob = lista1aux.get(pposicion);
+						String pob =  autotext.getText().toString();
 						String prueba = Singleton.url+":8000/api/register/"+u+"/"+name.getText().toString()+"/"+ap1.getText().toString()+"/"+ap2.getText().toString()+"/"+p+"/"+correo.getText().toString()+"/"+pob;
 						Set cm = new Set(prueba,k);
 						cm.execute();
@@ -158,15 +163,17 @@ public void onResume(){
 	    private Registro activity;
 	    private boolean completed;
 	     private Object _response;
+	     AutoCompleteTextView pob;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
-		public AsincReg(Context contexto,String urlpueblos,Registro activity){
+		public AsincReg(Context contexto,String urlpueblos,Registro activity,AutoCompleteTextView pob){
 			this.contexto = contexto;
 			this.urlpueblos=urlpueblos;
             this.activity = activity;
+            this.pob = pob;
 
 		}
 		
@@ -212,21 +219,26 @@ public void onResume(){
 		@Override
 		public void onPostExecute(Object response){
 			try {
-				int npueblos = pueblos.getInt("npueblos");
+		        BDClass admin = new BDClass(contexto,"administracion", null, 1);
+			    SQLiteDatabase db = admin.getReadableDatabase();
+				String sql = "SELECT * FROM pueblos" ;
+				Cursor c = db.rawQuery(sql, null);
+				int a = c.getCount();
 				lista1= new ArrayList<String>();
-				lista1aux= new ArrayList<String>();
-				lista1.add("Pueblos");
-				lista1aux.add("");
-				JSONArray p = pueblos.getJSONArray("pueblos");
-				for(int i = 0;i<npueblos;i++){
-					JSONObject f = (JSONObject)p.get(i);
-				   	lista1.add(f.getString("nombre"));
-				   	lista1aux.add(f.getString("idpueblo"));
-				}
-			} catch (JSONException e) {
+				lista1aux= new ArrayList<Integer>();
+				if (c.moveToFirst()){
+					do{
+						lista1.add(c.getString(1));
+						lista1aux.add(c.getInt(0));
+					}while(c.moveToNext());
+				}				
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
+	       pob.setAdapter(adaptador1);
+
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();

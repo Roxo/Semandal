@@ -48,7 +48,7 @@
         android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/Pob"
+        android:layout_above="@+id/autoCompleteTextView1"
         android:layout_below="@+id/imageView1" >
 
    <LinearLayout
@@ -152,12 +152,14 @@
           android:layout_centerHorizontal="true"
           android:text="@string/registrarse" />
 
-      <Spinner
-          android:id="@+id/Pob"
+
+      <AutoCompleteTextView
+          android:id="@+id/autoCompleteTextView1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_above="@+id/button1"
           android:layout_alignParentLeft="true"
-          android:text="@string/Selectpb" />
+          android:ems="10"
+          android:hint="Pueblo" />
       
 </RelativeLayout>

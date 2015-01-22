@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.semandal.Primera_pantalla$PlaceholderFragment" >
-
     <Button
         android:id="@+id/loggin"
         android:layout_width="wrap_content"
@@ -164,4 +163,5 @@
         android:text="Último Comentario"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    
 </RelativeLayout>

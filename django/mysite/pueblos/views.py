@@ -392,14 +392,14 @@ def verpueblo(request):
 		obj=''
 		r=''
 		for p in pueblos:
-			obj='"idpueblo":'+str(p.id)+',"nombre":"'+p.dspueblo+'"'
+			obj='"idpueblo":'+str(p.id)+',"nombre":"'+p.busqueda+'"'
 			obj = '{'+obj+'},'
 			r=r+obj
 			obj=''
 		r=r[0:len(r)-1]
 		r='{"npueblos":'+str(len(pueblos))+',"pueblos":['+r+']}'
 	else:
-		r='{"npueblos"=0}'
+		r='{"npueblos":0"}'
 	return HttpResponse(r)
 
 def vercategorias(request):
@@ -485,10 +485,9 @@ def busqueda(resques,datos):
 			r = '{"ret":true,"resultado":['+r+']}'
 			return HttpResponse(r)
 		else:
-			return HttpResponse('{"ret":false,"comentario":"No existe una noticia con esas caracteristicas"}')
+			return HttpResponse('{"ret":false,"resultado":[]}')
 	else:
-		return HttpResponse('{"ret":false,"comentario":"Debe insertar al menos un campo"}')
-
+		return HttpResponse('{"ret":false,"resultado":[]')
 
 def filternoticiabusqueda(n):
 	obj = ''
@@ -593,7 +592,7 @@ def ulog(request,id_user):
 def follow(sig):
 	r = ""
 	for i in sig:
-		obj = '{"id_pueblo"='+str(i.id_p.id)+',"dspueblo":"'+i.id_p.dspueblo+'"},'
+		obj = '{"id_pueblo":'+str(i.id_p.id)+',"dspueblo":"'+i.id_p.dspueblo+'"},'
 		r = r+obj
 	r = r[0:len(r)-1]
 	return r
@@ -613,11 +612,13 @@ def log(request,user,pas):
 			return HttpResponse('{"Resultado":false,"Message":"password no es correcta"}')
 
 def register(request,user,fn,sn,us,pas,mail,idpueblo):
-	p = Pueblo.objects.filter(id=int(idpueblo))[0]
-	u = Usuario(dsusuario=user,dsnombre=us,dsapellido1=fn,dsapellido2=sn,token=pas,correo=mail,pueblo=p)
-	sigp = SigP(id_user=u,id_p=p)
-	sigp.save();
-	u.save();
+	idpueblo = idpueblo.replace("_"," ")
+	p = Pueblo.objects.filter(busqueda = idpueblo)
+	if len(p) != 0:
+		u = Usuario(dsusuario=user.replace("_"," "),dsnombre=us.replace("_"," "),dsapellido1=fn.replace("_"," "),dsapellido2=sn.replace("_"," "),token=pas.replace("_"," "),correo=mail,pueblo=p)
+		u.save();
+		sigp = SigP(id_user=u,id_p=p)
+		sigp.save();
 	return HttpResponse("")
 
 def userview(request,datos):
@@ -670,7 +671,7 @@ def siguiendo(request,id_u):
 	r=''
 	obj=''
 	for p in pueblos:
-		obj = '{"id_pueblo"='+str(p.id_p.id)+',"dspueblo":"'+p.id_p.dspueblo+'"},'
+		obj = '{"id_pueblo":'+str(p.id_p.id)+',"dspueblo":"'+p.id_p.dspueblo+'"},'
 		r = r + obj
 	r = r[0:len(r)-1]
 	devolver = '{"npueblos":'+str(len(pueblos))+',pueblos":['+r+']}'
@@ -712,6 +713,10 @@ def categorizar(request,id_n,id_cnew,id_u):
 	cnew = Categorias_semandal.objects.filter(id = id_cnew)[0]
 	u = Usuario.objects.filter(id = id_u)
 	#c = Classify(id_n=n[0],id_user=u[0],c_ant=cact[0],c_new=cnew[0])
+	instancias = NC.objects.filter(noticia=n)
+	if len(instancias) == 1:
+		if instancias[0].categoria.id == 53:
+			insancias.delete()
 	c = NC(noticia=n,categoria=cnew,confirmada=Status.objects.filter(id=1)[0])
 	c.save()
 	return HttpResponse('{"agregado":true}')

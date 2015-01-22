@@ -29,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	@Override
@@ -152,9 +153,9 @@ public class MainActivity extends Activity {
 						}
 					}
 					bd.close();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (Exception e) {
+					 String answer = "Se necesita conexión a internet";
+					 Toast.makeText(contexto.getApplicationContext(), answer, Toast.LENGTH_LONG).show();
 				}
 	            completed = true;
 	            _response = response;

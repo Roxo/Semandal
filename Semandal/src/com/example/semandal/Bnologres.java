@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
+import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,12 +36,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class Bnologres extends Activity{
 	LinkedList<Integer> auxlist = new LinkedList<Integer>();
 	private static AsincBNL backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-
+	boolean nonotice = false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -100,11 +102,17 @@ public class Bnologres extends Activity{
 		
 		lista.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
-		        Intent i= new Intent(Bnologres.this,Display_not_nolog.class);
+		        if(!nonotice){
+		    	Intent i= new Intent(Bnologres.this,Display_not_nolog.class);
 		        int k =  (Integer) lista.getAdapter().getItem(pos);
 		        i.putExtra("id",auxlist.get(k));
 				startActivity(i);
-		        finish();                       
+		        }else{
+		        	String string = "No existen noticias con estas características" +
+		        			"realice una búsqueda con otras especificaciones.";
+		        	Toast.makeText(getApplicationContext(), string, Time.SECOND).show();
+		        }
+
 		    }
 		});
 		
@@ -208,22 +216,24 @@ public class Bnologres extends Activity{
 						String puntuacion = coment.getString("fecha");
 						int nlikes = coment.getInt("liked");
 						int comentarios =coment.getInt("ncomentarios");
-						String categoria = coment.getString("categoria");
 						String dspueblo = coment.getString("dspueblo");
 						auxlist.add(autor);
-						k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo);
+						k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,"",dspueblo);
 						mandar.add(k);
 				}
 				if(lcoment.length()==0){
+					nonotice = true;
 					k = new Noticia(0,"","Esa busqueda no tiene resultado",0,0,"","");
 					mandar.add(k);
+					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
+				}else{
+					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
 				}
 
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			lista.setAdapter(new Plantilla_dispnot(activity,mandar));
 
 			
 			  completed = true;

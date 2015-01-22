@@ -1,20 +1,22 @@
 package com.example.semandal;
 
 import java.io.BufferedReader;
-
-import com.example.semandal.Logueado.Asinlog;
-import com.example.semandal.aux.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.semandal.R;
+import com.example.semandal.aux.Comentario;
+import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -25,19 +27,18 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.app.ActionBarActivity;
-import android.text.method.ScrollingMovementMethod;
-import android.view.View;
 
-public class Nolog extends ActionBarActivity {
+public class Nolog extends Activity {
 	int idnoticia=0,idnoticiacomentario=0;
 	String answer = "";
 	private static AsincronNolog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-
+	LinkedList<Integer> noticias = new LinkedList<Integer>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
@@ -50,7 +51,7 @@ public class Nolog extends ActionBarActivity {
 	//	Button b4 = (Button)this.findViewById(R.id.auxiliar);
 		Button b5 = (Button)this.findViewById(R.id.notrel);
 		Button b6 = (Button)this.findViewById(R.id.Noticiaentera);
-
+	//	TwoWayView lvTest = (TwoWayView) findViewById(R.id.lvItems);
 		AsincronNolog tarea = null;
 		tarea = new AsincronNolog(this,(TextView) findViewById(R.id.titnoticia),
 				(TextView) findViewById(R.id.lastnew),
@@ -59,6 +60,7 @@ public class Nolog extends ActionBarActivity {
 				(TextView) findViewById(R.id.commentaut),
 				(TextView) findViewById(R.id.dspueblo),
 				(TextView) findViewById(R.id.date),
+		//		lvTest,
 				Singleton.url+":8000/api/noticias/ultima/",
 				Singleton.url+":8000/api/comentarios/ultimo",b5,b6,this
 			);
@@ -179,7 +181,7 @@ private void onTaskCompleted(Object _response)
 	    private Nolog activity;
 	    private boolean completed;
 	    private Object _response;
-
+	   // private TwoWayView lvTest;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
@@ -187,7 +189,8 @@ private void onTaskCompleted(Object _response)
 		
 		public AsincronNolog(Context contexto,TextView titview,TextView cuerpview,
 				TextView dateview,TextView commentview,TextView authview,TextView dspueblo,
-				TextView date, String url,	String urlcomment,Button b,Button b1, Nolog activity){
+				TextView date,// TwoWayView lvTest,
+				String url,	String urlcomment,Button b,Button b1, Nolog activity){
 			this.contexto = contexto;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
@@ -201,6 +204,7 @@ private void onTaskCompleted(Object _response)
 			this.b1=b1;
 			this.dspueblo=dspueblo;
 			this.date = date;
+			//this.lvTest = lvTest;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -240,7 +244,6 @@ private void onTaskCompleted(Object _response)
 				try {
 					if (!answer.equals("Se necesita conexión a internet")){
 					leernoticia();
-					leercomentario();
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -257,8 +260,9 @@ private void onTaskCompleted(Object _response)
 
 		@Override
 		public void onPostExecute(Object response){
+			List<Comentario> mandar = new ArrayList<Comentario>();
 			String dat = "",pob = "", titular = "",cuerpo="", fecha = "",user="",comentario="No existen comentarios";
-				if(html != null && Comentario != null){
+				if(html != null){
 				try{
 					if(html.getBoolean("existe")){
 					titular = html.getString("titular").replace("-","\n");
@@ -268,17 +272,7 @@ private void onTaskCompleted(Object _response)
 					pob = html.getString("dspueblo");
 					
 					}
-					else{
-						b1.setEnabled(false);
-					}
-					if(Comentario.getBoolean("existe")){
-					user = Comentario.getString("autor");
-					comentario=Comentario.getString("cuerpo").replace("-"," ");
-					idnoticiacomentario=Comentario.getInt("notid");
-					dat = Comentario.getString("fecha");
-					}
-					if(comentario=="No existen comentarios")
-						b.setEnabled(false);
+					b1.setEnabled(false);
 					date.setText(dat);
 					dspueblo.setText(pob);
 				    titview.setText(titular);
@@ -287,7 +281,9 @@ private void onTaskCompleted(Object _response)
 				    authview.setText(user);
 				    commentview.setText(comentario);
 				    cuerpview.setMovementMethod(new ScrollingMovementMethod());
-				    commentview.setMovementMethod(new ScrollingMovementMethod());
+				   
+				  //  lvTest.setAdapter(new Plantilla_Comment(activity,mandar));
+
 
 				} catch (JSONException e) {
 					b.setEnabled(false);
