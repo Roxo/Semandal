@@ -22,7 +22,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,115 +33,147 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Nolog"
-            android:label="@string/title_activity_nolog" >
+            android:label="@string/title_activity_nolog" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Buscnolog"
-            android:label="@string/title_activity_buscnolog" >
+            android:label="@string/title_activity_buscnolog" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Info"
-            android:label="@string/title_activity_info" >
+            android:label="@string/title_activity_info" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Registro"
-            android:label="@string/title_activity_registro" >
+            android:label="@string/title_activity_registro" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Logueado"
-            android:label="@string/title_activity_logueado" >
+            android:label="@string/title_activity_logueado" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Informacion"
-            android:label="@string/title_activity_informacion" >
+            android:label="@string/title_activity_informacion" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Bnolog"
-            android:label="@string/title_activity_bnolog" >
+            android:label="@string/title_activity_bnolog" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Bnologres"
-            android:label="@string/title_activity_bnologres" >
+            android:label="@string/title_activity_bnologres" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Listnoticias"
-            android:label="@string/title_activity_listnoticias" >
+            android:label="@string/title_activity_listnoticias" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Lnoticias"
-            android:label="@string/title_activity_lnoticias" >
+            android:label="@string/title_activity_lnoticias" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Blog"
-            android:label="@string/title_activity_blog" >
+            android:label="@string/title_activity_blog" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Display_not_log"
-            android:label="@string/title_activity_display_not_log" >
+            android:label="@string/title_activity_display_not_log" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Comentarios"
-            android:label="@string/title_activity_comentarios" >
+            android:label="@string/title_activity_comentarios" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Deuda"
-            android:label="@string/title_activity_deuda" >
+            android:label="@string/title_activity_deuda" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Amigos"
-            android:label="@string/title_activity_amigos" >
+            android:label="@string/title_activity_amigos" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Perfil"
-            android:label="@string/title_activity_perfil" >
+            android:label="@string/title_activity_perfil" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Display_not_nolog"
-            android:label="@string/title_activity_display_not_nolog" >
+            android:label="@string/title_activity_display_not_nolog" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Comentarios_nolog"
-            android:label="@string/title_activity_comentarios_nolog" >
+            android:label="@string/title_activity_comentarios_nolog" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Plantilla_Comment"
-            android:label="@string/title_activity_plantilla__comment" >
+            android:label="@string/title_activity_plantilla__comment" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Plantilla_dispnot"
-            android:label="@string/title_activity_plantilla_dispnot" >
+            android:label="@string/title_activity_plantilla_dispnot" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Plantilla_amigos"
-            android:label="@string/title_activity_plantilla_amigos" >
+            android:label="@string/title_activity_plantilla_amigos" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Buser"
-            android:label="@string/title_activity_buser" >
+            android:label="@string/title_activity_buser" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Log"
-            android:label="@string/title_activity_log" >
+            android:label="@string/title_activity_log" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Categoriza"
-            android:label="@string/title_activity_categoriza" >
+            android:label="@string/title_activity_categoriza" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Seman"
-            android:label="@string/title_activity_seman" >
+            android:label="@string/title_activity_seman" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".LPueblos"
-            android:label="@string/title_activity_lpueblos" >
+            android:label="@string/title_activity_lpueblos" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Plantilla_dispnotnula"
-            android:label="@string/title_activity_plantilla_dispnotnula" >
+            android:label="@string/title_activity_plantilla_dispnotnula"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".Plantilla_inicio"
+            android:label="@string/title_activity_plantilla_inicio" 
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

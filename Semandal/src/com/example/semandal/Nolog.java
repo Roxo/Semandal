@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.semandal.aux.Comentario;
+import com.example.semandal.aux.Inicio;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
@@ -27,18 +28,22 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class Nolog extends Activity {
-	int idnoticia=0,idnoticiacomentario=0;
 	String answer = "";
+	boolean noact = false;
 	private static AsincronNolog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	LinkedList<Integer> noticias = new LinkedList<Integer>();
+	LinkedList<Integer> not = new LinkedList<Integer>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
@@ -49,20 +54,10 @@ public class Nolog extends Activity {
 		Button b2 = (Button)this.findViewById(R.id.info);
 		Button b3 = (Button)this.findViewById(R.id.busqueda);
 	//	Button b4 = (Button)this.findViewById(R.id.auxiliar);
-		Button b5 = (Button)this.findViewById(R.id.notrel);
-		Button b6 = (Button)this.findViewById(R.id.Noticiaentera);
-	//	TwoWayView lvTest = (TwoWayView) findViewById(R.id.lvItems);
+		final ListView lvTest = (ListView) findViewById(R.id.listView1);
 		AsincronNolog tarea = null;
-		tarea = new AsincronNolog(this,(TextView) findViewById(R.id.titnoticia),
-				(TextView) findViewById(R.id.lastnew),
-				(TextView) findViewById(R.id.fecha),
-				(TextView) findViewById(R.id.lastcomment),
-				(TextView) findViewById(R.id.commentaut),
-				(TextView) findViewById(R.id.dspueblo),
-				(TextView) findViewById(R.id.date),
-		//		lvTest,
-				Singleton.url+":8000/api/noticias/ultima/",
-				Singleton.url+":8000/api/comentarios/ultimo",b5,b6,this
+		tarea = new AsincronNolog(this,lvTest,
+				Singleton.url+":8000/api/noticias/ultima/",this
 			);
 		tarea.execute();
 		
@@ -80,43 +75,24 @@ public class Nolog extends Activity {
 		 }
 
 		
-		b5.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent i = new Intent(Nolog.this, Display_not_nolog.class);
-				i.putExtra("id", idnoticiacomentario);
+		
+		lvTest.setOnItemClickListener(new OnItemClickListener() {
+		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
+		        if (!noact) {
+		    	Intent i= new Intent(Nolog.this,Display_not_log.class);
+		        i.putExtra("id",not.get(pos));
 				startActivity(i);
-			}
-			
-		});	
-		
-		
-		b6.setOnClickListener(new View.OnClickListener() {
+				noact = true;
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent i = new Intent(Nolog.this, Display_not_nolog.class);
-				i.putExtra("id", idnoticia);
-				startActivity(i);
-			}
-			
-		});		
-		
-		
-	/*	b4.setOnClickListener(new View.OnClickListener() {
+				}
+		        else{
+		        	String string = "No existen noticias, no puede clicar";
+		        	Toast.makeText(getApplicationContext(), string, Time.SECOND).show();
+		        }
+		    }
+		});
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent i = new Intent(Nolog.this, Logueado.class);
-				i.putExtra("user_id", "2");
-				startActivity(i);
-			}
-			
-		});		*/
+
 		
 		
 		b1.setOnClickListener(new View.OnClickListener() {
@@ -164,7 +140,8 @@ public void onResume(){
 		if(pleaseWaitDialog != null)
 			pleaseWaitDialog.show();
 	}
-}
+}	List<Integer> lista = new LinkedList<Integer>();
+
 
 private void onTaskCompleted(Object _response) 
 { 
@@ -173,11 +150,8 @@ private void onTaskCompleted(Object _response)
 	public class AsincronNolog extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
-		TextView titview,cuerpview,dateview,commentview,authview,dspueblo,date;
-		JSONObject html, Comentario;
-		String urlcomment;
-		String devolver;
-		Button b,b1;
+		JSONObject html;
+		ListView lvTest;
 	    private Nolog activity;
 	    private boolean completed;
 	    private Object _response;
@@ -187,24 +161,12 @@ private void onTaskCompleted(Object _response)
 		 * 
 		 * */
 		
-		public AsincronNolog(Context contexto,TextView titview,TextView cuerpview,
-				TextView dateview,TextView commentview,TextView authview,TextView dspueblo,
-				TextView date,// TwoWayView lvTest,
-				String url,	String urlcomment,Button b,Button b1, Nolog activity){
+		public AsincronNolog(Context contexto,ListView lvTest,
+				String url,Nolog activity){
 			this.contexto = contexto;
-			this.titview = titview;
-			this.cuerpview = cuerpview;
-			this.dateview = dateview;
-			this.commentview = commentview;
-			this.authview = authview;
-			this.urlcomment = urlcomment;
 			this.url = url;
-			this.b = b;
 			this.activity = activity;
-			this.b1=b1;
-			this.dspueblo=dspueblo;
-			this.date = date;
-			//this.lvTest = lvTest;
+			this.lvTest = lvTest;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -227,16 +189,6 @@ private void onTaskCompleted(Object _response)
 			    }
 			  }
 			  
-			  public void leercomentario() throws IOException, JSONException {
-				    InputStream is = new URL(urlcomment).openStream();
-				    try {
-				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-				      String jsonText = readAll(rd);
-				       Comentario = new JSONObject(jsonText);
-				    } finally {
-				      is.close();
-				    }
-				  }		  
 
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -260,44 +212,65 @@ private void onTaskCompleted(Object _response)
 
 		@Override
 		public void onPostExecute(Object response){
-			List<Comentario> mandar = new ArrayList<Comentario>();
-			String dat = "",pob = "", titular = "",cuerpo="", fecha = "",user="",comentario="No existen comentarios";
+			List<Inicio> mandar = new ArrayList<Inicio>();
 				if(html != null){
 				try{
 					if(html.getBoolean("existe")){
-					titular = html.getString("titular").replace("-","\n");
-					cuerpo = html.getString("cuerpo").replace("-", "\n");
-					fecha = html.getString("fecha");
-					idnoticia = html.getInt("notid");
-					pob = html.getString("dspueblo");
+						JSONArray noticias = html.getJSONArray("noticias");
+						for(int i = 0; i<noticias.length(); i++){
+							LinkedList<String> fechas = new LinkedList<String>();
+							LinkedList<String> autores = new LinkedList<String>();
+							LinkedList<String> coments = new LinkedList<String>();
+							JSONObject k = noticias.getJSONObject(i);
+							String titular = k.getString("titular").replace("-","\n");
+							if(titular.equalsIgnoreCase("")){
+								titular = "Esta noticia no tiene titular";
+							}
+							String fecha = k.getString("fecha");
+							int idnoticia = k.getInt("id_noticia");
+							not.add(idnoticia);
+							String pob = k.getString("dspueblo");
+							JSONArray comentarios = k.getJSONArray("comentarios");
+							for(int j = 0; j<comentarios.length(); j++ ){
+								JSONObject aC = comentarios.getJSONObject(j);
+								fechas.add(aC.getString("fecha"));
+								coments.add(aC.getString("cuerpo"));
+								autores.add(aC.getString("autor"));
+							}
+							if(comentarios.length()==1){
+								fechas.add("");
+								coments.add("");
+								autores.add("");
+							}
+							else if(comentarios.length()==0){
+								fechas.add("");
+								coments.add("Esta noticia no tiene comentarios");
+								autores.add("");
+								fechas.add("");
+								coments.add("");
+								autores.add("");
+							}
+							Inicio nuevo = new Inicio(idnoticia,fecha,titular,pob,autores.get(0),fechas.get(0),coments.get(0),autores.get(1),fechas.get(1),coments.get(1));
+							mandar.add(nuevo);
+						}
 					
 					}
-					b1.setEnabled(false);
-					date.setText(dat);
-					dspueblo.setText(pob);
-				    titview.setText(titular);
-				    cuerpview.setText(cuerpo);
-				    dateview.setText(fecha);
-				    authview.setText(user);
-				    commentview.setText(comentario);
-				    cuerpview.setMovementMethod(new ScrollingMovementMethod());
 				   
 				  //  lvTest.setAdapter(new Plantilla_Comment(activity,mandar));
 
 
 				} catch (JSONException e) {
-					b.setEnabled(false);
-					b1.setEnabled(false);
+					
 				}
 			}
-			if(html==null){		
-					titular = "No existen noticias";
-					b1.setEnabled(false);
+			if(html==null){	
+					noact = true;
+					String titular = "No existen noticias";
+					Inicio nuevo = new Inicio(0,"",titular,"","","","","","","");
+					mandar.add(nuevo);
 				}
 			
-			if(Comentario==null){
-					b.setEnabled(false);
-				}
+			lvTest.setAdapter(new Plantilla_inicio(activity,mandar));
 
 
 			  completed = true;

@@ -11,6 +11,7 @@ from pueblos.models import Amigode
 from django.http import Http404
 import datetime
 import operator
+import random
 from django.http import HttpResponse
 import json
 from django.db.models import Q
@@ -428,8 +429,12 @@ def lastnot(request):
 	# 	obj='{"existe":false}'
 	# return HttpResponse(obj)
 	r = ''
-	noticias=Noticias.objects.order_by("fecha").reverse()[:5]
-	for n in noticias:
+	noticias=Noticias.objects.order_by("fecha").reverse()[:20]
+	lista = cincoaleatorios();
+	lfinal = []
+	for i in lista:
+		lfinal.append(noticias[i])
+	for n in lfinal:
  		comentarios = getcoments(n)
   		obj='{"id_noticia":'+str(n.id)+',"titular":"'+n.dstitular.encode('utf-8')+'","fecha":"'+str(n.fecha)+'","dspueblo":"'+n.pueblo.dspueblo.encode('utf-8')+'","id_pueblo":'+str(n.pueblo.id).encode('utf-8')+',"comentarios":['+comentarios+']},'
 		r=r+obj
@@ -437,11 +442,20 @@ def lastnot(request):
 	r ='{"existe":true,"noticias":['+r+']}'
 	return HttpResponse(r)
 
+def cincoaleatorios():
+	usados = []
+	while len(usados)<5:
+		i = random.randint(0,19)
+		if i not in usados:
+			usados.append(i)
+	usados = sorted(usados)
+	return usados
+
 def getcoments(n):
 	r =''
 	com = Comentarios.objects.filter(id_not = n)[:2]
 	for c in com:
-		obj='{"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario.encode('utf-8')+'","cuerpo":"'+c.dscomentario.replace(" ","-").encode('utf-8')+',"puntuacion":'+str(c.puntuacion)+'},'
+		obj='{"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario.encode('utf-8')+'","cuerpo":"'+c.dscomentario.replace(" ","-").encode('utf-8')+'","puntuacion":'+str(c.puntuacion)+',"fecha":"'+str(c.fecha)+'"},'
 		r = r+obj
 	r = r[0:len(r)-1]
 	return r
@@ -745,9 +759,10 @@ def catfromnot(request,id_n):
 def denuncia(resquest,id_u,id_c):
 	try:
 		u = Usuario.objects.filter(id=id_u)[0]
-		c = Comentarios.objects.filter(id=id_c)[0]
-		d = Denuncias_C(comentario=c,id_user=u)
+		c = Comentarios.objects.filter(id=id_c)
+		d = Denuncias_C(comentario=c[0],id_user=u)
 		d.save()
+		c.update(puntuacion = c[0].puntuacion-1) 
 	except:
 		return HttpResponse('{"agregado":false}')
 	return HttpResponse('{"agregado":true}')
