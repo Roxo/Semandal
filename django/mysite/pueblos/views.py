@@ -316,7 +316,7 @@ def getnot(request,n_id):
 		if fecha == "":
 			fecha = "Noticia sin fecha"
 		obj = ""
-		obj = '{"existe":true,"id_noticia":'+str(noticia.id)+',"titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":'+str(noticia.liked)+',"dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":'+str(len(ncomentarios))+',"categoria":['+getcategorias(noticia)+']}'
+		obj = '{"existe":true,"id_noticia":'+str(noticia.id)+',"titular":"'+titular+'","cuerpo":"'+cuerpo+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":'+str(noticia.liked)+',"dspueblo":"'+noticia.pueblo.busqueda+'","id_pueblo":'+str(noticia.pueblo.id)+',"ncomentarios":'+str(len(ncomentarios))+',"categoria":['+getcategorias(noticia)+']}'
 	else:
 		obj = '{"existe":false,"id_noticia":0,"titular":"no existe la noticia"}'
 	agregarabd("api/noticias/"+n_id)
@@ -629,9 +629,9 @@ def register(request,user,fn,sn,us,pas,mail,idpueblo):
 	idpueblo = idpueblo.replace("_"," ")
 	p = Pueblo.objects.filter(busqueda = idpueblo)
 	if len(p) != 0:
-		u = Usuario(dsusuario=user.replace("_"," "),dsnombre=us.replace("_"," "),dsapellido1=fn.replace("_"," "),dsapellido2=sn.replace("_"," "),token=pas.replace("_"," "),correo=mail,pueblo=p)
+		u = Usuario(dsusuario=user.replace("_"," "),dsnombre=us.replace("_"," "),dsapellido1=fn.replace("_"," "),dsapellido2=sn.replace("_"," "),token=pas.replace("_"," "),correo=mail,pueblo=p[0])
 		u.save();
-		sigp = SigP(id_user=u,id_p=p)
+		sigp = SigP(id_user=u,id_p=p[0])
 		sigp.save();
 	return HttpResponse("")
 
