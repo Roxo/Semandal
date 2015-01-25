@@ -154,17 +154,19 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/mas"
+        android:layout_alignBottom="@+id/mas"
         android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/button2"
         android:text="Pueblo: "
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:id="@+id/pueblos"
+        android:id="@+id/mas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView3"
+        android:layout_above="@+id/scroll"
         android:layout_toRightOf="@+id/textView3"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="+"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.semandal.aux.AlmacenUsuario;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
@@ -32,9 +33,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
+	int iduser;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		AlmacenUsuario j = new AlmacenUsuario(this);
+		iduser = j.GetUsuario();
 		setContentView(R.layout.activity_main);
 		Asinc tarea =new Asinc(this,Singleton.url+":8000/api/pueblos",
 				Singleton.url+":8000/api/noticias/categorias/",this);
@@ -53,8 +58,15 @@ public class MainActivity extends Activity {
 
 		void onTaskCompleted(Object _response) 
 		{ 
-			Intent i = new Intent(MainActivity.this, Nolog.class);
-			startActivity(i);
+			if(iduser == 0){
+				Intent i = new Intent(MainActivity.this, Nolog.class);
+				startActivity(i);
+			}
+			else{
+				Intent i =  new Intent(MainActivity.this,Logueado.class);
+				i.putExtra("user_id",iduser);
+				startActivity(i);
+			}
 		}
 
 		public class Asinc extends AsyncTask<Void, Void, Object> {

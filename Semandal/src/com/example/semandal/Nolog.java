@@ -79,7 +79,7 @@ public class Nolog extends Activity {
 		lvTest.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
 		        if (!noact) {
-		    	Intent i= new Intent(Nolog.this,Display_not_log.class);
+		    	Intent i= new Intent(Nolog.this,Display_not_nolog.class);
 		        i.putExtra("id",not.get(pos));
 				startActivity(i);
 				noact = true;

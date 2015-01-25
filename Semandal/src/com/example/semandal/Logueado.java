@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import com.example.semandal.Log.loguear;
 import com.example.semandal.Nolog.AsincronNolog;
+import com.example.semandal.aux.AlmacenUsuario;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
@@ -46,6 +47,11 @@ public class Logueado extends Activity {
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
 		iduser = getIntent().getIntExtra("user_id",0);
+		AlmacenUsuario j = new AlmacenUsuario(this);
+		int f = j.GetUsuario();
+		if(iduser != f){
+			j.GuardarUsuario(iduser);
+		}
 		TextView bienvenida=(TextView) this.findViewById(R.id.bienvenida);
 		TextView noticia=(TextView) this.findViewById(R.id.noticias);
 		TextView pueblo=(TextView) this.findViewById(R.id.pueblo);
@@ -57,7 +63,7 @@ public class Logueado extends Activity {
 		tarea.execute();
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		
-		b5.setOnClickListener(new View.OnClickListener() {
+		noticia.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -71,6 +77,19 @@ public class Logueado extends Activity {
 			
 		});		
 	
+	
+		b5.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Logueado.this, Blog.class);
+				i.putExtra("user_id", iduser);
+				i.putExtra("indice",indice);
+				startActivity(i);
+			}
+			
+		});		
 		
 		b1.setOnClickListener(new View.OnClickListener() {
 

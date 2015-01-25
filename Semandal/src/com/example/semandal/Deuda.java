@@ -16,12 +16,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.semandal.Bnolog.AsincBnolog;
+import com.example.semandal.Display_not_log.Asinadd;
 import com.example.semandal.Nolog.AsincronNolog;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -146,12 +149,8 @@ public class Deuda extends Activity{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-					Asinadd tarea = new Asinadd(
-						Singleton.url+":8000/api/addsigue/"+iduser+"/"+puebloant,a
-						);
-					tarea.execute();
-				}
-
+				showDialogNSigue(a,"Confirmación","¿Está seguro que quiere seguir este pueblo?");
+			}
 			
 		});		
 
@@ -248,6 +247,27 @@ public class Deuda extends Activity{
 		});
 	}
 	
+	public void showDialogNSigue(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Deuda.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Asinadd tarea = new Asinadd(
+						Singleton.url+":8000/api/addsigue/"+iduser+"/"+puebloant,a
+						);
+					tarea.execute();
+		    }
+		});
+		b.show();
+	}	
+
 	public void onPause(){
 		super.onPause();
 		if (pleaseWaitDialog != null)
@@ -384,12 +404,6 @@ public class Deuda extends Activity{
 			JSONObject c=  pueblo.getJSONObject("coordenadas");
 			coordenadas.setText("Longitud: "+c.getDouble("longitud")+" . Latitud: "+c.getDouble("latitud"));
 			///////////////////////////////////////////////////////////////////////
-			if(usig.getBoolean("sigue")){
-				b6.setEnabled(false);
-			}
-			else{
-				b6.setEnabled(true);
-			}
 
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -410,6 +424,20 @@ public class Deuda extends Activity{
 					lista1aux.add(c.getInt(0));
 				}while(c.moveToNext());
 			}
+			db.close();
+			
+	        BDClass admin1 = new BDClass(contexto,"following", null, 1);
+		    SQLiteDatabase db1 = admin1.getReadableDatabase();
+			sql = "SELECT * FROM siguiendo WHERE id="+puebloant ;
+			c = db1.rawQuery(sql, null);
+			if(c.getCount()==0){
+				b6.setEnabled(true);
+			}
+			else{
+				b6.setEnabled(false);
+			}
+
+
 			
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
 			pob.setAdapter(adaptador1);
@@ -464,22 +492,30 @@ public class Deuda extends Activity{
     }
 	public class Asinadd extends AsyncTask<Void, Void, Object> {
 		String url;
+		Context contexto;
 	    private Deuda activity;
 	    private boolean completed;
 	    private Object _response;
+	    JSONObject datosuser;
+	    private String urlsigue = Singleton.url+":8000/api/logginuser/"+iduser;
 
 		public Asinadd(String url,Deuda activity){
 			this.url=url;
 			this.activity = activity;
+			this.contexto = activity;
 		}
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
 				actualizar();
+				leerdatos();
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -500,8 +536,52 @@ public class Deuda extends Activity{
 	                                                       false);
 
 	    } 
+	    
+		  private String readAll(Reader rd) throws IOException {
+			    StringBuilder sb = new StringBuilder();
+			    int cp;
+			    while ((cp = rd.read()) != -1) {
+			      sb.append((char) cp);
+			    }
+			    return sb.toString();
+			  }
+
+
+			  
+			  public void leerdatos() throws IOException, JSONException {
+				    InputStream is = new URL(urlsigue).openStream();
+				    try {
+				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+				      String jsonText = readAll(rd);
+				       datosuser = new JSONObject(jsonText);
+				    } finally {
+				      is.close();
+				    }
+				  }		  
+
 
 	    public void onPostExecute(Object response){
+	        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
+	        SQLiteDatabase bd = admin.getWritableDatabase();
+	        try{
+	        	admin.onCreate(bd);
+	        }catch(Exception e){}
+			bd.execSQL("DELETE FROM siguiendo");
+	        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Todos"+"')");
+			try {
+				JSONArray psig = datosuser.getJSONArray("siguiendo");
+				for (int i = 0;i<psig.length(); i++){
+					JSONObject f = psig.getJSONObject(i);
+					bd.execSQL("INSERT INTO siguiendo VALUES ("+f.getInt("id_pueblo")+", '"+f.getString("dspueblo")+"')");
+				}
+			bd.close();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
