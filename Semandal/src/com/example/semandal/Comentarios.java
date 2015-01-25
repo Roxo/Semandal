@@ -91,9 +91,12 @@ public class Comentarios extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Comentarios.this, Amigos.class);
+			/*	Intent i = new Intent(Comentarios.this, Amigos.class);
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice", indice);
+				startActivity(i);
+			*/
+				Intent i = new Intent(Comentarios.this, Nolog.class);
 				startActivity(i);
 			}
 			

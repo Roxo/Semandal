@@ -62,7 +62,7 @@ public class Display_not_nolog extends Activity {
 				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),
 				Singleton.url+":8000/api/noticias/"+notid,this,
 				(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment)
-				,(TextView) findViewById(R.id.pueblos));
+				,(TextView) findViewById(R.id.textView3));
 		tarea.execute();
 
 		

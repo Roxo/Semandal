@@ -201,10 +201,13 @@ public class Deuda extends Activity{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Deuda.this, Amigos.class);
+			/*	Intent i = new Intent(Deuda.this, Amigos.class);
 				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
+				startActivity(i);*/
+				Intent i = new Intent(Deuda.this, Nolog.class);
 				startActivity(i);
+
 			}
 			
 		});		

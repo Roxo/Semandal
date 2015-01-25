@@ -104,12 +104,14 @@ public class Buser extends Activity  implements OnItemSelectedListener{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Buser.this, Amigos.class);
+	/*			Intent i = new Intent(Buser.this, Amigos.class);
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice", indice);
 				startActivity(i);
-			}
-			
+			}*/
+				Intent i = new Intent(Buser.this, Nolog.class);
+				startActivity(i);
+			}			
 		});		
 		b2.setOnClickListener(new View.OnClickListener() {
 

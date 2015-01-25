@@ -127,9 +127,12 @@ public class Lnoticias extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Lnoticias.this, Amigos.class);
+				/*Intent i = new Intent(Lnoticias.this, Amigos.class);
 				i.putExtra("user_id", iduser);
+				startActivity(i);*/
+				Intent i = new Intent(Lnoticias.this, Nolog.class);
 				startActivity(i);
+
 			}
 			
 		});		

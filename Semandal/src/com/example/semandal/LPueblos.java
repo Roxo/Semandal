@@ -112,10 +112,13 @@ public class LPueblos extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(LPueblos.this, Amigos.class);
+		/*		Intent i = new Intent(LPueblos.this, Amigos.class);
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice", indice);
+				startActivity(i);*/
+				Intent i = new Intent(LPueblos.this, Nolog.class);
 				startActivity(i);
+
 			}
 			
 		});		

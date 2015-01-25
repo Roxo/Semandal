@@ -39,7 +39,7 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/busqueda"
@@ -120,15 +120,6 @@
         android:layout_alignParentRight="true"
         android:text="@string/comment" />
 
-    <Button
-        android:id="@+id/button2"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/imageView1" 
-        android:text="Me gusta" />
-
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -138,22 +129,23 @@
         android:layout_toLeftOf="@+id/button2"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    
-        <TextView
+
+    <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView1"
         android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/button2"
         android:text="Pueblo: "
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/pueblos"
+    <Button
+        android:id="@+id/button2"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView3"
-        android:layout_toRightOf="@+id/textView3"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/imageView1"
+        android:text="Me gusta" />
     
 </RelativeLayout>

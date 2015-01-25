@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.semandal.aux.AlmacenUsuario;
 import com.example.semandal.aux.Comentario;
 import com.example.semandal.aux.Inicio;
 import com.example.semandal.aux.Singleton;
@@ -48,8 +49,8 @@ public class Nolog extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.activity_nolog);
-
-
+		AlmacenUsuario j = new AlmacenUsuario(this);
+		j.GuardarUsuario(0);
 		Button b1 = (Button)this.findViewById(R.id.loggin);
 		Button b2 = (Button)this.findViewById(R.id.info);
 		Button b3 = (Button)this.findViewById(R.id.busqueda);

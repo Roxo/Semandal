@@ -96,10 +96,13 @@ public class Logueado extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Logueado.this, Amigos.class);
+		/*		Intent i = new Intent(Logueado.this, Amigos.class);
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice",indice);
+				startActivity(i);*/
+				Intent i = new Intent(Logueado.this, Nolog.class);
 				startActivity(i);
+
 			}
 			
 		});		

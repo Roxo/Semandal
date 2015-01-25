@@ -176,10 +176,13 @@ public class Display_not_log extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Display_not_log.this, Amigos.class);
+	/*			Intent i = new Intent(Display_not_log.this, Amigos.class);
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice", indice);
+				startActivity(i);*/
+				Intent i = new Intent(Display_not_log.this, Nolog.class);
 				startActivity(i);
+
 			}
 			
 		});		
@@ -300,7 +303,7 @@ public class Display_not_log extends Activity {
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.pueblos),(TextView) findViewById(R.id.mas));
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(TextView) findViewById(R.id.mas));
 			tarea.execute();
 
 			set=false;
