@@ -99,7 +99,7 @@ public class Log extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Log.this, LoginActivity.class);
+				Intent i = new Intent(Log.this, Log.class);
 				startActivity(i);
 			}
 			

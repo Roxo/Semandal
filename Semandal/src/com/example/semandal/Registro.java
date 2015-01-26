@@ -28,6 +28,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,18 +40,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-public class Registro extends Activity  implements OnItemSelectedListener{
+public class Registro extends Activity{
 	private static AsincReg backgroundTask;
 	private static Set backgroundTask1;
 	static ProgressDialog pleaseWaitDialog;
-	private Spinner spinner1;
-	private int pposicion;
 	Registro k=this;
 	boolean loadp = false;
 	private EditText usuario, pass, correo, conpass,name,ap1,ap2;
 	private List<String> lista1;
 	List<Integer> lista1aux;
-
+	private AutoCompleteTextView autotext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +66,7 @@ public class Registro extends Activity  implements OnItemSelectedListener{
 				name = (EditText)this.findViewById(R.id.name);
 				ap1= (EditText)this.findViewById(R.id.ap1);
 				ap2 = (EditText)this.findViewById(R.id.ap2);
-				final AutoCompleteTextView autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
+				autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 				AsincReg tarea = null;
 				tarea = new AsincReg(this,
 						Singleton.url+":8000/api/pueblos",this,autotext
@@ -79,14 +78,7 @@ public class Registro extends Activity  implements OnItemSelectedListener{
 
 					@Override
 					public void onClick(View v) {
-						String u= usuario.getText().toString();
-						String p= pass.getText().toString();
-						String pob =  autotext.getText().toString();
-						String prueba = Singleton.url+":8000/api/register/"+u+"/"+name.getText().toString()+"/"+ap1.getText().toString()+"/"+ap2.getText().toString()+"/"+p+"/"+correo.getText().toString()+"/"+pob;
-						Set cm = new Set(prueba,k);
-						cm.execute();
-						Intent i = new Intent(Registro.this, Log.class);
-						startActivity(i);
+						attemptLogin();
 					}
 					
 				});		
@@ -96,7 +88,7 @@ public class Registro extends Activity  implements OnItemSelectedListener{
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-						Intent i = new Intent(Registro.this, LoginActivity.class);
+						Intent i = new Intent(Registro.this, Log.class);
 						startActivity(i);
 					}
 					
@@ -121,6 +113,7 @@ public class Registro extends Activity  implements OnItemSelectedListener{
 					}
 					
 				});
+				
 	}
 	
 public void onPause(){
@@ -145,6 +138,112 @@ public void onResume(){
 	{ 
 
 	}
+	
+	public void attemptLogin() {
+
+		// Reset errors.
+		pass.setError(null);
+		correo.setError(null);
+		conpass.setError(null);
+		name.setError(null);
+		ap1.setError(null);
+		ap2.setError(null);
+		usuario.setError(null);
+
+
+		// Store values at the time of the login attempt.
+		String email = correo.getText().toString();
+		String password = pass.getText().toString();
+		String confpass = conpass.getText().toString();
+		String nombre = name.getText().toString();
+		String apellido1 = ap1.getText().toString();
+		String apellido2 = ap2.getText().toString();
+		String user = usuario.getText().toString();
+		String pueblo = autotext.getText().toString();
+
+		boolean cancel = false;
+		View focusView = null;
+
+		// Check for a valid password, if the user entered one.
+		if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+			pass.setError(getString(R.string.error_invalid_password));
+			focusView = pass;
+			cancel = true;
+		}
+		if (!confirm(password,confpass) && !TextUtils.isEmpty(confpass)) {
+			conpass.setError(getString(R.string.error_invalid_password));
+			focusView = conpass;
+			cancel = true;
+		}
+		// Check for a valid email address.
+		if (TextUtils.isEmpty(email)) {
+			correo.setError(getString(R.string.error_field_required));
+			focusView = correo;
+			cancel = true;
+		} else if (!isEmailValid(email)) {
+			correo.setError(getString(R.string.error_invalid_email));
+			focusView = correo;
+			cancel = true;
+		}
+		if (TextUtils.isEmpty(nombre)) {
+			name.setError(getString(R.string.error_field_required));
+			focusView = name;
+			cancel = true;
+		} 
+		if (TextUtils.isEmpty(apellido1)) {
+			ap1.setError(getString(R.string.error_field_required));
+			focusView = ap1;
+			cancel = true;
+		} 		
+		if (TextUtils.isEmpty(apellido2)) {
+			ap2.setError(getString(R.string.error_field_required));
+			focusView = ap2;
+			cancel = true;
+		} 
+		if (TextUtils.isEmpty(user)) {
+			usuario.setError(getString(R.string.error_field_required));
+			focusView = usuario;
+			cancel = true;
+		} 
+		
+		if (TextUtils.isEmpty(pueblo)) {
+			autotext.setError(getString(R.string.error_field_required));
+			focusView = autotext;
+			cancel = true;
+		}
+		if (cancel) {
+			// There was an error; don't attempt login and focus the first
+			// form field with an error.
+			focusView.requestFocus();
+		} else {
+			// Show a progress spinner, and kick off a background task to
+			// perform the user login attempt.
+			String u= usuario.getText().toString();
+			String p= pass.getText().toString();
+			String pob =  autotext.getText().toString();
+			String prueba = (Singleton.url+":8000/api/register/"+u+"/"+name.getText().toString()+"/"+ap1.getText().toString()+"/"+ap2.getText().toString()+"/"+p+"/"+correo.getText().toString()+"/"+pob).replace(" ","%20");
+			Set cm = new Set(prueba,k);
+			cm.execute();
+			Intent i = new Intent(Registro.this, Log.class);
+			startActivity(i);
+		}
+	}
+
+	private boolean isEmailValid(String email) {
+		// TODO: Replace this with your own logic
+		return (email.contains("@") && !email.contains(" "));
+	}
+
+	private boolean isPasswordValid(String password) {
+		// TODO: Replace this with your own logic
+		return password.length() > 4;
+	}
+
+	private boolean confirm(String password,String pasconf) {
+		// TODO: Replace this with your own logic
+		return password.equalsIgnoreCase(pasconf);
+	}
+
 
 
 
@@ -256,7 +355,7 @@ public void onResume(){
             if (pleaseWaitDialog == null)
                 pleaseWaitDialog= ProgressDialog.show(activity, 
                                                        "Espere un segundo", 
-                                                       "Recopilando pueblos y categorías", 
+                                                       "Recopilando pueblos", 
                                                        false);
 
     } 
@@ -279,16 +378,8 @@ public void onResume(){
 
 
 
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-		String selected = parent.getItemAtPosition(pos).toString();
-        if(parent == this.findViewById(R.id.Pob))
-        	pposicion=pos;
-        
-    }
 
-    public void onNothingSelected(AdapterView parent) {
-        // Do nothing.
-    }
+
 	public class Set extends AsyncTask<Void, Void, Object> {
 		String url;
 	    private Registro activity;

@@ -444,14 +444,14 @@ public class Display_not_log extends Activity {
 		    
 	        BDClass admin1 = new BDClass(contexto,"following", null, 1);
 		    SQLiteDatabase db1 = admin1.getReadableDatabase();
-			String sql = "SELECT * FROM siguiendo WHERE dspueblo='"+p+"'";
+			String sql = "SELECT * FROM siguiendo WHERE id="+pid;
 			Cursor c = db1.rawQuery(sql, null);
 			if(c.getCount()==0){
 				mas.setEnabled(true);
 			}
 			else{
 				sigue = true;
-				mas.setText("");
+ 				mas.setText("");
 				mas.setEnabled(false);
 			}
 	           completed = true;

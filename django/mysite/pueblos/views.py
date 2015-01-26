@@ -730,7 +730,7 @@ def categorizar(request,id_n,id_cnew,id_u):
 	instancias = NC.objects.filter(noticia=n)
 	if len(instancias) == 1:
 		if instancias[0].categoria.id == 53:
-			insancias.delete()
+			instancias.delete()
 	c = NC(noticia=n,categoria=cnew,confirmada=Status.objects.filter(id=1)[0])
 	c.save()
 	return HttpResponse('{"agregado":true}')
