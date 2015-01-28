@@ -276,9 +276,6 @@ public class Logueado extends Activity {
 			    noticia.setText(datosuser.getString("dstitular"));
 			    pueblo.setText("Municipio:\t\t"+datosuser.getString("dspueblo"));
 			    iduser=datosuser.getInt("id");
-			    if(notid==0){
-			    	b5.setEnabled(false);
-			    }
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

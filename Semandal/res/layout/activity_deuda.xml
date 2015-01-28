@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <LinearLayout
+       <LinearLayout
             android:id="@+id/LinearScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,49 +75,39 @@
                 android:text="Agregar pueblo!" />
 
 	<TextView
+	    android:id="@+id/municipio"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
+	    android:text="Municipio:"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+	<TextView
 	    android:id="@+id/textomunicipio"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 	<TextView
+	    android:id="@+id/prov"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Provincia:"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
+		
+	<TextView
 	    android:id="@+id/Provincia"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
-	
-	<TextView
-	    android:id="@+id/coordenadas"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-	<TextView
-	    android:id="@+id/cp"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:textAppearance="?android:attr/textAppearanceLarge" />
-		
-	<TextView
-	    android:id="@+id/web"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:text="web: "
-	    android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 	<TextView
-	    android:id="@+id/urlweb"
+	    android:id="@+id/textView1"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:textAppearance="?android:attr/textAppearanceLarge" />
-	
-	<TextView
-	    android:id="@+id/habitantes"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:textAppearance="?android:attr/textAppearanceLarge" />
-	
-			
+	    android:text="Deuda obtenida a través del Ministerio"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
 	
 	
 	<TextView
@@ -126,39 +116,114 @@
 	    android:layout_height="wrap_content"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 
+		
+	
 	<TextView
-	    android:id="@+id/textView1"
+	    android:id="@+id/codigo"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="Deuda obtenida a través del Ministerio"
+	    android:text="Codigo Postal:"
+	    android:textAppearance="?android:attr/textAppearanceSmall" />
+		
+	<TextView
+	    android:id="@+id/cp"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
 	    android:textAppearance="?android:attr/textAppearanceMedium" />
+		
 
+		
+	
+
+	
+			
+	<TextView
+	    android:id="@+id/hab"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Habitantes:"
+	    android:textAppearance="?android:attr/textAppearanceSmall" />
+		
+	
+	<TextView
+	    android:id="@+id/habitantes"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	<TextView
+	    android:id="@+id/sup"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Superficie:"
+	    android:textAppearance="?android:attr/textAppearanceSmall" />
+	
+	
 
 	<TextView
 	    android:id="@+id/superficie"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:textAppearance="?android:attr/textAppearanceLarge" />
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	<TextView
+	    android:id="@+id/web"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="web: "
+	    android:textAppearance="?android:attr/textAppearanceSmall" />
+	
+	<TextView
+	    android:id="@+id/urlweb"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
 	
 	<TextView
 	    android:id="@+id/wiki"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:text="pagina wikipedia:"
-	    android:textAppearance="?android:attr/textAppearanceLarge" />
+	    android:textAppearance="?android:attr/textAppearanceSmall" />
 	
 	<TextView
 	    android:id="@+id/wikiurl"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:textAppearance="?android:attr/textAppearanceLarge" />
-	
-	<TextView
-	    android:id="@+id/textView2"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+		<TextView
+	    android:id="@+id/coordenadas"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="Si deesea realizar una consulta de la deuda de otro pueblo, seleccioneló y posteriormente pulse Buscar!"
+	    android:text="Coordenadas:"
 	    android:textAppearance="?android:attr/textAppearanceMedium" />
+	
+	<TextView
+	    android:id="@+id/lat"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Latitud:"
+	    android:textAppearance="?android:attr/textAppearanceSmall" />	
+	    
+	<TextView
+	    android:id="@+id/latitud"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
+	<TextView
+	    android:id="@+id/lon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="Longitud:"
+	    android:textAppearance="?android:attr/textAppearanceSmall" />	
+	
+		<TextView
+	    android:id="@+id/longitud"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="?android:attr/textAppearanceMedium"/>
+		
  
 		<Button
 	    android:id="@+id/irnoticias"

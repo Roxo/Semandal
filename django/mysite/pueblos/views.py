@@ -1,3 +1,4 @@
+#coding=UTF-8
 from django.template import RequestContext, loader
 from django.shortcuts import render
 from pueblos.models import Pueblo
@@ -10,6 +11,8 @@ from pueblos.models import Categoria
 from pueblos.models import Amigode
 from django.http import Http404
 import datetime
+from datetime import datetime
+import time
 import operator
 import random
 from django.http import HttpResponse
@@ -287,7 +290,8 @@ def getcomentarios(request,n_id):
 	if len(rez) != 0:
 		obj=""
 		for i in rez:
-			obj = obj+'{"id_comentario":'+str(i.id)+',"id_user":'+str(i.id_user.id)+',"usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":'+str(int(i.puntuacion))+',"fecha":"'+str(i.fecha).split("+")[0]+'"},'
+			Hace = str(gettiempo(str(i.fecha).split("+")[0]))
+			obj = obj+'{"id_comentario":'+str(i.id)+',"id_user":'+str(i.id_user.id)+',"usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":'+str(int(i.puntuacion))+',"fecha":"'+Hace+'"},'
 		obj = obj[0:(len(obj)-1)]
 		obj = '{"ncomentarios":"'+str(len(rez))+'","comentarios":['+obj+']}'
 	else:
@@ -295,6 +299,49 @@ def getcomentarios(request,n_id):
 	agregarabd("api/noticias/"+n_id)
 	return HttpResponse(obj)
 
+def gettiempo(string):
+	tiempo = ""
+	devolver = 0
+	actual = str(time.strftime("%Y-%m-%d %H:%M:%S"))
+	dias1 = datetime.strptime(actual.split(" ")[0], "%Y-%m-%d")
+	dias1seg = datetime.strptime(actual.split(" ")[1], "%H:%M:%S")
+	dias2 = datetime.strptime(string.split(" ")[0], "%Y-%m-%d")
+	dias2seg = datetime.strptime(string.split(" ")[1], "%H:%M:%S")
+	secs = int(abs(dias1seg-dias2seg).seconds)
+	days = int(abs(dias1-dias2).days)
+	month = int(divmod(days,30)[0])
+	years = int(divmod(month,12)[0])
+	hours = int(divmod(secs,3600)[0])
+	mins = int(divmod(secs,60)[0])
+	tiempo = "< minutos"
+	devolver = 1
+	if mins != 0:
+		tiempo = "minutos"
+		if mins == 1:
+			tiempo = "minuto"
+		devolver = mins
+	if hours != 0:
+		tiempo = "horas"
+		if hours == 1:
+			tiempo = "hora"
+		devolver = hours
+	if days != 0:
+		if days == 1:
+			tiempo = "dia"
+		tiempo = "dias"
+		devolver = days
+	if month != 0:
+		if month == 1:
+			tiempo = "mes"
+		tiempo = "meses"
+		devolver = month
+	if years != 0:
+		if years == 1:
+			tiempo = "año".encode("UTF-8")
+		tiempo = "años".encode("UTF-8")
+		devolver = years
+
+	return "Hace "+str(devolver)+" "+tiempo
 
 def getnot(request,n_id):
 	noticia = Noticias.objects.filter(id=n_id)
@@ -308,8 +355,10 @@ def getnot(request,n_id):
 			titular = noticia.dstitular.replace('"','\"')
 		if noticia.dscuerpo is not None:
 			cuerpo = noticia.dscuerpo.replace('"','\"')
-		if noticia.fecha is not None:
+		if noticia.fecha is not None and noticia.fecha is not "":
 			fecha = str(noticia.fecha)
+			fecha = fecha.split("-")
+			fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
 		if titular == "":
 			titular ="Noticia sin titular"
 		if cuerpo == "":
@@ -466,7 +515,18 @@ def lastnot(request):
 		lfinal.append(noticias[i])
 	for n in lfinal:
  		comentarios = getcoments(n)
-  		obj='{"id_noticia":'+str(n.id)+',"titular":"'+n.dstitular.encode('utf-8')+'","fecha":"'+str(n.fecha)+'","dspueblo":"'+n.pueblo.dspueblo.encode('utf-8')+'","id_pueblo":'+str(n.pueblo.id).encode('utf-8')+',"comentarios":['+comentarios+']},'
+ 		titular =""
+		cuerpo = ""
+		fecha = ""
+		if n.dstitular is not None:
+			titular = n.dstitular.replace('"','\"')
+		if n.dscuerpo is not None:
+			cuerpo = n.dscuerpo.replace('"','\"')
+		if n.fecha is not None and n.fecha is not "":
+			fecha = str(n.fecha)
+			fecha = fecha.split("-")
+			fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
+  		obj='{"id_noticia":'+str(n.id)+',"titular":"'+titular.encode('utf-8')+'","fecha":"'+fecha+'","dspueblo":"'+n.pueblo.dspueblo.encode('utf-8')+'","id_pueblo":'+str(n.pueblo.id).encode('utf-8')+',"comentarios":['+comentarios+']},'
 		r=r+obj
 	r = r[0:len(r)-1]
 	r ='{"existe":true,"noticias":['+r+']}'
@@ -485,7 +545,8 @@ def getcoments(n):
 	r =''
 	com = Comentarios.objects.filter(id_not = n)[:2]
 	for c in com:
-		obj='{"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario.encode('utf-8')+'","cuerpo":"'+c.dscomentario.replace(" ","-").encode('utf-8')+'","puntuacion":'+str(c.puntuacion)+',"fecha":"'+str(c.fecha)+'"},'
+		Hace = str(gettiempo(str(c.fecha).split("+")[0]))
+		obj='{"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario.encode('utf-8')+'","cuerpo":"'+c.dscomentario.replace(" ","-").encode('utf-8')+'","puntuacion":'+str(c.puntuacion)+',"fecha":"'+str(Hace)+'"},'
 		r = r+obj
 	r = r[0:len(r)-1]
 	return r
@@ -540,15 +601,17 @@ def filternoticiabusqueda(n):
 	for noticia in n:
 		if noticia.noticia.id not in lista:
 			ncomentarios = Comentarios.objects.filter(id_not = noticia.noticia)
-			titular =""
-			cuerpo = ""
-			fecha = ""
+			titular ="noticia sin titular"
+			cuerpo = "noticia sin cuerpo"
+			fecha = "noticia sin fecha"
 			if noticia.noticia.dstitular is not None:
 				titular = noticia.noticia.dstitular.replace('"','\"')
 			if noticia.noticia.dscuerpo is not None:
 				cuerpo = noticia.noticia.dscuerpo.replace('"','\"')
-			if noticia.noticia.fecha is not None:
+			if noticia.noticia.fecha is not None and noticia.noticia.fecha is not "":
 				fecha = str(noticia.noticia.fecha)
+				fecha = fecha.split("-")
+				fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
 			n_categorias = getcategorias(noticia.noticia);
 			obj = '{"id_noticia":'+str(noticia.noticia.id)+',"titular":"'+titular+'","fecha":"'+fecha+'","url":"'+noticia.noticia.url+'","liked":'+str(noticia.noticia.liked)+',"dspueblo":"'+noticia.noticia.pueblo.dspueblo+'","ncomentarios":'+str(len(ncomentarios))+',"categoria":['+n_categorias+']},'
 			r = r + obj
@@ -564,15 +627,17 @@ def filternoticia(n):
 	for noticia in n:
 		if noticia.id not in lista:
 			ncomentarios = Comentarios.objects.filter(id_not = noticia)
-			titular =""
-			cuerpo = ""
-			fecha = ""
+			titular ="noticia sin titular"
+			cuerpo = "noticia sin cuerpo"
+			fecha = "noticia sin fecha"
 			if noticia.dstitular is not None:
 				titular = noticia.dstitular.replace('"','\"')
 			if noticia.dscuerpo is not None:
 				cuerpo = noticia.dscuerpo.replace('"','\"')
-			if noticia.fecha is not None:
+			if noticia.fecha is not None and noticia.fecha is not "":
 				fecha = str(noticia.fecha)
+				fecha = fecha.split("-")
+				fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
 			n_categorias = getcategorias(noticia);
 			obj = '{"id_noticia":'+str(noticia.id)+',"titular":"'+titular+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":'+str(noticia.liked)+',"dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":['+n_categorias+']},'
 			r = r + obj

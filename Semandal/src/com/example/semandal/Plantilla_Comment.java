@@ -48,8 +48,6 @@ public class Plantilla_Comment extends BaseAdapter{
 		View view = inflater.inflate(R.layout.activity_plantilla__comment,null,true);
 		TextView textView1 =(TextView)view.findViewById(R.id.p_autor);
 		textView1.setText(lista.get(position).getAutor());
-		TextView textView2 =(TextView)view.findViewById(R.id.p_puntuacion);
-		textView2.setText(lista.get(position).getpuntuacion());
 		TextView textView3 =(TextView)view.findViewById(R.id.p_comentario);
 		textView3.setText(lista.get(position).getComentario());
 		TextView textView4 =(TextView)view.findViewById(R.id.fecha);

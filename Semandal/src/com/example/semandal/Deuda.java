@@ -63,7 +63,8 @@ public class Deuda extends Activity{
 	TextView deuda;
 	TextView municipio;
 	TextView provincia;
-	TextView coordenadas;
+	TextView latitud;
+	TextView longitud;
 	TextView cp;
 	TextView urlweb;
 	TextView habitantes;
@@ -86,7 +87,8 @@ public class Deuda extends Activity{
 		deuda = (TextView)this.findViewById(R.id.textodeuda);
 		municipio = (TextView)this.findViewById(R.id.textomunicipio);
 		provincia = (TextView)this.findViewById(R.id.Provincia);
-		coordenadas = (TextView)this.findViewById(R.id.coordenadas);
+		latitud = (TextView)this.findViewById(R.id.latitud);
+		longitud = (TextView)this.findViewById(R.id.longitud);
 		cp = (TextView)this.findViewById(R.id.cp);
 		urlweb = (TextView)this.findViewById(R.id.urlweb);
 		habitantes = (TextView)this.findViewById(R.id.habitantes);
@@ -127,7 +129,7 @@ public class Deuda extends Activity{
         });  
 
 
-		tarea = new AsinDeuda(this,deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
+		tarea = new AsinDeuda(this,deuda,municipio,provincia,latitud,longitud,cp,urlweb,habitantes,
 				superficie,urlwiki,
 				Singleton.url+":8000/api/pueblos/"+puebloant,this,
 				Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,
@@ -184,7 +186,7 @@ public class Deuda extends Activity{
 				}
 				if(idpueblo!= 0){
 					puebloant=idpueblo;
-					AsinDeuda tarea = new AsinDeuda(a,deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
+					AsinDeuda tarea = new AsinDeuda(a,deuda,municipio,provincia,latitud,longitud,cp,urlweb,habitantes,
 							superficie,urlwiki,
 							Singleton.url+":8000/api/pueblos/"+puebloant,a,
 							Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,
@@ -336,7 +338,7 @@ public class Deuda extends Activity{
 			i.putExtra("pb",puebloant);
 			i.putExtra("p_id", pid);
 			startActivity(i);
-			AsinDeuda tarea = new AsinDeuda(a,deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
+			AsinDeuda tarea = new AsinDeuda(a,deuda,municipio,provincia,latitud,longitud,cp,urlweb,habitantes,
 					superficie,urlwiki,
 					Singleton.url+":8000/api/pueblos/"+puebloant,a,
 					Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,
@@ -348,7 +350,7 @@ public class Deuda extends Activity{
 
 	public class AsinDeuda extends AsyncTask<Void, Void, Object> {
 		Context contexto;
-		TextView deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
+		TextView deuda,municipio,provincia,latitud,longitud,cp,urlweb,habitantes,
 		superficie,urlwiki;
 		String url,usuario;
 		JSONObject pueblos,d,usig;
@@ -364,7 +366,7 @@ public class Deuda extends Activity{
 		 * */
 		
 		public AsinDeuda(Context contexto,TextView deuda,TextView municipio,TextView provincia,
-				TextView coordenadas,TextView cp,TextView urlweb,TextView habitantes,
+				TextView latitud,TextView longitud,TextView cp,TextView urlweb,TextView habitantes,
 				TextView superficie,TextView urlwiki,
 				String url,Deuda activity,String usersigue,Button b6,AutoCompleteTextView t,Button b7){
 			this.usuario = usersigue;
@@ -372,7 +374,6 @@ public class Deuda extends Activity{
 			this.deuda = deuda;
 			this.municipio = municipio;
 			this.provincia = provincia;
-			this.coordenadas = coordenadas;
 			this.cp = cp;
 			this.urlweb = urlweb;
 			this.habitantes = habitantes;
@@ -383,6 +384,8 @@ public class Deuda extends Activity{
 			this.b6 = b6;
 			this.pob = t;
 			this.b7 = b7;
+			this.latitud=latitud;
+			this.longitud = longitud;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -441,16 +444,17 @@ public class Deuda extends Activity{
 			try {
 			JSONArray p1 = d.getJSONArray("pueblos");
 			JSONObject pueblo = (JSONObject) p1.get(0);
-			deuda.setText("deuda obtenida a día 1/1/2014 \t\t"+pueblo.getDouble("deuda"));
-			municipio.setText("Municipio: \t\t"+pueblo.getString("dspueblo"));
-			cp.setText("Código postal: \t\t"+pueblo.getInt("cp"));
+			deuda.setText(""+pueblo.getDouble("deuda"));
+			municipio.setText(pueblo.getString("dspueblo"));
+			cp.setText(""+pueblo.getInt("cp"));
 			urlweb.setText(pueblo.getString("url"));
-			habitantes.setText("Habitantes: \t\t"+pueblo.getInt("habitantes"));
-			provincia.setText("Provincia: \t\t"+d.getString("provincia"));
-			superficie.setText("Superficie: \t\t"+pueblo.getDouble("superficie"));
+			habitantes.setText(""+pueblo.getInt("habitantes"));
+			provincia.setText(d.getString("provincia"));
+			superficie.setText(""+pueblo.getDouble("superficie"));
 			urlwiki.setText(pueblo.getString("wiki"));
 			JSONObject c=  pueblo.getJSONObject("coordenadas");
-			coordenadas.setText("Longitud: "+c.getDouble("longitud")+" . Latitud: "+c.getDouble("latitud"));
+			latitud.setText(""+c.getDouble("latitud"));
+			longitud.setText(""+c.getDouble("longitud"));
 			///////////////////////////////////////////////////////////////////////
 			numnot = pueblo.getInt("n_noticias");
 			} catch (JSONException e) {

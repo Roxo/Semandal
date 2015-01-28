@@ -256,17 +256,15 @@ public class Comentarios extends Activity {
 						listacomment.add(coment.getInt("id_comentario"));
 						String autor = coment.getString("usuario");
 						String comentario = coment.getString("comentario").replace("-", " ");
-						String puntuacion = coment.getString("puntuacion");
 						String fecha = coment.getString("fecha");
-						k = new Comentario(autor,puntuacion,comentario,fecha);
+						k = new Comentario(autor,comentario,fecha);
 						mandar.add(k);
 				}
 				}else{
 					String autor = "";
 					String comentario = "No existen comentarios para esta noticia. Se el primero!";
-					String puntuacion ="";
 					String fecha = "";
-					k = new Comentario(autor,puntuacion,comentario,fecha);
+					k = new Comentario(autor,comentario,fecha);
 					mandar.add(k);
 
 				}

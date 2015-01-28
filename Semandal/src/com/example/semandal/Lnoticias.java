@@ -74,12 +74,8 @@ public class Lnoticias extends Activity {
 		TextView fl = (TextView)this.findViewById(R.id.fl);
 		TextView fr = (TextView)this.findViewById(R.id.fr);
 		TextView resultados = (TextView)this.findViewById(R.id.resultados);
-		try{
-			indice = getIntent().getIntExtra("indice",0);
-			fbusqueda = getIntent().getBooleanExtra("busqueda",false);
-		}catch(Exception e){
-			
-		}
+		indice = getIntent().getIntExtra("indice",0);
+		fbusqueda = getIntent().getBooleanExtra("busqueda",false);
 		
 		final ListView lista = (ListView)this.findViewById(R.id.listView1);
 		AsincLN tarea = null;
@@ -293,7 +289,7 @@ public class Lnoticias extends Activity {
 				url = Singleton.url+":8000/api/"+iduser+"/noticias";
 			else if(!fbusqueda)
 				url = Singleton.url+":8000/api/busqueda/"+"(id_p:"+aux1list.get(indice)+")";
-			
+			fbusqueda = false;
 			try {
 				leercomentario();
 			} catch (IOException e) {

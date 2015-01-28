@@ -18,9 +18,12 @@ import org.json.JSONObject;
 import com.example.semandal.Bnolog.AsincBnolog;
 import com.example.semandal.aux.Singleton;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -34,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -44,11 +48,16 @@ public class Blog extends Activity implements OnItemSelectedListener {
 	private static ProgressDialog pleaseWaitDialog;
 	private Spinner spinner2;
 	private int indice,cposicion,iduser;
-	private EditText Titular, fecha;
+	private EditText Titular;
+	private Blog a = this;
 	private List<String> lista1,lista2;
 	private List<Integer> lista1aux;
 	private LinkedList<Integer> auxiliar = new LinkedList<Integer>();
+	String año = "",mes="",dia="";
+	DatePicker yourDatepicker;
+	AutoCompleteTextView autotext;
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,9 +69,12 @@ public class Blog extends Activity implements OnItemSelectedListener {
 		Button b5 = (Button)this.findViewById(R.id.blog);
 		iduser = getIntent().getIntExtra("user_id",0);
 		indice = getIntent().getIntExtra("indice",0);
+		yourDatepicker = (DatePicker)this.findViewById(R.id.datePicker1);
+		yourDatepicker.setCalendarViewShown(false);
 		Titular = (EditText)this.findViewById(R.id.Tit_nolog);
-		fecha = (EditText)this.findViewById(R.id.Fecha_nolog);
-		final AutoCompleteTextView autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
+		autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
+		yourDatepicker = (DatePicker)this.findViewById(R.id.datePicker1);
+		yourDatepicker.setCalendarViewShown(false);
 		AsincBlog tarea = new AsincBlog(this,autotext);
 		tarea.execute();
 		
@@ -70,52 +82,8 @@ public class Blog extends Activity implements OnItemSelectedListener {
 
 			@Override
 			public void onClick(View v) {
-				String titular = "", Fecha = "";
-				int idpueblo =0,idcat=0;
-				titular = Titular.getText().toString();
-				Fecha = fecha.getText().toString();
-				String pueblo = autotext.getText().toString();
-				int p = 0;
-				if(!pueblo.equalsIgnoreCase("")){
-					p = buscapuebloid(pueblo);
-				}
-				if(p != 0){
-					idpueblo = lista1aux.get(p);
-				}
-				if(cposicion != 0){
-					idcat = auxiliar.get(cposicion);
-				}
-				String stringfinal ="";
-				if(!titular.equals(""))
-					stringfinal = stringfinal+"_t:"+titular+",";
-				if(!Fecha.equals(""))
-					stringfinal = stringfinal+"_d:"+Fecha+",";
-				if(idpueblo != 0)
-					stringfinal = stringfinal+"id_p:"+idpueblo+",";
-				if(idcat != 0)
-					stringfinal = stringfinal+"id_c:"+idcat+",";
-				stringfinal = stringfinal.substring(0,stringfinal.length()-1);
-				stringfinal = "("+stringfinal+")";
-				Intent i = new Intent(Blog.this, Lnoticias.class);
-				i.putExtra("datos",stringfinal);
-				i.putExtra("busqueda", true);
-				i.putExtra("user_id", iduser);
-				i.putExtra("indice",indice);
-				startActivity(i);
+				showDialog(a,"Confimarción","quiere usar ésta fecha en la búsqueda");
 			}
-			private int buscapuebloid(String pueblo) {
-				boolean encontrado = false;
-				int i = 0;
-				while(!encontrado && i<lista1.size()){
-					if(lista1.get(i).equalsIgnoreCase(pueblo)){
-						encontrado = true;
-						return i;
-					}
-					i++;
-				}
-				return 0;				
-			}
-	
 		});		
 
 		b1.setOnClickListener(new View.OnClickListener() {
@@ -170,6 +138,77 @@ public class Blog extends Activity implements OnItemSelectedListener {
 			
 		});
 	}
+	
+	private void pasarbusqueda(String Fecha){
+		String titular = "";
+		Integer idcat=0;
+		Integer idpueblo =0;
+		titular = Titular.getText().toString();
+		String pueblo = autotext.getText().toString();
+		int p = 0;
+		if(!pueblo.equalsIgnoreCase("")){
+			p = buscapuebloid(pueblo);
+		}
+		if(p != 0){
+			idpueblo = lista1aux.get(p);
+		}
+		if(cposicion != 0){
+			idcat = auxiliar.get(cposicion);
+		}
+		String stringfinal ="";
+		if(!titular.equals(""))
+			stringfinal = stringfinal+"_t:"+titular+",";
+		if(!Fecha.equals(""))
+			stringfinal = stringfinal+"_d:"+Fecha+",";
+		if(idpueblo != 0)
+			stringfinal = stringfinal+"id_p:"+idpueblo+",";
+		if(idcat != 0)
+			stringfinal = stringfinal+"id_c:"+idcat+",";
+		stringfinal = stringfinal.substring(0,stringfinal.length()-1);
+		stringfinal = "("+stringfinal+")";
+		Intent i = new Intent(Blog.this, Lnoticias.class);
+		i.putExtra("datos",stringfinal);
+		i.putExtra("busqueda",true);
+		i.putExtra("user_id", iduser);
+		i.putExtra("indice", indice);
+		startActivity(i);
+	}
+	private int buscapuebloid(String pueblo) {
+		boolean encontrado = false;
+		int i = 0;
+		while(!encontrado && i<lista1.size()){
+			if(lista1.get(i).equalsIgnoreCase(pueblo)){
+				encontrado = true;
+				return i;
+			}
+			i++;
+		}
+		return 0;				
+	}
+
+	
+	public void showDialog(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Blog.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	pasarbusqueda("");
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				dia = ""+yourDatepicker.getDayOfMonth();
+				mes = ""+(yourDatepicker.getMonth()+1);
+				año = ""+yourDatepicker.getYear();
+		    	pasarbusqueda(año+"-"+mes+"-"+dia);
+		    	builder.cancel();
+		    }
+		});
+		b.show();
+	}	
 	
 	public void onPause(){
 		super.onPause();
