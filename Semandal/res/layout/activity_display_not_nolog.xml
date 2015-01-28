@@ -146,6 +146,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/imageView1"
-        android:text="Me gusta" />
+        android:text="Votamé!" />
     
 </RelativeLayout>

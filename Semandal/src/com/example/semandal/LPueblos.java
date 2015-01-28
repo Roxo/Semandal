@@ -285,7 +285,7 @@ public class LPueblos extends Activity {
 			db.close();
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
 			pob.setAdapter(adaptador1);
-			ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista2);
+			ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(contexto,android.R.layout.simple_list_item_1,lista2);
 			lv.setAdapter(adaptador2);
 
             completed = true;

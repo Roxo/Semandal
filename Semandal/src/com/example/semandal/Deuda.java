@@ -60,7 +60,17 @@ public class Deuda extends Activity{
 	private Deuda a = this;
 	private int indice;
 	boolean fromdatos=false,addpueblo=false;
-	
+	TextView deuda;
+	TextView municipio;
+	TextView provincia;
+	TextView coordenadas;
+	TextView cp;
+	TextView urlweb;
+	TextView habitantes;
+	TextView superficie;		
+	TextView urlwiki;
+	AutoCompleteTextView autotext;
+	Button b6,b7;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,26 +80,25 @@ public class Deuda extends Activity{
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
-		final Button b6 = (Button)this.findViewById(R.id.button2);
-
+		b6 = (Button)this.findViewById(R.id.button2);
+		b7 = (Button)this.findViewById(R.id.irnoticias);
 		// DEFINICIÓN DE LOS TEXTVIEW
-		final TextView deuda = (TextView)this.findViewById(R.id.textodeuda);
-		final TextView municipio = (TextView)this.findViewById(R.id.textomunicipio);
-		final TextView provincia = (TextView)this.findViewById(R.id.Provincia);
-		final TextView coordenadas = (TextView)this.findViewById(R.id.coordenadas);
-		final TextView cp = (TextView)this.findViewById(R.id.cp);
-		final TextView urlweb = (TextView)this.findViewById(R.id.urlweb);
-		final TextView habitantes = (TextView)this.findViewById(R.id.habitantes);
-		final TextView superficie = (TextView)this.findViewById(R.id.superficie);		
-		final TextView urlwiki = (TextView)this.findViewById(R.id.wikiurl);
-		final AutoCompleteTextView autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
+		deuda = (TextView)this.findViewById(R.id.textodeuda);
+		municipio = (TextView)this.findViewById(R.id.textomunicipio);
+		provincia = (TextView)this.findViewById(R.id.Provincia);
+		coordenadas = (TextView)this.findViewById(R.id.coordenadas);
+		cp = (TextView)this.findViewById(R.id.cp);
+		urlweb = (TextView)this.findViewById(R.id.urlweb);
+		habitantes = (TextView)this.findViewById(R.id.habitantes);
+		superficie = (TextView)this.findViewById(R.id.superficie);		
+		urlwiki = (TextView)this.findViewById(R.id.wikiurl);
+		autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 		urlwiki.setTextColor(Color.BLUE);
 		urlweb.setTextColor(Color.BLUE);
 		//////////////////////////////////////////////
 		indice = getIntent().getIntExtra("indice",0);
 		iduser = getIntent().getIntExtra("user_id",0);
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
-		Button iranoticias = (Button)this.findViewById(R.id.irnoticias);
 		AsinDeuda tarea = null;
 		puebloant= pid;
 		try{
@@ -101,7 +110,7 @@ public class Deuda extends Activity{
 			
 		}
 		
-		iranoticias.setOnClickListener(new OnClickListener() {  
+		b7.setOnClickListener(new OnClickListener() {  
             @Override  
             public void onClick(View v) {  
                 // TODO Auto-generated method stub  
@@ -121,7 +130,8 @@ public class Deuda extends Activity{
 		tarea = new AsinDeuda(this,deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
 				superficie,urlwiki,
 				Singleton.url+":8000/api/pueblos/"+puebloant,this,
-				Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,autotext
+				Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,
+				autotext,b7
 				);
 		tarea.execute();
      
@@ -149,7 +159,11 @@ public class Deuda extends Activity{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				showDialogNSigue(a,"Confirmación","¿Está seguro que quiere seguir este pueblo?");
+				String f =b6.getText().toString();
+				if(!b6.getText().toString().equalsIgnoreCase("Dejar de seguir"))
+					showDialogSigue(a,"Confirmación","¿Está seguro que quiere seguir este pueblo?");
+				if(b6.getText().toString().equalsIgnoreCase("Dejar de seguir"))
+					showDialogNoSigue(a,"Confirmación","¿Está seguro que quiere dejar de seguir este pueblo?");
 			}
 			
 		});		
@@ -173,7 +187,8 @@ public class Deuda extends Activity{
 					AsinDeuda tarea = new AsinDeuda(a,deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
 							superficie,urlwiki,
 							Singleton.url+":8000/api/pueblos/"+puebloant,a,
-							Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,autotext
+							Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,
+							autotext,b7
 							);
 					tarea.execute();
 				}
@@ -250,7 +265,7 @@ public class Deuda extends Activity{
 		});
 	}
 	
-	public void showDialogNSigue(Activity activity, String title, CharSequence message) {
+	public void showDialogSigue(Activity activity, String title, CharSequence message) {
 		AlertDialog.Builder b = new AlertDialog.Builder(Deuda.this);
 		final AlertDialog builder = b.create();
 		b.setTitle(title);
@@ -264,6 +279,27 @@ public class Deuda extends Activity{
 		    public void onClick(DialogInterface dialog, int id) {
 				Asinadd tarea = new Asinadd(
 						Singleton.url+":8000/api/addsigue/"+iduser+"/"+puebloant,a
+						);
+					tarea.execute();
+		    }
+		});
+		b.show();
+	}	
+
+	public void showDialogNoSigue(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Deuda.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Asinadd tarea = new Asinadd(
+						Singleton.url+":8000/api/usuario/borraseguimiento/"+puebloant+"/"+iduser,a
 						);
 					tarea.execute();
 		    }
@@ -294,12 +330,19 @@ public class Deuda extends Activity{
 	{ 
 
 		if(addpueblo){
+			addpueblo=false;
 			Intent i = new Intent(Deuda.this, LPueblos.class);
 			i.putExtra("user_id", iduser);
 			i.putExtra("pb",puebloant);
 			i.putExtra("p_id", pid);
 			startActivity(i);
-
+			AsinDeuda tarea = new AsinDeuda(a,deuda,municipio,provincia,coordenadas,cp,urlweb,habitantes,
+					superficie,urlwiki,
+					Singleton.url+":8000/api/pueblos/"+puebloant,a,
+					Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,
+					autotext,b7
+					);
+			tarea.execute();
 		}
 	}
 
@@ -312,7 +355,7 @@ public class Deuda extends Activity{
 	    private boolean completed;
 	    private Deuda activity;
 	    private Object _response;
-	    Button b6;
+	    Button b6,b7;
 		AutoCompleteTextView pob;
 
 		/*
@@ -323,7 +366,7 @@ public class Deuda extends Activity{
 		public AsinDeuda(Context contexto,TextView deuda,TextView municipio,TextView provincia,
 				TextView coordenadas,TextView cp,TextView urlweb,TextView habitantes,
 				TextView superficie,TextView urlwiki,
-				String url,Deuda activity,String usersigue,Button b6,AutoCompleteTextView t){
+				String url,Deuda activity,String usersigue,Button b6,AutoCompleteTextView t,Button b7){
 			this.usuario = usersigue;
 			this.contexto = contexto;
 			this.deuda = deuda;
@@ -339,6 +382,7 @@ public class Deuda extends Activity{
 			this.activity=activity;
 			this.b6 = b6;
 			this.pob = t;
+			this.b7 = b7;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -393,6 +437,7 @@ public class Deuda extends Activity{
 		  
 		@Override
 		public void onPostExecute(Object response){
+			int numnot=0;
 			try {
 			JSONArray p1 = d.getJSONArray("pueblos");
 			JSONObject pueblo = (JSONObject) p1.get(0);
@@ -407,13 +452,13 @@ public class Deuda extends Activity{
 			JSONObject c=  pueblo.getJSONObject("coordenadas");
 			coordenadas.setText("Longitud: "+c.getDouble("longitud")+" . Latitud: "+c.getDouble("latitud"));
 			///////////////////////////////////////////////////////////////////////
-
+			numnot = pueblo.getInt("n_noticias");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			
+			b7.setText(b7.getText().toString()+" ("+numnot+")");
 	        BDClass admin = new BDClass(contexto,"administracion", null, 1);
 		    SQLiteDatabase db = admin.getReadableDatabase();
 			String sql = "SELECT * FROM pueblos" ;
@@ -437,10 +482,11 @@ public class Deuda extends Activity{
 				b6.setEnabled(true);
 			}
 			else{
-				b6.setEnabled(false);
+				b6.setEnabled(true);
+				b6.setText("Dejar de seguir");
 			}
 
-
+			db1.close();
 			
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
 			pob.setAdapter(adaptador1);
@@ -499,7 +545,7 @@ public class Deuda extends Activity{
 	    private Deuda activity;
 	    private boolean completed;
 	    private Object _response;
-	    JSONObject datosuser;
+	    JSONObject datosuser,html;
 	    private String urlsigue = Singleton.url+":8000/api/logginuser/"+iduser;
 
 		public Asinadd(String url,Deuda activity){
@@ -525,17 +571,24 @@ public class Deuda extends Activity{
 			return null;
 		}
 
-		private void actualizar() throws MalformedURLException, IOException {
-		    InputStream is = new URL(url).openStream();
-		    is.close();
-		}
+		  public void actualizar() throws IOException, JSONException {
+			    InputStream is = new URL(url).openStream();
+			    try {
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			      String jsonText = readAll(rd);
+			       html = new JSONObject(jsonText);
+			    } finally {
+			      is.close();
+			    }
+			  }		  
+
 		
 	    @Override 
 	    protected void onPreExecute() {
 	            //Start the splash screen dialog
 	                pleaseWaitDialog= ProgressDialog.show(activity, 
 	                                                       "Espere un segundo", 
-	                                                       "Agregando pueblo", 
+	                                                       "Actualizando información", 
 	                                                       false);
 
 	    } 
@@ -564,6 +617,7 @@ public class Deuda extends Activity{
 
 
 	    public void onPostExecute(Object response){
+	    	
 	        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
 	        SQLiteDatabase bd = admin.getWritableDatabase();
 	        try{
@@ -578,6 +632,9 @@ public class Deuda extends Activity{
 					bd.execSQL("INSERT INTO siguiendo VALUES ("+f.getInt("id_pueblo")+", '"+f.getString("dspueblo")+"')");
 				}
 			bd.close();
+			
+			String cadena = html.getString("message");
+			Toast.makeText(getApplicationContext(), cadena, Toast.LENGTH_LONG).show();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -585,6 +642,8 @@ public class Deuda extends Activity{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();

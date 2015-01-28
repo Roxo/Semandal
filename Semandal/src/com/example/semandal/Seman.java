@@ -35,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -45,18 +46,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 
-public class Seman extends Activity implements OnItemSelectedListener {
+public class Seman extends Activity {
 	private int idnot,indice,iduser;
 	Asincseman backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	private Spinner spinner1;
-	private int cposicion;
 	private Seman t = this;
 	private List<String> lista2;
-	boolean fromcat = false, fromsend = false;
+	boolean fromsend = false;
 	private LinkedList<Integer> auxiliar=new LinkedList<Integer>(),categorias;
 	ListView lista ;
 	boolean votado = false,from=false;
+	private AutoCompleteTextView categoria;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,8 +70,8 @@ public class Seman extends Activity implements OnItemSelectedListener {
 		iduser = getIntent().getIntExtra("user_id",0);
 		indice = getIntent().getIntExtra("indice",0);
 		lista = (ListView) this.findViewById(R.id.listView1);
-		final EditText categoriacreada = (EditText)this.findViewById(R.id.editText1);
-		Asincseman tarea = new Asincseman(this,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista);
+		categoria = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
+		Asincseman tarea = new Asincseman(this,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista,categoria);
 		tarea.execute();
 
 		b5.setOnClickListener(new View.OnClickListener() {
@@ -79,21 +79,9 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
-				if(cposicion != 0 && !categoriacreada.getText().toString().equalsIgnoreCase("")){
-					 String answer = "Puede seleccionar o crear una categoría no a la vez";
-					 Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
-				}
-				else if(cposicion != 0){
-					int cnew=auxiliar.get(cposicion);
-					String url = Singleton.url+":8000/api/categoriza/"+idnot+"/"+cnew+"/"+iduser;
-					Mandar tarea = new Mandar(url,t);
-					tarea.execute();
-				}
-				else if(!categoriacreada.getText().toString().equalsIgnoreCase("")){
-					String cnew = categoriacreada.getText().toString();
-					cnew = cnew.replace(" ","_");
-					String url = Singleton.url+":8000/api/noticias/"+idnot+"/addcat/"+cnew+"/";
+				if(!categoria.getText().toString().equalsIgnoreCase("")){
+					String cnew = categoria.getText().toString();
+					String url = (Singleton.url+":8000/api/noticias/"+idnot+"/addcat/"+iduser+"/"+cnew).replace(" ","%20");
 					Mandar tarea = new Mandar(url,t);
 					tarea.execute();
 				}
@@ -187,24 +175,11 @@ public class Seman extends Activity implements OnItemSelectedListener {
 	private void onTaskCompleted(Object _response) 
 	{ 
 
-		if(fromcat){
-		   spinner1 = (Spinner) findViewById(R.id.cat);
-		   ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lista2);
-		   adaptador2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		   spinner1.setAdapter(adaptador2);
-		   spinner1.setOnItemSelectedListener(this);
-		   fromcat = false;
-		}
-		if(fromsend){
-			Asincseman tarea = new Asincseman(t,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista);
-			tarea.execute();
+		if(fromsend||from){
 			fromsend=false;
-		}
-		if(from){
-			String answer =  votado ?   "Su votación se ha realizado" :  "Usted ya ha votado esta categoria para esta noticia";
-			Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
-			votado = false;
-			from = false;
+			from =false;
+			Asincseman tarea = new Asincseman(t,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista,(AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1));
+			tarea.execute();
 		}
 	}
 
@@ -218,17 +193,19 @@ public class Seman extends Activity implements OnItemSelectedListener {
 	    private Object _response;
 		private ListView lv;
 		private String[] listacategorias;
+		private AutoCompleteTextView cat;
 
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
-		public Asincseman(Seman activity,String url,ListView lv){
+		public Asincseman(Seman activity,String url,ListView lv,AutoCompleteTextView cat){
 			this.contexto = activity;
             this.activity = activity;
             this.url = url;
             this.lv = lv;
+            this.cat = cat;
 
 		}
 		
@@ -278,8 +255,6 @@ public class Seman extends Activity implements OnItemSelectedListener {
 					Cursor c = db.rawQuery(sql, null);
 					int a = c.getCount();
 					lista2= new ArrayList<String>();
-					lista2.add("Categorias");
-					auxiliar.add(0);
 					if (c.moveToFirst()){
 						do{
 							if(!busca(categorias,c.getInt(0))){
@@ -315,6 +290,10 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto,
 					android.R.layout.simple_list_item_1, listacategorias);
 			lv.setAdapter(adapter);
+			
+			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista2);
+			cat.setAdapter(adaptador1);
+
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
@@ -350,7 +329,6 @@ public class Seman extends Activity implements OnItemSelectedListener {
     private void notifyActivityTaskCompleted() 
     { 
         if ( null != activity ) { 
-        	fromcat = true;
             activity.onTaskCompleted(_response); 
         } 
     } 
@@ -360,21 +338,12 @@ public class Seman extends Activity implements OnItemSelectedListener {
 
 	}
 
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-		String selected = parent.getItemAtPosition(pos).toString();
-        if(parent == this.findViewById(R.id.cat))
-        	cposicion=pos;
-    }
-
-    public void onNothingSelected(AdapterView parent) {
-        // Do nothing.
-    }
-
 	public class Mandar extends AsyncTask<Void, Void, Object> {
 		String url;
 	    private Seman activity;
 	    private boolean completed;
 	    private Object _response;
+		private JSONObject html;
 
 		public Mandar(String url,Seman activity){
 			this.url=url;
@@ -390,14 +359,32 @@ public class Seman extends Activity implements OnItemSelectedListener {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			return null;
 		}
 
-		private void actualizar() throws MalformedURLException, IOException {
-		    InputStream is = new URL(url).openStream();
-		    is.close();
-		}
+		  private String readAll(Reader rd) throws IOException {
+			    StringBuilder sb = new StringBuilder();
+			    int cp;
+			    while ((cp = rd.read()) != -1) {
+			      sb.append((char) cp);
+			    }
+			    return sb.toString();
+			  }
+
+			  public void actualizar() throws IOException, JSONException {
+			    InputStream is = new URL(url).openStream();
+			    try {
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			      String jsonText = readAll(rd);
+			       html = new JSONObject(jsonText);
+			    } finally {
+			      is.close();
+			    }
+			  }
 		
 	    @Override 
 	    protected void onPreExecute() {
@@ -410,6 +397,15 @@ public class Seman extends Activity implements OnItemSelectedListener {
 	    } 
 
 	    public void onPostExecute(Object response){
+	    	try {
+				votado = html.getBoolean("agregado");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String answer =  votado ?   "Se ha agregado la categoría" :  "Usted ya ha agregado esta categoria para esta noticia";
+			Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
+			votado = false;
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
@@ -507,6 +503,10 @@ public class Seman extends Activity implements OnItemSelectedListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			String answer =  votado ?   "Se ha votado la categoría para su borrado" :  "Usted ya ha votado en contra de esta categoria para esta noticia";
+			Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
+            from = true;
+
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
@@ -521,7 +521,6 @@ public class Seman extends Activity implements OnItemSelectedListener {
 	    { 
 	        this.activity = activity; 
 	        if ( completed ) { 
-	            from = true;
 	            notifyActivityTaskCompleted(); 
 	        } 
 	    } 
@@ -546,7 +545,7 @@ public class Seman extends Activity implements OnItemSelectedListener {
 		});
 		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
 		    public void onClick(DialogInterface dialog, int id) {
-		    	wrong_cat k = new wrong_cat(Singleton.url+":8000/api/votacion/"+idnot+"/"+iduser+"/"+c+"/",t);
+		    	wrong_cat k = new wrong_cat((Singleton.url+":8000/api/votacion/"+idnot+"/"+iduser+"/"+c+"/").replace(" ","%20"),t);
 		    	k.execute();
 		    }
 		});

@@ -46,6 +46,7 @@ public class Logueado extends Activity {
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
+		Button b6 = (Button)this.findViewById(R.id.Modificar);
 		iduser = getIntent().getIntExtra("user_id",0);
 		AlmacenUsuario j = new AlmacenUsuario(this);
 		int f = j.GetUsuario();
@@ -91,6 +92,19 @@ public class Logueado extends Activity {
 			
 		});		
 		
+		b6.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Logueado.this, Perfil.class);
+				i.putExtra("user_id", iduser);
+				i.putExtra("indice",indice);
+				startActivity(i);
+			}
+			
+		});		
+
 		b1.setOnClickListener(new View.OnClickListener() {
 
 			@Override

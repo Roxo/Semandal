@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +23,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
@@ -27,14 +32,24 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Perfil extends Activity {
-	int iduser,indice,id,notid;
+	int iduser,indice;
 	private static Asincperfil backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
+	private List<String> lista1;
+	private List<Integer> lista1aux;
+	boolean from = false;
+	TextView municipio;
+	TextView usuario;
+	Perfil t = this;
+	AutoCompleteTextView auto;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,28 +60,43 @@ public class Perfil extends Activity {
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
-		TextView text = (TextView)this.findViewById(R.id.munc);
-		id = getIntent().getIntExtra("id",0);
+		Button exit = (Button)this.findViewById(R.id.modificar);
+		municipio = (TextView)this.findViewById(R.id.munc);
+		usuario = (TextView)this.findViewById(R.id.nperfil);
+		auto = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 		iduser = getIntent().getIntExtra("user_id",0);
 		indice = getIntent().getIntExtra("indice",0);
 		Asincperfil tarea = null;
-		tarea = new Asincperfil(this,(TextView)this.findViewById(R.id.nperfil),
-				text,
-				(TextView) this.findViewById(R.id.puntuacion),
-				(TextView) findViewById(R.id.textView5),
-				(TextView) findViewById(R.id.ln),
-				Singleton.url+":8000/api/usuario/"+id,this
-				);
+		tarea = new Asincperfil(this,municipio,usuario,auto,
+				Singleton.url+":8000/api/usuario/"+iduser);
 		tarea.execute();
+	
+		
+		exit.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				String pueblo = auto.getText().toString().replace(" ","%20");
+				if(!auto.getText().toString().equalsIgnoreCase("")){
+					Cambiar tarea = new Cambiar(Singleton.url+":8000/api/usuario/mprincipal/"+iduser+"/"+pueblo,t);
+					tarea.execute();
+				}
+			}
+			
+		});		
+		
 		b1.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Perfil.this, Amigos.class);
+			/*	Intent i = new Intent(Perfil.this, Amigos.class);
 				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
+				startActivity(i);*/
+				Intent i = new Intent(Perfil.this, Nolog.class);
 				startActivity(i);
+
 			}
 			
 		});		
@@ -125,13 +155,19 @@ public class Perfil extends Activity {
 
 		void onTaskCompleted(Object _response) 
 		{ 
-
+			if(from){
+				from = false;
+				Asincperfil tarea = new Asincperfil(this,municipio,usuario,auto,
+						Singleton.url+":8000/api/usuario/"+iduser);
+				tarea.execute();
+			}
 		}
 
 	public class Asincperfil extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
-		TextView nombre,puntuacion,comentario,noticia,municipio;
+		TextView nombre,municipio;
+		 AutoCompleteTextView auto;
 		JSONObject perfil;
 	    private Perfil activity;
 	    private boolean completed;
@@ -142,20 +178,17 @@ public class Perfil extends Activity {
 		 * 
 		 * */
 		
-		public Asincperfil(Context contexto,TextView nombre,TextView municipio,
-				TextView puntuacion,TextView comentario,TextView noticia,String url,Perfil activity){
-			this.contexto = contexto;
-			this.nombre = nombre;
-			this.puntuacion = puntuacion;
-			this.comentario = comentario;
-			this.noticia = noticia;
-			this.municipio = municipio;
-			this.url = url;
-			this.activity = activity;
-			
+		  public Asincperfil(Perfil perfil2, TextView municipio2,
+				TextView usuario, AutoCompleteTextView auto, String string) {
+			  this.contexto = perfil2;
+			  this.activity = perfil2;
+			  this.nombre = usuario;
+			  this.auto = auto;
+			  this.municipio = municipio2;
+			  this.url = string;
 		}
-		
-		  private String readAll(Reader rd) throws IOException {
+
+		private String readAll(Reader rd) throws IOException {
 			    StringBuilder sb = new StringBuilder();
 			    int cp;
 			    while ((cp = rd.read()) != -1) {
@@ -195,27 +228,35 @@ public class Perfil extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			String nombre="",municipio="",puntuacion="",comentario="",noticia="";
+				String name = "",mun = "";
+		        BDClass admin = new BDClass(contexto,"administracion", null, 1);
+			    SQLiteDatabase db = admin.getReadableDatabase();
+				String sql = "SELECT * FROM pueblos" ;
+				Cursor c = db.rawQuery(sql, null);
+				int a = c.getCount();
+				lista1= new ArrayList<String>();
+				lista1aux= new ArrayList<Integer>();
+				if (c.moveToFirst()){
+					do{
+						lista1.add(c.getString(1));
+						lista1aux.add(c.getInt(0));
+					}while(c.moveToNext());
+				}
+				db.close();
+			
 			try {
-				nombre = perfil.getString("dsusuario");
-				municipio = perfil.getString("dspueblo");
-				JSONArray comentarios = perfil.getJSONArray("comentarios_recientes");
-				JSONObject k = comentarios.getJSONObject(comentarios.length()-1);
-				comentario = k.getString("comentario");
-				JSONArray noticias = perfil.getJSONArray("noticias");
-				JSONObject l = noticias.getJSONObject(noticias.length()-1);
-				noticia = l.getString("dstitular");
-				notid = l.getInt("idnoticia");
-
+				name = perfil.getString("dsusuario");
+				mun = perfil.getString("dspueblo");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
-			this.nombre.setText(nombre);
-			this.puntuacion.setText(puntuacion);
-			this.municipio.setText(municipio);
-			this.comentario.setText(comentario);
-			this.noticia.setText(noticia);
+			this.nombre.setText(name);
+			this.municipio.setText(mun);
+			
+			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
+			auto.setAdapter(adaptador1);
+
 	           completed = true;
 	            _response = response;
 	            notifyActivityTaskCompleted();
@@ -260,5 +301,102 @@ public class Perfil extends Activity {
 		}
 
 
+	public class Cambiar extends AsyncTask<Void, Void, Object> {
+		String url;
+	    private Perfil activity;
+	    private boolean completed;
+	    private Object _response;
+	    private JSONObject html;
 
+		public Cambiar(String url, Perfil t){
+			this.url=url;
+			this.activity = t;
+		}
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				try {
+					actualizar();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		  private String readAll(Reader rd) throws IOException {
+			    StringBuilder sb = new StringBuilder();
+			    int cp;
+			    while ((cp = rd.read()) != -1) {
+			      sb.append((char) cp);
+			    }
+			    return sb.toString();
+			  }
+
+			  public void actualizar() throws IOException, JSONException {
+			    InputStream is = new URL(url).openStream();
+			    try {
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			      String jsonText = readAll(rd);
+			       html = new JSONObject(jsonText);
+			    } finally {
+			      is.close();
+			    }
+			  }
+		
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Modificando municipio principal", 
+	                                                       false);
+
+	    } 
+
+	    public void onPostExecute(Object response){
+	    	Boolean votado = false;
+	    	String answer="";
+	    	try {
+				votado = html.getBoolean("ret");
+				answer = html.getString("message");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
+            from = true;
+
+            completed = true;
+            _response = response;
+            notifyActivityTaskCompleted();
+        //Close the splash screen
+        if (pleaseWaitDialog != null)
+        {
+            pleaseWaitDialog.dismiss();
+            pleaseWaitDialog = null;
+        }
+	    }
+	    public void setActivity(Perfil activity) 
+	    { 
+	        this.activity = activity; 
+	        if ( completed ) { 
+	            notifyActivityTaskCompleted(); 
+	        } 
+	    } 
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	            activity.onTaskCompleted(_response); 
+	        } 
+	    } 
+	}
 }

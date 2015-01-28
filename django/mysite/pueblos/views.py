@@ -53,7 +53,8 @@ def consultaprovincia(pbls,pr):
 		wiki = 'No existe'
 		if p.wiki != None:
 			wiki = p.wiki
-		obj = '"id": '+str(p.id)+', "dspueblo" : "'+str(p.dspueblo.encode("utf8"))+'","coordenadas":{"longitud":'+str(p.longitud)+',"latitud":'+str(p.latitud)+'}, "url":"'+url.encode("utf8")+'", "opencms":'+opcms+', "habitantes":'+str(p.habitantes)+', "deuda":'+str(p.deuda)+', "deudaxhab":'+str(float(p.deuda)/float(p.densidad))+', "fecha_inscripcion":"'+str(p.fecha_ins)+'", "superficie":'+str(p.superficie).encode('utf8')+', "wiki":"'+str(wiki.encode("utf8"))+'", "cp":'+str(p.cp)
+		noticias = Noticias.objects.filter(pueblo = p)
+		obj = '"id": '+str(p.id)+', "dspueblo" : "'+str(p.dspueblo.encode("utf8"))+'","coordenadas":{"longitud":'+str(p.longitud)+',"latitud":'+str(p.latitud)+'}, "url":"'+url.encode("utf8")+'", "opencms":'+opcms+', "habitantes":'+str(p.habitantes)+', "deuda":'+str(p.deuda)+', "deudaxhab":'+str(float(p.deuda)/float(p.densidad))+', "fecha_inscripcion":"'+str(p.fecha_ins)+'", "superficie":'+str(p.superficie).encode('utf8')+', "wiki":"'+str(wiki.encode("utf8"))+'", "cp":'+str(p.cp)+',"n_noticias":'+str(len(noticias))
 		obj = '{'+obj+'},'
 		r = r+obj
 		obj=''
@@ -322,23 +323,52 @@ def getnot(request,n_id):
 	agregarabd("api/noticias/"+n_id)
 	return HttpResponse(obj)
 
-def nuevacategoria(request,id_n,categoria):
+def nuevacategoria(request,id_n,id_u,categoria):
 	try:
-		categoria = categoria.replace("_"," ")
 		c = Categorias_semandal.objects.filter(dscategoria__icontains = categoria)
+		n=Noticias.objects.filter(id=id_n)[0]
 		if len(c) == 0:
-			n=Noticias.objects.filter(id=id_n)[0]
 			newcat = Categorias_semandal(dscategoria=categoria)
 			newcat.save()
 		else:
-			newcat = c
+			newcat = c[0]
+		instancias = NC.objects.filter(noticia=n)
+		if len(instancias) == 1:
+			if instancias[0].categoria.id == 53:
+				instancias.delete()
 		nuevanoticia = NC(noticia = n,categoria=newcat,confirmada=Status.objects.filter(id=1)[0])
-		nuevanoticia.save()	
+		nuevanoticia.save()
+		u=Usuario.objects.filter(id=id_u)[0]
+		addcategoriza = Classify(id_n = n, id_user = u, c_new = newcat)
+		addcategoriza.save()
 		return HttpResponse('{"agregado":true}')
-	except:		
+	except:
 		return HttpResponse('{"agregado":false}')
 
-
+def votaciones(request,id_n,id_u,id_c):
+	try:
+		n=Noticias.objects.filter(id=id_n)[0]
+		u=Usuario.objects.filter(id=id_u)[0]
+		c=Categorias_semandal.objects.filter(id=id_c)[0]
+		filtraCategorizacion = Classify.objects.filter(id_n=n,id_user = u, c_new = c)
+		if len(filtraCategorizacion) != 1:
+			v = Votaciones(id_n=n,id_user=u,categoria=c,votacion=True)
+			v.save()
+		else:
+			BorrarNC = NC.objects.filter(noticia = n)
+		if len(BorrarNC) == 1:
+			BorrarNC = NC.objects.filter(noticia = n, categoria = c)
+			BorrarNC.delete()
+			c=Categorias_semandal.objects.filter(id=53)[0]
+			t = NC(noticia=n,categoria=c,confirmada=Status.objects.filter(id=1)[0])
+			t.save()
+		else:
+			BorrarNC = NC.objects.filter(noticia = n, categoria = c)
+			BorrarNC.delete()
+		filtraCategorizacion.delete()
+		return HttpResponse('{"agregado":true}')
+	except:
+		return HttpResponse('{"agregado":false}')	
 ####################################################MODIFICAR GET CATEGORIAS ###########################################
 def get_noticias(noticias):
 	obj = ''
@@ -692,11 +722,15 @@ def siguiendo(request,id_u):
 	return HttpResponse(devolver)
 
 def addsig(request,id_p,id_u):
-	usuario = Usuario.objects.filter(id=id_u)[0]
-	pueblo = Pueblo.objects.filter(id=id_p)[0]
-	u = SigP(id_user=usuario,id_p=pueblo)
-	u.save()
-	return HttpResponse("agregado")
+	try:
+		usuario = Usuario.objects.filter(id=id_u)[0]
+		pueblo = Pueblo.objects.filter(id=id_p)[0]
+		u = SigP(id_user=usuario,id_p=pueblo)
+		u.save()
+	except:
+		return HttpResponse('{"ret":false,"message":"No se ha podido procesar su solicitud"}')
+	return HttpResponse('{"ret":true,"message":"Siguiendo el pueblo: '+pueblos.busqueda+'"}')
+
 
 def addliked(request,id_u,id_n):
 	try:
@@ -735,16 +769,6 @@ def categorizar(request,id_n,id_cnew,id_u):
 	c.save()
 	return HttpResponse('{"agregado":true}')
 
-def votaciones(request,id_n,id_u,id_c):
-	try:
-		n=Noticias.objects.filter(id=id_n)[0]
-		u=Usuario.objects.filter(id=id_u)[0]
-		c=Categorias_semandal.objects.filter(id=id_c)[0]
-		v = Votaciones(id_n=n,id_user=u,categoria=c,votacion=True)
-		v.save()
-	except:
-		return HttpResponse('{"agregado":false}')
-	return HttpResponse('{"agregado":true}')
 
 def catfromnot(request,id_n):
 	try:
@@ -791,3 +815,31 @@ def llamadas(request):
 	obj = '{"llamadas":['+obj+']}'
 	agregarabd("api/busqueda")
 	return HttpResponse(obj)
+
+def borrasig(request,id_p,id_u):
+	sigo = SigP.objects.filter(id_user__id = id_u)
+	if len(sigo) == 1:
+		return HttpResponse('{"ret":false,"message":"Debe seguir al menos un pueblo"}')
+	usuario = Usuario.objects.filter(id = id_u, pueblo__id = id_p)
+	if len(usuario) == 1:
+		return HttpResponse('{"ret":false,"message":"No puede eliminar su pueblo. Puede modificarlo en la pantalla principal"}')
+	sigo = SigP.objects.filter(id_user__id = id_u, id_p__id = id_p)
+	sigo.delete()
+	pueblo = Pueblo.objects.filter(id = id_p)
+	return HttpResponse('{"ret":true,"message":"Ha dejado de seguir '+pueblo[0].busqueda+'"}')
+
+def mdfy(request,id_u,pueblo):
+	try:
+		u = Usuario.objects.filter(id = id_u,pueblo__busqueda = pueblo)
+		if len(u) != 0:
+			return HttpResponse('{"ret":false,"message":"Este ya es su municipio principal"}')
+		u = Usuario.objects.filter(id = id_u)		
+		p = Pueblo.objects.filter(busqueda = pueblo)[0]
+		u.update(pueblo = p)
+		sigue = SigP.objects.filter(id_user__id = id_u,id_p = p)
+		if len(sigue)==0:
+			new = SigP(id_user=u[0],id_p=p)
+			new.save()
+	except:
+		return HttpResponse('{"ret":false,"message":"Ha ocurrido un error en la operacion"}')
+	return HttpResponse('{"ret":true,"message":"Cambio de municipio principal realizado correctamente"}')
