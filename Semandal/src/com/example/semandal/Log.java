@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.semandal.Bnolog.AsincBnolog;
+import com.example.semandal.aux.AlmacenUsuario;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
@@ -30,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -54,8 +56,14 @@ public class Log extends Activity {
 		Button loguear = (Button)this.findViewById(R.id.entrar);
 		Button registrarse = (Button)this.findViewById(R.id.registro);
 		TextView notificacion = (TextView)this.findViewById(R.id.notificacion);
-		final EditText user = (EditText)this.findViewById(R.id.idnombre);
+		final AutoCompleteTextView user = (AutoCompleteTextView)this.findViewById(R.id.idnombre);
 		final EditText pass = (EditText)this.findViewById(R.id.password);
+		AlmacenUsuario j = new AlmacenUsuario(this);
+		String[] us = new String[1];
+		us[0]=j.GetUsuario().split("-")[0];
+		ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,us);
+		user.setAdapter(adaptador1);
+
 		try{
 			message =getIntent().getStringExtra("mn");
 		}catch(Exception e){

@@ -50,7 +50,7 @@ public class Nolog extends Activity {
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.activity_nolog);
 		AlmacenUsuario j = new AlmacenUsuario(this);
-		j.GuardarUsuario(0);
+		j.GuardaridUsuario(0);
 		Button b1 = (Button)this.findViewById(R.id.loggin);
 		Button b2 = (Button)this.findViewById(R.id.info);
 		Button b3 = (Button)this.findViewById(R.id.busqueda);

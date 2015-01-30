@@ -1661,9 +1661,8 @@ containing a value of this type.
         public static final int Pob=0x7f090057;
         public static final int Provincia=0x7f090060;
         public static final int Pueblo=0x7f09008e;
-        public static final int TextView01=0x7f090091;
-        public static final int TextView02=0x7f090092;
-        public static final int TextView03=0x7f090093;
+        public static final int TextView01=0x7f090092;
+        public static final int TextView02=0x7f090093;
         public static final int Tit_nolog=0x7f09004d;
         public static final int Usuario=0x7f09008d;
         public static final int action_bar=0x7f090033;
@@ -1701,7 +1700,8 @@ containing a value of this type.
         public static final int c1=0x7f090096;
         public static final int c2=0x7f090098;
         public static final int cat=0x7f09004e;
-        public static final int categoria=0x7f090090;
+        public static final int categoria=0x7f090091;
+        public static final int checkBox1=0x7f090090;
         public static final int checkbox=0x7f09002b;
         public static final int codigo=0x7f090063;
         public static final int collapseActionView=0x7f090015;
@@ -1868,31 +1868,34 @@ containing a value of this type.
         public static final int activity_buser=0x7f03001b;
         public static final int activity_comentarios=0x7f03001c;
         public static final int activity_comentarios_nolog=0x7f03001d;
-        public static final int activity_deuda=0x7f03001e;
-        public static final int activity_display_not_log=0x7f03001f;
-        public static final int activity_display_not_nolog=0x7f030020;
-        public static final int activity_informacion=0x7f030021;
-        public static final int activity_lnoticias=0x7f030022;
-        public static final int activity_log=0x7f030023;
-        public static final int activity_logueado=0x7f030024;
-        public static final int activity_lpueblos=0x7f030025;
-        public static final int activity_main=0x7f030026;
-        public static final int activity_nolog=0x7f030027;
-        public static final int activity_perfil=0x7f030028;
-        public static final int activity_plantilla__comment=0x7f030029;
-        public static final int activity_plantilla_amigos=0x7f03002a;
-        public static final int activity_plantilla_dispnot=0x7f03002b;
-        public static final int activity_plantilla_dispnotnula=0x7f03002c;
-        public static final int activity_plantilla_inicio=0x7f03002d;
-        public static final int activity_registro=0x7f03002e;
-        public static final int activity_seman=0x7f03002f;
-        public static final int support_simple_spinner_dropdown_item=0x7f030030;
+        public static final int activity_dcategorias=0x7f03001e;
+        public static final int activity_deuda=0x7f03001f;
+        public static final int activity_display_not_log=0x7f030020;
+        public static final int activity_display_not_nolog=0x7f030021;
+        public static final int activity_informacion=0x7f030022;
+        public static final int activity_lnoticias=0x7f030023;
+        public static final int activity_log=0x7f030024;
+        public static final int activity_logueado=0x7f030025;
+        public static final int activity_lpueblos=0x7f030026;
+        public static final int activity_main=0x7f030027;
+        public static final int activity_nolog=0x7f030028;
+        public static final int activity_perfil=0x7f030029;
+        public static final int activity_plantilla__comment=0x7f03002a;
+        public static final int activity_plantilla_amigos=0x7f03002b;
+        public static final int activity_plantilla_check_cat=0x7f03002c;
+        public static final int activity_plantilla_dispnot=0x7f03002d;
+        public static final int activity_plantilla_dispnotnula=0x7f03002e;
+        public static final int activity_plantilla_inicio=0x7f03002f;
+        public static final int activity_registro=0x7f030030;
+        public static final int activity_seman=0x7f030031;
+        public static final int support_simple_spinner_dropdown_item=0x7f030032;
     }
     public static final class menu {
         public static final int buscnolog=0x7f0c0000;
         public static final int info=0x7f0c0001;
         public static final int nolog=0x7f0c0002;
-        public static final int registro=0x7f0c0003;
+        public static final int plantilla_check_cat=0x7f0c0003;
+        public static final int registro=0x7f0c0004;
     }
     public static final class string {
         public static final int Amigos=0x7f0a001c;
@@ -1974,15 +1977,15 @@ containing a value of this type.
         public static final int comment=0x7f0a0010;
         public static final int confpass=0x7f0a0017;
         public static final int correo=0x7f0a001f;
-        public static final int error_field_required=0x7f0a004f;
-        public static final int error_incorrect_password=0x7f0a004e;
-        public static final int error_invalid_email=0x7f0a004c;
-        public static final int error_invalid_password=0x7f0a004d;
+        public static final int error_field_required=0x7f0a0051;
+        public static final int error_incorrect_password=0x7f0a0050;
+        public static final int error_invalid_email=0x7f0a004e;
+        public static final int error_invalid_password=0x7f0a004f;
         public static final int hello_world=0x7f0a0026;
         public static final int pass=0x7f0a001e;
         /**  Strings related to login 
          */
-        public static final int prompt_email=0x7f0a004b;
+        public static final int prompt_email=0x7f0a004d;
         public static final int registrarse=0x7f0a0020;
         public static final int relacionada=0x7f0a0014;
         public static final int title_activity_amigos=0x7f0a003b;
@@ -1994,6 +1997,7 @@ containing a value of this type.
         public static final int title_activity_categoriza=0x7f0a0045;
         public static final int title_activity_comentarios=0x7f0a0038;
         public static final int title_activity_comentarios_nolog=0x7f0a003e;
+        public static final int title_activity_dcategorias=0x7f0a004a;
         public static final int title_activity_deuda=0x7f0a003a;
         public static final int title_activity_display_not_log=0x7f0a0037;
         public static final int title_activity_display_not_nolog=0x7f0a003d;
@@ -2002,7 +2006,7 @@ containing a value of this type.
         public static final int title_activity_listnoticias=0x7f0a0034;
         public static final int title_activity_lnoticias=0x7f0a0035;
         public static final int title_activity_log=0x7f0a0043;
-        public static final int title_activity_login=0x7f0a004a;
+        public static final int title_activity_login=0x7f0a004c;
         public static final int title_activity_logueado=0x7f0a0030;
         public static final int title_activity_lpueblos=0x7f0a0047;
         public static final int title_activity_main=0x7f0a0044;
@@ -2010,6 +2014,7 @@ containing a value of this type.
         public static final int title_activity_perfil=0x7f0a003c;
         public static final int title_activity_plantilla__comment=0x7f0a003f;
         public static final int title_activity_plantilla_amigos=0x7f0a0041;
+        public static final int title_activity_plantilla_check_cat=0x7f0a004b;
         public static final int title_activity_plantilla_dispnot=0x7f0a0040;
         public static final int title_activity_plantilla_dispnotnula=0x7f0a0048;
         public static final int title_activity_plantilla_inicio=0x7f0a0049;

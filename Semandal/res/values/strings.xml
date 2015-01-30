@@ -60,5 +60,7 @@
     <string name="title_activity_lpueblos">LPueblos</string>
     <string name="title_activity_plantilla_dispnotnula">Plantilla_dispnotnula</string>
     <string name="title_activity_plantilla_inicio">Plantilla_inicio</string>
+    <string name="title_activity_dcategorias">DCategorias</string>
+    <string name="title_activity_plantilla_check_cat">Plantilla_checkCat</string>
 
 </resources>

@@ -38,6 +38,8 @@ public class Logueado extends Activity {
 	int pid=0,notid=0,iduser=0;
 	private static Asinlog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
+	private String nombreuser = "";
+	AlmacenUsuario j;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,11 +50,7 @@ public class Logueado extends Activity {
 		Button b5 = (Button)this.findViewById(R.id.button1);
 		Button b6 = (Button)this.findViewById(R.id.Modificar);
 		iduser = getIntent().getIntExtra("user_id",0);
-		AlmacenUsuario j = new AlmacenUsuario(this);
-		int f = j.GetUsuario();
-		if(iduser != f){
-			j.GuardarUsuario(iduser);
-		}
+		j = new AlmacenUsuario(this);
 		TextView bienvenida=(TextView) this.findViewById(R.id.bienvenida);
 		TextView noticia=(TextView) this.findViewById(R.id.noticias);
 		TextView pueblo=(TextView) this.findViewById(R.id.pueblo);
@@ -178,7 +176,11 @@ public class Logueado extends Activity {
 
 		void onTaskCompleted(Object _response) 
 		{ 
-
+			int f = Integer.parseInt(j.GetUsuario().split("-")[1]);
+			if(iduser != f){
+				j.GuardaridUsuario(iduser);
+				j.GuardarStringUsuario(nombreuser);
+			}
 		}
 
 	public class Asinlog extends AsyncTask<Void, Void, Object> {
@@ -273,6 +275,7 @@ public class Logueado extends Activity {
 				}
 				notid=datosuser.getInt("notid");
 				pid=datosuser.getInt("pid");
+				nombreuser = datosuser.getString("dsusuario");
 				bienvenida.setText("Bienvenido "+datosuser.getString("dsusuario"));
 			    noticia.setText(datosuser.getString("dstitular"));
 			    pueblo.setText("Municipio: "+datosuser.getString("dspueblo"));
