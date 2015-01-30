@@ -78,7 +78,6 @@
 	    android:id="@+id/municipio"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
 	    android:text="Municipio:"
 	    android:textAppearance="?android:attr/textAppearanceMedium" />
             
@@ -86,6 +85,7 @@
 	    android:id="@+id/textomunicipio"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 	<TextView
@@ -99,6 +99,7 @@
 	    android:id="@+id/Provincia"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	
@@ -114,6 +115,7 @@
 	    android:id="@+id/textodeuda"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
 
 		
@@ -129,6 +131,7 @@
 	    android:id="@+id/cp"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
 	    android:textAppearance="?android:attr/textAppearanceMedium" />
 		
 
@@ -149,6 +152,7 @@
 	    android:id="@+id/habitantes"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
 	    android:textAppearance="?android:attr/textAppearanceMedium" />
 	
 	<TextView
@@ -164,6 +168,7 @@
 	    android:id="@+id/superficie"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
 	    android:textAppearance="?android:attr/textAppearanceMedium" />
 
 	<TextView
@@ -204,24 +209,28 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:text="Latitud:"
+	    android:layout_gravity="right"
 	    android:textAppearance="?android:attr/textAppearanceSmall" />	
 	    
 	<TextView
 	    android:id="@+id/latitud"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
 	    android:textAppearance="?android:attr/textAppearanceMedium" />
 	<TextView
 	    android:id="@+id/lon"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:text="Longitud:"
+	    android:layout_gravity="right"
 	    android:textAppearance="?android:attr/textAppearanceSmall" />	
 	
 		<TextView
 	    android:id="@+id/longitud"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
 	    android:textAppearance="?android:attr/textAppearanceMedium"/>
 		
  
@@ -240,6 +249,7 @@
 	    android:layout_above="@+id/button1"
 	    android:layout_alignParentLeft="true"
 	    android:layout_alignParentRight="true"
+	    android:layout_gravity="center"
 	    android:ems="10"
 	    android:hint="Pueblo" >
 

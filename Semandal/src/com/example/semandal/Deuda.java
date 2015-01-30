@@ -462,7 +462,7 @@ public class Deuda extends Activity{
 				e.printStackTrace();
 			}
 
-			b7.setText(b7.getText().toString()+" ("+numnot+")");
+			b7.setText("Ver sus noticias ("+numnot+")");
 	        BDClass admin = new BDClass(contexto,"administracion", null, 1);
 		    SQLiteDatabase db = admin.getReadableDatabase();
 			String sql = "SELECT * FROM pueblos" ;
@@ -628,7 +628,8 @@ public class Deuda extends Activity{
 	        	admin.onCreate(bd);
 	        }catch(Exception e){}
 			bd.execSQL("DELETE FROM siguiendo");
-	        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Todos"+"')");
+	        bd.execSQL("INSERT INTO siguiendo VALUES ("+(-1)+", '"+"Todos"+"')");
+	        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Sigo"+"')");
 			try {
 				JSONArray psig = datosuser.getJSONArray("siguiendo");
 				for (int i = 0;i<psig.length(); i++){

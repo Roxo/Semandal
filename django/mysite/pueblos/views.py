@@ -566,7 +566,7 @@ def lastcomment(request):
 		return HttpResponse(obj)
 
 
-def busqueda(resques,datos):
+def busqueda(resques,datos,int1,int2):
 	kwargs={}
 	datos = datos[1:len(datos)-1]
 	c=[]
@@ -584,7 +584,7 @@ def busqueda(resques,datos):
 				kwargs['noticia__fecha'] = i.split(':')[1]
 			else:
 				return HttpResponse('{"ret":false,"comentario":"datos por parametros erroneos"}')
-		n = NC.objects.filter(**kwargs).order_by("noticia__fecha").reverse()
+		n = NC.objects.filter(**kwargs).order_by("noticia__fecha").reverse()[int1:int2]
 		if len(n) is not 0:
 			r = filternoticiabusqueda(n)
 			r = '{"ret":true,"resultado":['+r+']}'
@@ -776,7 +776,7 @@ def sig(request,id_p,id_u):
 	return HttpResponse(devolver)
 
 def siguiendo(request,id_u):
-	pueblos = SigP.objects.filter(id_user__id = id_u)
+	pueblos = SigP.objects.filter(id_user__id = id_u).order_by("id_p__dspueblo")
 	r=''
 	obj=''
 	for p in pueblos:
@@ -858,14 +858,14 @@ def denuncia(resquest,id_u,id_c):
 
 #####################EXPERIMENTO 20 NOTICIAS DE TODOS LOS PUEBLOS QUE SIGO
 
-def todosnot(request,id_u):
+def todosnot(request,id_u,init,fin):
 	consultas = []
 	sigo = SigP.objects.filter(id_user__id = id_u)
 	for i in sigo:
 		tupla = ('pueblo_id__id',str(i.id_p.id))
 		consultas.append(tupla)
 	mylist = [Q(x) for x in consultas]
-	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[:20]
+	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[init:fin]
 	r = filternoticia(n)
 	r = '{"ret":true,"resultado":['+r+']}'
 	return HttpResponse(r)
@@ -908,3 +908,9 @@ def mdfy(request,id_u,pueblo):
 	except:
 		return HttpResponse('{"ret":false,"message":"Ha ocurrido un error en la operacion"}')
 	return HttpResponse('{"ret":true,"message":"Cambio de municipio principal realizado correctamente"}')
+
+def todasnoticias(request,init,fin):
+	n = Noticias.objects.all()[init:fin]
+	r = filternoticia(n)
+	r = '{"ret":true,"resultado":['+r+']}'
+	return HttpResponse(r)

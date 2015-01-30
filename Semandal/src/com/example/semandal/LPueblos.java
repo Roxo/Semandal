@@ -264,6 +264,7 @@ public class LPueblos extends Activity {
 			int a = c.getCount();
 			if (c.moveToFirst()){
 				c.moveToNext();
+				c.moveToNext();
 				do{
 					lista2.add(c.getString(1));
 					lista2aux.add(c.getInt(0));

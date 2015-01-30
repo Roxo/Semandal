@@ -57,7 +57,7 @@ public class Logueado extends Activity {
 		TextView noticia=(TextView) this.findViewById(R.id.noticias);
 		TextView pueblo=(TextView) this.findViewById(R.id.pueblo);
 		Asinlog tarea = null;
-		final int indice = getIntent().getIntExtra("indice", 0);
+		final int indice = getIntent().getIntExtra("indice", -1);
 		tarea = new Asinlog(b5,this,bienvenida,noticia,pueblo,
 				Singleton.url+":8000/api/logginuser/"+iduser,this
 				);
@@ -255,7 +255,8 @@ public class Logueado extends Activity {
 		        	admin.onCreate(bd);
 		        }catch(Exception e){}
 				bd.execSQL("DELETE FROM siguiendo");
-		        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Todos"+"')");
+		        bd.execSQL("INSERT INTO siguiendo VALUES ("+(-1)+", '"+"Todos"+"')");
+		        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Sigo"+"')");
 				try {
 					JSONArray psig = datosuser.getJSONArray("siguiendo");
 					for (int i = 0;i<psig.length(); i++){

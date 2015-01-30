@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +36,8 @@ import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -50,11 +53,16 @@ public class Lnoticias extends Activity {
 	ArrayList<String> lista1= new ArrayList<String>();
 	LinkedList<Integer> aux1list = new LinkedList<Integer>();
 	String datos,pueblonuevo;
-	
+	ListView lista;
 	int iduser,pid,indice;
-	boolean fbusqueda=false,noeffect;
+	boolean fbusqueda=false,noeffect=false,completado = false,roto = false;
 	private static AsincLN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
+	TextView resultados;
+	int start, last;
+	Lnoticias a = this;
+	List<Noticia> mandar;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,16 +79,17 @@ public class Lnoticias extends Activity {
 		pueblonuevo = getIntent().getStringExtra("pueblito");
 		if(pueblonuevo==null)
 			pueblonuevo = "";
+		start = 0;
+		last = 11;
+		mandar = new ArrayList<Noticia>();
 		TextView fl = (TextView)this.findViewById(R.id.fl);
 		TextView fr = (TextView)this.findViewById(R.id.fr);
-		TextView resultados = (TextView)this.findViewById(R.id.resultados);
+		resultados = (TextView)this.findViewById(R.id.resultados);
 		indice = getIntent().getIntExtra("indice",0);
 		fbusqueda = getIntent().getBooleanExtra("busqueda",false);
-		
-		final ListView lista = (ListView)this.findViewById(R.id.listView1);
-		AsincLN tarea = null;
-		tarea = new AsincLN(this,resultados,
-				Singleton.url+":8000/api/busqueda/"+datos,lista, this
+		lista = (ListView)this.findViewById(R.id.listView1);
+		AsincLN tarea = new AsincLN(resultados,
+				(Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last).replace(" ","%20"),lista, this
 				);
 		tarea.execute();
 
@@ -105,7 +114,7 @@ public class Lnoticias extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(indice == 0)
+				if(indice == -1)
 					indice = lista1.size()-1;
 				else
 					indice -= 1;
@@ -176,6 +185,7 @@ public class Lnoticias extends Activity {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Lnoticias.this, Blog.class);
 				i.putExtra("user_id", iduser);
+				i.putExtra("indice",indice);
 				startActivity(i);
 			}
 			
@@ -183,44 +193,61 @@ public class Lnoticias extends Activity {
 		
 		lista.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
-		        if (!noeffect) {
+		        try{
+			        int k =  (Integer) lista.getAdapter().getItem(pos);
+		        	auxlist.get(k);
+		        }catch(Exception E){		        	
+		        	String string = "No existen noticias con estas características" +
+	        			"realice una búsqueda con otras especificaciones.";
+	        	Toast.makeText(getApplicationContext(), string, Time.SECOND).show();
+		        }
 		    	Intent i= new Intent(Lnoticias.this,Display_not_log.class);
 		        int k =  (Integer) lista.getAdapter().getItem(pos);
 		        i.putExtra("id",auxlist.get(k));
 				i.putExtra("user_id", iduser);
-				startActivity(i);
-				noeffect = true;
-
-				}
-		        else{
-		        	String string = "No existen noticias con estas características" +
-		        			"realice una búsqueda con otras especificaciones.";
-		        	Toast.makeText(getApplicationContext(), string, Time.SECOND).show();
-		        }
+				startActivity(i);	   
+				
 		    }
+		    
 		});
+		
+		 lista.setOnScrollListener(new OnScrollListener(){
+			 private int currentFirstVisibleItem;
+			private int currentVisibleItemCount;
+			private int currentScrollState;
 
-	}
-	public void onPause(){
-		super.onPause();
-		if (pleaseWaitDialog != null)
-			pleaseWaitDialog.dismiss();
-	}
+			@Override
+			 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+	           if(completado){
+	        	   if ((firstVisibleItem + visibleItemCount) >= totalItemCount) {
+	        			   start += 10;
+	        			   last +=10;
+	        			   AsincLN tarea = new AsincLN(resultados,
+	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last).replace(" ","%20"),lista, a
+	        					   );
+	        			   tarea.execute();	
+	        			   completado = false;
+	        			
+	        		   
+	            }
+	           }
 
-	public void onResume(){
-		super.onResume();
-		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
-			if(pleaseWaitDialog != null)
-				pleaseWaitDialog.show();
-		}
+			}
+
+				public void onScrollStateChanged(AbsListView view, int scrollState) {
+				    this.currentScrollState = scrollState;
+				    this.isScrollCompleted();
+				 }
+
+				private void isScrollCompleted() {
+				    if (this.currentVisibleItemCount > 0 && this.currentScrollState == SCROLL_STATE_IDLE) {
+				    }
+				}
+			 
+		 });
 	}
 	
-	private void onTaskCompleted(Object _response) 
-	{ 
-
-	}
-
-
+	
 	public class AsincLN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
@@ -235,9 +262,9 @@ public class Lnoticias extends Activity {
 		 * 
 		 * */
 		
-		public AsincLN(Context contexto,TextView resultados,
+		public AsincLN(TextView resultados,
 				String urlcomment,ListView lista,Lnoticias activity){
-			this.contexto = contexto;
+			this.contexto = activity;
 			this.url = urlcomment;
 			this.lista = lista;			
 			this.activity = activity;
@@ -272,6 +299,7 @@ public class Lnoticias extends Activity {
 
 		@Override
 		protected Void doInBackground(Void... params) {
+			try {
 			BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
 		    SQLiteDatabase db = admin.getReadableDatabase();
 			String sql = "SELECT * FROM siguiendo " ;
@@ -285,12 +313,13 @@ public class Lnoticias extends Activity {
 				}while(c.moveToNext());
 			}
 			db.close();
-			if(indice == 0 && !fbusqueda)
-				url = Singleton.url+":8000/api/"+iduser+"/noticias";
+			if(indice == -1 && !fbusqueda)
+				url = Singleton.url+":8000/api/noticias/"+start+"/"+last;
+			else if(indice == 0 && !fbusqueda)
+				url = Singleton.url+":8000/api/"+iduser+"/noticias/"+start+"/"+last;
 			else if(!fbusqueda)
-				url = Singleton.url+":8000/api/busqueda/"+"(id_p:"+aux1list.get(indice)+")";
+				url = Singleton.url+":8000/api/busqueda/"+"(id_p:"+aux1list.get(indice)+")/"+start+"/"+last;
 			fbusqueda = false;
-			try {
 				leercomentario();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -306,7 +335,9 @@ public class Lnoticias extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			if(indice == 0 && !fbusqueda)
+			if(indice == -1 && !fbusqueda)
+				resultados.setText("Todas las noticias");
+			else if(indice == 0 && !fbusqueda)
 				resultados.setText("Noticias de Mis Pueblos");
 			else if(!fbusqueda)
 				resultados.setText(lista1.get(indice));
@@ -316,9 +347,9 @@ public class Lnoticias extends Activity {
 				resultados.setText("resultados");
 
 
-			List<Noticia> mandar = new ArrayList<Noticia>();
 			Noticia k;
 			try {
+				
 				if(Noticias.getBoolean("ret")){
 					JSONArray lcoment = Noticias.getJSONArray("resultado");
 					for(int i = 0; i<lcoment.length();i++){
@@ -339,17 +370,18 @@ public class Lnoticias extends Activity {
 				}
 				else{
 					noeffect = true;
-					k = new Noticia(0,"","Esta consulta no tiene noticias",0,0,"","");
+					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","");
 					mandar.add(k);
 					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
+					roto = true;
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			
-			  completed = true;
+				
+			     completed = true;
 	            _response = response;
 	            notifyActivityTaskCompleted();
 	        //Close the splash screen
@@ -383,7 +415,10 @@ public class Lnoticias extends Activity {
 	   //Notify activity of async task completion
 	    private void notifyActivityTaskCompleted() 
 	    { 
-	        if ( null != activity ) { 
+	        if ( null != activity ) { 	 
+	        	if(!roto)
+	        	completado = true;
+
 	            activity.onTaskCompleted(_response); 
 	        } 
 	    } 
@@ -394,6 +429,23 @@ public class Lnoticias extends Activity {
 		}
 
 
+	public void onPause(){
+		super.onPause();
+		if (pleaseWaitDialog != null)
+			pleaseWaitDialog.dismiss();
+	}
+
+	public void onResume(){
+		super.onResume();
+		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
+		}
+	}
+	
+	private void onTaskCompleted(Object _response) 
+	{ 
+	}
 
 	
 }

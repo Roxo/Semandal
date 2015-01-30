@@ -33,7 +33,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -42,20 +44,29 @@ public class Bnologres extends Activity{
 	LinkedList<Integer> auxlist = new LinkedList<Integer>();
 	private static AsincBNL backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	boolean nonotice = false;
+	boolean nonotice = false,completado=false,roto=false;
+	ListView lista;
+	int start, last;
+	Bnologres a = this;
+	List<Noticia> mandar;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_bnologres);
-		String datos = getIntent().getStringExtra("datos");
+		mandar = new ArrayList<Noticia>();
+		final String datos = getIntent().getStringExtra("datos");
 		Button b4 = (Button)this.findViewById(R.id.button1);
 		Button b1 = (Button)this.findViewById(R.id.loggin);
 		Button b2 = (Button)this.findViewById(R.id.info);
 		Button b3 = (Button)this.findViewById(R.id.busqueda);
-		final ListView lista = (ListView)this.findViewById(R.id.listView1);
+		lista = (ListView)this.findViewById(R.id.listView1);
+		start = 0;
+		last = 11;
+
 		AsincBNL tarea = null;
 		tarea = new AsincBNL(this,
-				Singleton.url+":8000/api/busqueda/"+datos,lista, this
+				Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last,lista, this
 				);
 		tarea.execute();
 
@@ -102,19 +113,58 @@ public class Bnologres extends Activity{
 		
 		lista.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
-		        if(!nonotice){
+		        try{
+			        int k =  (Integer) lista.getAdapter().getItem(pos);
+			        auxlist.get(k);
+		        }catch(Exception E){
+		        	String string = "No existen noticias con estas características" +
+		        			"realice una búsqueda con otras especificaciones.";
+		        	Toast.makeText(getApplicationContext(), string, Time.SECOND).show();
+
+		        }
 		    	Intent i= new Intent(Bnologres.this,Display_not_nolog.class);
 		        int k =  (Integer) lista.getAdapter().getItem(pos);
 		        i.putExtra("id",auxlist.get(k));
 				startActivity(i);
-		        }else{
-		        	String string = "No existen noticias con estas características" +
-		        			"realice una búsqueda con otras especificaciones.";
-		        	Toast.makeText(getApplicationContext(), string, Time.SECOND).show();
-		        }
 
 		    }
 		});
+		
+		 lista.setOnScrollListener(new OnScrollListener(){
+			 private int currentFirstVisibleItem;
+			private int currentVisibleItemCount;
+			private int currentScrollState;
+
+			@Override
+			 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+	           if(completado){
+	        	   if ((firstVisibleItem + visibleItemCount) >= totalItemCount) {
+	        			   start += 10;
+	        			   last +=10;
+	        			   AsincBNL tarea = new AsincBNL(a,
+	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last).replace(" ","%20"),lista, a
+	        					   );
+	        			   tarea.execute();	
+	        			   completado = false;
+	        			
+	        		   
+	            }
+	           }
+
+			}
+
+				public void onScrollStateChanged(AbsListView view, int scrollState) {
+				    this.currentScrollState = scrollState;
+				    this.isScrollCompleted();
+				 }
+
+				private void isScrollCompleted() {
+				    if (this.currentVisibleItemCount > 0 && this.currentScrollState == SCROLL_STATE_IDLE) {
+				    }
+				}
+			 
+		 });
+
 		
 	}
 	
@@ -205,7 +255,6 @@ public class Bnologres extends Activity{
 
 		@Override
 		public void onPostExecute(Object response){
-			List<Noticia> mandar = new ArrayList<Noticia>();
 			Noticia k;
 			try {
 				JSONArray lcoment = Noticias.getJSONArray("resultado");
@@ -223,9 +272,10 @@ public class Bnologres extends Activity{
 				}
 				if(lcoment.length()==0){
 					nonotice = true;
-					k = new Noticia(0,"","Esa busqueda no tiene resultado",0,0,"","");
+					k = new Noticia(0,"","Esa busqueda no tiene más resultados",0,0,"","");
 					mandar.add(k);
 					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
+					roto = true;
 				}else{
 					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
 				}
@@ -271,6 +321,9 @@ public class Bnologres extends Activity{
 	    private void notifyActivityTaskCompleted() 
 	    { 
 	        if ( null != activity ) { 
+	        	if(!roto)
+	        		completado = true;
+
 	            activity.onTaskCompleted(_response); 
 	        } 
 	    } 
