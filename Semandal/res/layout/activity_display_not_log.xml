@@ -71,13 +71,13 @@
         android:layout_alignParentRight="true"
         android:text="@string/comment" />
     
-        <Button
+       <Button
         android:id="@+id/button2"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/imageView1" 
+        android:layout_below="@+id/textView3" 
         android:text="Votamé" />
 
     <TextView
@@ -94,9 +94,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/button1"
+        android:layout_below="@+id/button2"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button2" >
+        android:layout_alignParentRight="true" >
 
         <LinearLayout
             android:id="@+id/LinearScroll"
@@ -154,9 +154,8 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/mas"
-        android:layout_alignBottom="@+id/mas"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/imageView1" 
         android:text="Pueblo: "
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -164,9 +163,11 @@
         android:id="@+id/mas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/scroll"
-        android:layout_toRightOf="@+id/textView3"
-        android:text="+"
+        android:layout_alignBaseline="@+id/textView3"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_below="@+id/imageView1" 
+        android:layout_alignRight="@+id/button1"
+        android:text="   +"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

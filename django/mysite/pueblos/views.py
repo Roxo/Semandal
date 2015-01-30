@@ -9,6 +9,7 @@ from pueblos.models import Comentarios
 from pueblos.models import Llamadas
 from pueblos.models import Categoria
 from pueblos.models import Amigode
+from pueblos.models import Versions
 from django.http import Http404
 import datetime
 from datetime import datetime
@@ -910,7 +911,19 @@ def mdfy(request,id_u,pueblo):
 	return HttpResponse('{"ret":true,"message":"Cambio de municipio principal realizado correctamente"}')
 
 def todasnoticias(request,init,fin):
-	n = Noticias.objects.all()[init:fin]
+	n = Noticias.objects.all().order_by("fecha").reverse()[init:fin]
 	r = filternoticia(n)
 	r = '{"ret":true,"resultado":['+r+']}'
 	return HttpResponse(r)
+
+def versiones(request):
+	try:
+		v = Versions.objects.all()
+		r = ""
+		for k in v:
+			n = '{"TName":"'+k.tabla+'","version":'+str(k.version)+"},"
+			r = r+n
+		r = r[0:len(r)-1]
+		return HttpResponse('{"ret":true,"versiones":['+r+']}')
+	except:
+		return HttpResponse('{"ret":false}')

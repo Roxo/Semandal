@@ -62,7 +62,7 @@ public class Bnologres extends Activity{
 		Button b3 = (Button)this.findViewById(R.id.busqueda);
 		lista = (ListView)this.findViewById(R.id.listView1);
 		start = 0;
-		last = 11;
+		last = 9;
 
 		AsincBNL tarea = null;
 		tarea = new AsincBNL(this,

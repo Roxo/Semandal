@@ -55,7 +55,7 @@ public class Lnoticias extends Activity {
 	String datos,pueblonuevo;
 	ListView lista;
 	int iduser,pid,indice;
-	boolean fbusqueda=false,noeffect=false,completado = false,roto = false;
+	boolean fbusqueda=false,noeffect=false,completado = false,roto = false,first = true;
 	private static AsincLN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	TextView resultados;
@@ -80,7 +80,7 @@ public class Lnoticias extends Activity {
 		if(pueblonuevo==null)
 			pueblonuevo = "";
 		start = 0;
-		last = 11;
+		last = 9;
 		mandar = new ArrayList<Noticia>();
 		TextView fl = (TextView)this.findViewById(R.id.fl);
 		TextView fr = (TextView)this.findViewById(R.id.fr);
@@ -160,6 +160,7 @@ public class Lnoticias extends Activity {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Lnoticias.this, LPueblos.class);
 				i.putExtra("user_id", iduser);
+				i.putExtra("indice",indice);
 				startActivity(i);
 			}
 			

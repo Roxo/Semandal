@@ -1633,12 +1633,17 @@ containing a value of this type.
         public static final int abc_textfield_search_activated_mtrl_alpha=0x7f020030;
         public static final int abc_textfield_search_default_mtrl_alpha=0x7f020031;
         public static final int abc_textfield_search_material=0x7f020032;
-        public static final int bandera_and=0x7f020033;
-        public static final int fleft=0x7f020034;
-        public static final int fright=0x7f020035;
-        public static final int gradiente=0x7f020036;
-        public static final int ic_launcher=0x7f020037;
-        public static final int portada=0x7f020038;
+        public static final int activado=0x7f020033;
+        public static final int bandera_and=0x7f020034;
+        public static final int desactivado=0x7f020035;
+        public static final int fleft=0x7f020036;
+        public static final int focused=0x7f020037;
+        public static final int fright=0x7f020038;
+        public static final int gradiente=0x7f020039;
+        public static final int ic_launcher=0x7f02003a;
+        public static final int mybutton=0x7f02003b;
+        public static final int portada=0x7f02003c;
+        public static final int pulsado=0x7f02003d;
     }
     public static final class id {
         public static final int Amigos=0x7f090043;
@@ -1650,7 +1655,7 @@ containing a value of this type.
         public static final int NUsuario=0x7f090053;
         public static final int Nombre=0x7f090054;
         public static final int Nombreyapellidos=0x7f09008f;
-        public static final int Noticia=0x7f090076;
+        public static final int Noticia=0x7f090077;
         public static final int Noticias=0x7f090044;
         public static final int Perfilde=0x7f090086;
         public static final int Pob=0x7f090057;
@@ -1684,7 +1689,7 @@ containing a value of this type.
         public static final int autoCompleteTextView1=0x7f090047;
         public static final int autor1=0x7f090097;
         public static final int autor2=0x7f090099;
-        public static final int b1=0x7f090078;
+        public static final int b1=0x7f090079;
         public static final int beginning=0x7f09001b;
         public static final int bienvenida=0x7f090082;
         public static final int blog=0x7f09004a;
@@ -1720,7 +1725,7 @@ containing a value of this type.
         public static final int expanded_menu=0x7f09002a;
         public static final int fc1=0x7f09009c;
         public static final int fc2=0x7f09009b;
-        public static final int fecha=0x7f090074;
+        public static final int fecha=0x7f090075;
         public static final int fl=0x7f09007c;
         public static final int fr=0x7f09007d;
         public static final int hab=0x7f090065;
@@ -1790,13 +1795,13 @@ containing a value of this type.
         public static final int superficie=0x7f090068;
         public static final int tabMode=0x7f09000c;
         public static final int textView1=0x7f090061;
-        public static final int textView2=0x7f090077;
-        public static final int textView3=0x7f090079;
+        public static final int textView2=0x7f090078;
+        public static final int textView3=0x7f090074;
         public static final int textView4=0x7f09009a;
         public static final int textodeuda=0x7f090062;
         public static final int textomunicipio=0x7f09005e;
         public static final int title=0x7f090029;
-        public static final int titular=0x7f090075;
+        public static final int titular=0x7f090076;
         public static final int top=0x7f09001f;
         public static final int up=0x7f090001;
         public static final int urlweb=0x7f09006a;

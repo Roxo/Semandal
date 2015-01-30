@@ -128,3 +128,7 @@ class Denuncias_C(models.Model):
 	id_user = models.ForeignKey(Usuario)
 	class Meta:
 		unique_together = ('id_user', 'comentario')
+
+class Versions(models.Model):
+	tabla = models.CharField(max_length=20,null = False)
+	version = models.PositiveIntegerField(default = 1, null = False)
