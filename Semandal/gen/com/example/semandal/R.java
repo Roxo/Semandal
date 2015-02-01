@@ -1636,14 +1636,16 @@ containing a value of this type.
         public static final int activado=0x7f020033;
         public static final int bandera_and=0x7f020034;
         public static final int desactivado=0x7f020035;
-        public static final int fleft=0x7f020036;
-        public static final int focused=0x7f020037;
-        public static final int fright=0x7f020038;
-        public static final int gradiente=0x7f020039;
-        public static final int ic_launcher=0x7f02003a;
-        public static final int mybutton=0x7f02003b;
-        public static final int portada=0x7f02003c;
-        public static final int pulsado=0x7f02003d;
+        public static final int edit=0x7f020036;
+        public static final int fleft=0x7f020037;
+        public static final int focused=0x7f020038;
+        public static final int fright=0x7f020039;
+        public static final int gradiente=0x7f02003a;
+        public static final int gradiente_leido=0x7f02003b;
+        public static final int ic_launcher=0x7f02003c;
+        public static final int mybutton=0x7f02003d;
+        public static final int portada=0x7f02003e;
+        public static final int pulsado=0x7f02003f;
     }
     public static final class id {
         public static final int Amigos=0x7f090043;
@@ -1651,7 +1653,6 @@ containing a value of this type.
         public static final int DwEdit=0x7f090059;
         public static final int Imagebtton=0x7f090041;
         public static final int LinearScroll=0x7f09004b;
-        public static final int Modificar=0x7f090084;
         public static final int NUsuario=0x7f090053;
         public static final int Nombre=0x7f090054;
         public static final int Nombreyapellidos=0x7f09008f;
@@ -1737,6 +1738,7 @@ containing a value of this type.
         public static final int ifRoom=0x7f090016;
         public static final int image=0x7f090025;
         public static final int imageView1=0x7f090045;
+        public static final int imageView2=0x7f090083;
         public static final int info=0x7f090050;
         public static final int irnoticias=0x7f090072;
         public static final int lat=0x7f09006e;
@@ -1770,7 +1772,7 @@ containing a value of this type.
         public static final int progress_circular=0x7f090007;
         public static final int progress_horizontal=0x7f090008;
         public static final int prov=0x7f09005f;
-        public static final int pueblo=0x7f090083;
+        public static final int pueblo=0x7f090084;
         public static final int radio=0x7f09002d;
         public static final int registro=0x7f09005b;
         public static final int resultados=0x7f09007b;

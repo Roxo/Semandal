@@ -132,3 +132,9 @@ class Denuncias_C(models.Model):
 class Versions(models.Model):
 	tabla = models.CharField(max_length=20,null = False)
 	version = models.PositiveIntegerField(default = 1, null = False)
+
+class NVistas(models.Model):
+	noticia = models.ForeignKey(Noticias)
+	usuario = models.ForeignKey(Usuario)
+	class Meta:
+		unique_together = ('usuario', 'noticia')

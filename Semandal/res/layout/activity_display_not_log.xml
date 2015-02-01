@@ -78,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView3" 
-        android:text="Votamé" />
+        android:text="Vótame" />
 
     <TextView
         android:id="@+id/textView1"
@@ -163,10 +163,8 @@
         android:id="@+id/mas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView3"
-        android:layout_alignBottom="@+id/textView3"
-        android:layout_below="@+id/imageView1" 
-        android:layout_alignRight="@+id/button1"
+        android:layout_above="@+id/button2"
+        android:layout_toRightOf="@+id/textView3"
         android:text="   +"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 

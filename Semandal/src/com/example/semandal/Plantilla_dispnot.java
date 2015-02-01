@@ -64,6 +64,13 @@ public class Plantilla_dispnot extends BaseAdapter{
 		textView5.setText(lista.get(position).getPueblo());
 		TextView textView6 =(TextView)view.findViewById(R.id.ncomentarios);
 		textView6.setText(lista.get(position).getNcomentarios());
+		boolean cambiocolor = lista.get(position).isVista();
+		if(cambiocolor){
+			view.setBackgroundResource(R.drawable.gradiente_leido);
+		}
+		else{
+			view.setBackgroundResource(R.drawable.gradiente);
+		}
 		return view;
 		}
 }

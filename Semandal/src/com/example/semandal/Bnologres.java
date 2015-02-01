@@ -66,7 +66,7 @@ public class Bnologres extends Activity{
 
 		AsincBNL tarea = null;
 		tarea = new AsincBNL(this,
-				Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last,lista, this
+				Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/0",lista, this
 				);
 		tarea.execute();
 
@@ -142,7 +142,7 @@ public class Bnologres extends Activity{
 	        			   start += 10;
 	        			   last +=10;
 	        			   AsincBNL tarea = new AsincBNL(a,
-	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last).replace(" ","%20"),lista, a
+	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/0").replace(" ","%20"),lista, a
 	        					   );
 	        			   tarea.execute();	
 	        			   completado = false;
@@ -266,13 +266,14 @@ public class Bnologres extends Activity{
 						int nlikes = coment.getInt("liked");
 						int comentarios =coment.getInt("ncomentarios");
 						String dspueblo = coment.getString("dspueblo");
+						boolean vista = coment.getBoolean("vista");
 						auxlist.add(autor);
-						k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,"",dspueblo);
+						k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,"",dspueblo,vista);
 						mandar.add(k);
 				}
 				if(lcoment.length()==0){
 					nonotice = true;
-					k = new Noticia(0,"","Esa busqueda no tiene más resultados",0,0,"","");
+					k = new Noticia(0,"","Esa busqueda no tiene más resultados",0,0,"","",false);
 					mandar.add(k);
 					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
 					roto = true;

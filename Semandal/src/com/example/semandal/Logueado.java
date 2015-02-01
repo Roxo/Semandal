@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class Logueado extends Activity {
@@ -48,12 +49,13 @@ public class Logueado extends Activity {
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
-		Button b6 = (Button)this.findViewById(R.id.Modificar);
+		ImageView b6 = (ImageView)this.findViewById(R.id.imageView2);
 		iduser = getIntent().getIntExtra("user_id",0);
 		j = new AlmacenUsuario(this);
 		TextView bienvenida=(TextView) this.findViewById(R.id.bienvenida);
 		TextView noticia=(TextView) this.findViewById(R.id.noticias);
 		TextView pueblo=(TextView) this.findViewById(R.id.pueblo);
+		TextView mispueblos=(TextView) this.findViewById(R.id.button2);
 		Asinlog tarea = null;
 		final int indice = getIntent().getIntExtra("indice", -1);
 		tarea = new Asinlog(b5,this,bienvenida,noticia,pueblo,
@@ -62,17 +64,32 @@ public class Logueado extends Activity {
 		tarea.execute();
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		
+		
+		mispueblos.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(Logueado.this, Lnoticias.class);
+				i.putExtra("user_id", iduser);
+				i.putExtra("datos","(id_p:"+pid+")");
+				i.putExtra("busqueda",true);
+				i.putExtra("indice",indice);
+				startActivity(i);
+			}
+
+		});		
+
+		
 		noticia.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				Intent i = new Intent(Logueado.this, Display_not_log.class);
 				i.putExtra("user_id", iduser);
 				i.putExtra("id",notid);
 				i.putExtra("indice",indice);
 				startActivity(i);
-			}
+			}			
 			
 		});		
 	

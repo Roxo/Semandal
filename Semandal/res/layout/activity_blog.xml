@@ -70,9 +70,10 @@
             android:orientation="vertical" >
     
 	<DatePicker
-    android:id="@+id/datePicker1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+	    android:id="@+id/datePicker1"
+	    android:layout_width="match_parent"
+	    android:layout_height="100dp"
+	    android:scaleY="0.5" />
 
     <EditText
         android:id="@+id/Tit_nolog"

@@ -68,7 +68,7 @@
         android:layout_alignBaseline="@+id/ncomentarios"
         android:layout_alignBottom="@+id/ncomentarios"
         android:layout_toLeftOf="@+id/nlikes"
-        android:text="nLikes: "
+        android:text="Votos: "
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView

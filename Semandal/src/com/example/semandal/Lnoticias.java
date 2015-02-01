@@ -89,7 +89,7 @@ public class Lnoticias extends Activity {
 		fbusqueda = getIntent().getBooleanExtra("busqueda",false);
 		lista = (ListView)this.findViewById(R.id.listView1);
 		AsincLN tarea = new AsincLN(resultados,
-				(Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last).replace(" ","%20"),lista, this
+				(Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/"+iduser).replace(" ","%20"),lista, this
 				);
 		tarea.execute();
 
@@ -99,7 +99,7 @@ public class Lnoticias extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if(indice == lista1.size()-1)
-					indice = 0;
+					indice = -2;
 				else
 					indice += 1;
 				Intent i = new Intent(Lnoticias.this, Lnoticias.class);
@@ -115,7 +115,7 @@ public class Lnoticias extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if(indice == -1)
-					indice = lista1.size()-1;
+					indice = lista1.size();
 				else
 					indice -= 1;
 				Intent i = new Intent(Lnoticias.this, Lnoticias.class);
@@ -224,7 +224,7 @@ public class Lnoticias extends Activity {
 	        			   start += 10;
 	        			   last +=10;
 	        			   AsincLN tarea = new AsincLN(resultados,
-	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last).replace(" ","%20"),lista, a
+	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/iduser").replace(" ","%20"),lista, a
 	        					   );
 	        			   tarea.execute();	
 	        			   completado = false;
@@ -315,12 +315,11 @@ public class Lnoticias extends Activity {
 			}
 			db.close();
 			if(indice == -1 && !fbusqueda)
-				url = Singleton.url+":8000/api/noticias/"+start+"/"+last;
+				url = Singleton.url+":8000/api/noticias/"+start+"/"+last+"/"+iduser;
 			else if(indice == 0 && !fbusqueda)
 				url = Singleton.url+":8000/api/"+iduser+"/noticias/"+start+"/"+last;
 			else if(!fbusqueda)
-				url = Singleton.url+":8000/api/busqueda/"+"(id_p:"+aux1list.get(indice)+")/"+start+"/"+last;
-			fbusqueda = false;
+				url = Singleton.url+":8000/api/busqueda/"+"(id_p:"+aux1list.get(indice+1)+")/"+start+"/"+last+"/"+iduser;
 				leercomentario();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -341,12 +340,13 @@ public class Lnoticias extends Activity {
 			else if(indice == 0 && !fbusqueda)
 				resultados.setText("Noticias de Mis Pueblos");
 			else if(!fbusqueda)
-				resultados.setText(lista1.get(indice));
+				resultados.setText(lista1.get(indice+1));
 			else if(!pueblonuevo.equalsIgnoreCase(""))
 				resultados.setText(pueblonuevo);
 			else
 				resultados.setText("resultados");
 
+			fbusqueda = false;
 
 			Noticia k;
 			try {
@@ -363,15 +363,16 @@ public class Lnoticias extends Activity {
 							//String categoria = coment.getString("categoria");
 							String categoria = "";
 							String dspueblo = coment.getString("dspueblo");
+							boolean vista = coment.getBoolean("vista");
 							auxlist.add(autor);
-							k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo);
+							k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo,vista);
 							mandar.add(k);
 					}
 					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
 				}
 				else{
 					noeffect = true;
-					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","");
+					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","",false);
 					mandar.add(k);
 					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
 					roto = true;

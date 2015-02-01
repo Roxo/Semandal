@@ -84,7 +84,7 @@ public class Display_not_log extends Activity {
 		TextView pueblo = (TextView) findViewById(R.id.textView3);
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 				(TextView) findViewById(R.id.Noticia),
-				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
+				(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
 				Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
 				,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
 				pueblo,mas);
@@ -297,24 +297,24 @@ public class Display_not_log extends Activity {
 
 	private void onTaskCompleted(Object _response){
 		if(set){
+			set=false;
 			startActivity(getIntent());
 			AsincronDNN tarea = null;
 			tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 					(TextView) findViewById(R.id.Noticia),
-					(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
+					(TextView) findViewById(R.id.fecha),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
 					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(TextView) findViewById(R.id.mas));
 			tarea.execute();
 
-			set=false;
 		}
 
 	}
 
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
-		String url,urlsig;
-		TextView titview,cuerpview,dateview,puntuacion,cat,mas;
+		String url,urlsig,urlvista="";
+		TextView titview,cuerpview,dateview,cat,mas;
 		Button b7,comentarios;
 		JSONObject html,sig;
 	    private Display_not_log activity;
@@ -329,7 +329,7 @@ public class Display_not_log extends Activity {
 		 * */
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-			TextView dateview,TextView puntuacion, Button b7,
+			TextView dateview, Button b7,String urlvista,
 			String url,String urlsig,Display_not_log activity,ListView lv,
 			Button comentarios,TextView pueblo,TextView mas){
 			this.contexto = contexto;
@@ -339,15 +339,32 @@ public class Display_not_log extends Activity {
 			this.dateview = dateview;
 			this.url = url;
 			this.activity = activity;
-			this.puntuacion = puntuacion;
 			this.b7 = b7;
 			this.urlsig = urlsig;
 			this.lv = lv;
 			this.comentarios = comentarios;
 			this.pueblo = pueblo;
-			
+			this.urlvista = urlvista;
 		}
 		
+		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
+				TextView dateview, Button b7,
+				String url,String urlsig,Display_not_log activity,ListView lv,
+				Button comentarios,TextView pueblo,TextView mas){
+				this.contexto = contexto;
+				this.mas = mas;
+				this.titview = titview;
+				this.cuerpview = cuerpview;
+				this.dateview = dateview;
+				this.url = url;
+				this.activity = activity;
+				this.b7 = b7;
+				this.urlsig = urlsig;
+				this.lv = lv;
+				this.comentarios = comentarios;
+				this.pueblo = pueblo;
+				
+			}
 		  private String readAll(Reader rd) throws IOException {
 			    StringBuilder sb = new StringBuilder();
 			    int cp;
@@ -378,7 +395,12 @@ public class Display_not_log extends Activity {
 				      is.close();
 				    }
 				  }
-
+			  
+			  public void addnoticia() throws IOException, JSONException {
+				    InputStream is = new URL(urlvista).openStream();
+                    is.close();
+				    
+				  }
 		@Override
 		protected Void doInBackground(Void... params) {
 
@@ -387,6 +409,8 @@ public class Display_not_log extends Activity {
 						leernoticia();
 					if(!urlsig.equalsIgnoreCase(""))
 						sigo();
+					if(!urlvista.equalsIgnoreCase(""))
+						addnoticia();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -434,7 +458,7 @@ public class Display_not_log extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			puntuacion.setText(likes);
+			b7.setText("Vótame ("+likes+")");
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);
 		    dateview.setText(fecha);
@@ -532,7 +556,7 @@ public class Display_not_log extends Activity {
 	            //Start the splash screen dialog
 	                pleaseWaitDialog= ProgressDialog.show(activity, 
 	                                                       "Espere un segundo", 
-	                                                       "Guardando su 'me gusta'", 
+	                                                       "Guardando su voto", 
 	                                                       false);
 
 	    } 

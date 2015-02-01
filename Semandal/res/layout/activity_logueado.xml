@@ -58,7 +58,7 @@
         android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/button1"
+        android:layout_above="@+id/button2"
         android:layout_below="@+id/imageView1" >
 
    <LinearLayout
@@ -76,21 +76,22 @@
         android:text="Bienvenido"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    <ImageView
+        android:id="@+id/imageView2"
+         android:layout_marginTop="30dp"
+         android:layout_marginLeft="200dp"
+        android:layout_width="28dp"
+        android:layout_height="29dp"
+        android:src="@drawable/edit" />
+
     <TextView
         android:id="@+id/pueblo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/bienvenida"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="52dp"
         android:text="Pueblo"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Button
-        android:id="@+id/Modificar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Modificar municipio principal" />
 
     <TextView
         android:id="@+id/textView1"
@@ -123,5 +124,13 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:text="Buscador de noticias" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_centerHorizontal="true"
+        android:text="Otras noticias de mi municipio" />
 
 </RelativeLayout>
