@@ -47,6 +47,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Bnolog extends Activity implements OnItemSelectedListener {
 	private static AsincBnolog backgroundTask;
@@ -58,9 +59,9 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 	private List<String> lista1,lista2;
 	private List<Integer> lista1aux,auxiliar=new LinkedList<Integer>();
 	String año = "",mes="",dia="";
-	DatePicker yourDatepicker;
+
 	AutoCompleteTextView autotext;
-	@SuppressLint("NewApi")
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 	   super.onCreate(savedInstanceState);
@@ -70,8 +71,6 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 		Button b3 = (Button)this.findViewById(R.id.busqueda);
 		Button resultado = (Button)this.findViewById(R.id.button1);
 		Titular = (EditText)this.findViewById(R.id.Tit_nolog);
-		yourDatepicker = (DatePicker)this.findViewById(R.id.datePicker1);
-		yourDatepicker.setCalendarViewShown(false);
 		autotext  = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 		AsincBnolog tarea = null;
 		tarea = new AsincBnolog(this,autotext);
@@ -81,8 +80,54 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 			
 			@Override
 			public void onClick(View v) {
-				showDialog(a,"Confimarción","quiere usar ésta fecha en la búsqueda");
+				
+				boolean cancel = false;
+				EditText fi = (EditText)a.findViewById(R.id.fdesde);
+				EditText ff = (EditText)a.findViewById(R.id.fhasta);
+				View focusView = null;
+				
+				if (!confirm(fi.getText().toString())) {
+					fi.setError(getString(R.string.error_date_format));
+					focusView = fi;
+					cancel = true;
+				}
+				if (!confirm(ff.getText().toString())) {
+					ff.setError(getString(R.string.error_date_format));
+					focusView = ff;
+					cancel = true;
+				}
 
+				if (cancel) {
+					// There was an error; don't attempt login and focus the first
+					// form field with an error.
+					focusView.requestFocus();
+				} else {
+					pasarbusqueda(fi.getText().toString(),ff.getText().toString());
+				}
+			}
+
+			private boolean confirm(String string) {
+				if(string.equalsIgnoreCase(""))
+					return true;
+				try{
+					String[] a = string.split("-");
+					if(a.length == 3){
+						if(a[0].length() <= 2){
+							if(a[1].length() <=2){
+								if(a[2].length() == 4)
+									return true;
+								else
+									return false;
+							}else
+								return false;
+						}
+						else
+							return false;
+					}else
+						return false;
+				}catch(Exception e){
+					return false;
+				}
 			}
 
 		}); 
@@ -119,10 +164,18 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 		
 	}
 	
-	private void pasarbusqueda(String Fecha){
+	private void pasarbusqueda(String finit,String ffin){
 		String titular = "";
 		Integer idcat=0;
 		Integer idpueblo =0;
+		try{
+		finit = convertdate(finit);
+		}
+		catch(Exception e){}
+		try{
+		ffin = convertdate(ffin);
+		}
+		catch(Exception e){}
 		titular = Titular.getText().toString();
 		String pueblo = autotext.getText().toString();
 		int p = 0;
@@ -138,18 +191,41 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 		String stringfinal ="";
 		if(!titular.equals(""))
 			stringfinal = stringfinal+"_t:"+titular+",";
-		if(!Fecha.equals(""))
-			stringfinal = stringfinal+"_d:"+Fecha+",";
+		
+		if (!finit.equals(""))
+			if(ffin.equals(""))
+				ffin = finit;
+		
+		if(!ffin.equals(""))
+			if (finit.equals(""))
+				finit = ffin;
+		
+		if(!finit.equals("")&&!ffin.equals("")){
+			stringfinal = stringfinal+"_d:"+finit+":"+ffin+",";
+		}
+
 		if(idpueblo != 0)
 			stringfinal = stringfinal+"id_p:"+idpueblo+",";
 		if(idcat != 0)
 			stringfinal = stringfinal+"id_c:"+idcat+",";
-		stringfinal = stringfinal.substring(0,stringfinal.length()-1);
-		stringfinal = "("+stringfinal+")";
-		Intent i = new Intent(Bnolog.this, Bnologres.class);
-		i.putExtra("datos",stringfinal);
-		startActivity(i);
+		if(stringfinal.equals("")){
+			 String answer = "Necesita seleccionar al menos un campo";
+			 Toast.makeText(this.getApplicationContext(), answer, Toast.LENGTH_LONG).show();
+		}
+		else{
+			stringfinal = stringfinal.substring(0,stringfinal.length()-1);
+			stringfinal = "("+stringfinal+")";
+			Intent i = new Intent(Bnolog.this, Lnoticias.class);
+			i.putExtra("datos",stringfinal);
+			i.putExtra("busqueda",true);
+			startActivity(i);
+		}
 	}
+	private String convertdate(String ffin) {
+		String[] fecha = ffin.split("-");
+		return (fecha[2]+"-"+fecha[1]+"-"+fecha[0]);
+	}
+
 	private int buscapuebloid(String pueblo) {
 		boolean encontrado = false;
 		int i = 0;
@@ -164,28 +240,6 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 	}
 
 	
-	public void showDialog(Activity activity, String title, CharSequence message) {
-		AlertDialog.Builder b = new AlertDialog.Builder(Bnolog.this);
-		final AlertDialog builder = b.create();
-		b.setTitle(title);
-		b.setMessage(message);
-		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-		    	pasarbusqueda("");
-		    	builder.cancel();
-		    }
-		});
-		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-				dia = ""+yourDatepicker.getDayOfMonth();
-				mes = ""+(yourDatepicker.getMonth()+1);
-				año = ""+yourDatepicker.getYear();
-		    	pasarbusqueda(año+"-"+mes+"-"+dia);
-		    	builder.cancel();
-		    }
-		});
-		b.show();
-	}	
 
 public void onPause(){
 	super.onPause();

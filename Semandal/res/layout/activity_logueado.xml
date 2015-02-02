@@ -57,47 +57,57 @@
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/button2"
+        android:layout_height="match_parent"        
+        android:layout_above="@+id/textView2"
         android:layout_below="@+id/imageView1" >
 
    <LinearLayout
-            android:id="@+id/LinearScroll"
-            android:layout_width="match_parent"
-            android:layout_height="388dp"
-            android:orientation="vertical" >
+       android:id="@+id/LinearScroll"
+       android:layout_above="@+id/textView2"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical" >
 
     <TextView
         android:id="@+id/bienvenida"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/imageView1"
         android:text="Bienvenido"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-         android:layout_marginTop="30dp"
-         android:layout_marginLeft="200dp"
-        android:layout_width="28dp"
-        android:layout_height="29dp"
-        android:src="@drawable/edit" />
-
-    <TextView
-        android:id="@+id/pueblo"
+  
+     <TextView
+        android:id="@+id/mun"
         android:layout_width="wrap_content"
+        android:layout_marginTop="32dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/bienvenida"
-        android:layout_centerHorizontal="true"
-        android:text="Pueblo"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="Municipio:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    
+    <LinearLayout
+            android:id="@+id/Linearlyout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
 
+       <TextView
+           android:id="@+id/pueblo"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:textAppearance="?android:attr/textAppearanceLarge" />
+
+       <ImageView
+           android:id="@+id/imageView2"
+           android:layout_width="25dp"
+           android:layout_height="25dp"
+           android:layout_alignParentRight="true"
+           android:src="@drawable/edit" />
+
+</LinearLayout>
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/pueblo"
         android:layout_marginTop="32dp"
         android:text="Última noticia de su municipio:"
@@ -105,12 +115,10 @@
 
     <TextView
         android:id="@+id/noticias"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView1"
         android:text="@string/Notrec"
+        android:background="@drawable/gradiente"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
          	
@@ -122,15 +130,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Buscador de noticias" />
+        android:layout_alignParentRight="true"
+        android:text="Buscador" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_centerHorizontal="true"
-        android:text="Otras noticias de mi municipio" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="Otras de mi Municipio" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button2"
+        android:layout_alignParentLeft="true"
+        android:text="Noticias:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

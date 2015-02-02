@@ -66,15 +66,29 @@
         <LinearLayout
             android:id="@+id/LinearScroll"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical" >
-    
-	<DatePicker
-	    android:id="@+id/datePicker1"
-	    android:layout_width="match_parent"
-	    android:layout_height="100dp"
-	    android:scaleY="0.5" />
-
+            
+    <EditText
+        android:id="@+id/fdesde"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Fecha desde: DD-MM-AAAA"
+        android:maxLines="1"
+        android:singleLine="true" />
+        
+     <EditText
+        android:id="@+id/fhasta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Fecha hasta: DD-MM-AAAA"
+        android:maxLines="1"
+        android:singleLine="true" />
+            
     <EditText
         android:id="@+id/Tit_nolog"
         android:layout_width="match_parent"
@@ -83,9 +97,7 @@
         android:ems="10"
         android:hint="@string/Titular"
         android:maxLines="1"
-        android:singleLine="true" >
-
-    </EditText>
+        android:singleLine="true" ></EditText>
 
     <AutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"

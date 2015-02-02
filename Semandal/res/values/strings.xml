@@ -7,6 +7,7 @@
     <string name="ap1">Primer Apellido</string>
     <string name="ap2">Segundo Apellido</string>
     <string name="relacionada">Ver noticia relacionada</string>
+    <string name="error_date_format">Formato de fecha erroneo</string>
     <string name="Enviar">Enviar!</string>
     <string name="User">Usuario</string>
     <string name="confpass">Confirmar Password</string>

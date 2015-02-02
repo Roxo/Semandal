@@ -276,9 +276,11 @@ public class Bnologres extends Activity{
 					k = new Noticia(0,"","Esa busqueda no tiene más resultados",0,0,"","",false);
 					mandar.add(k);
 					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
+					lista.setSelectionFromTop(start-1, 0);
 					roto = true;
 				}else{
 					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
+					lista.setSelectionFromTop(start-1, 0);
 				}
 
 			} catch (JSONException e) {

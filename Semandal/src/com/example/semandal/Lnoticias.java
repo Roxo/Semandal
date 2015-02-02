@@ -224,7 +224,7 @@ public class Lnoticias extends Activity {
 	        			   start += 10;
 	        			   last +=10;
 	        			   AsincLN tarea = new AsincLN(resultados,
-	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/iduser").replace(" ","%20"),lista, a
+	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/"+iduser).replace(" ","%20"),lista, a
 	        					   );
 	        			   tarea.execute();	
 	        			   completado = false;
@@ -345,9 +345,6 @@ public class Lnoticias extends Activity {
 				resultados.setText(pueblonuevo);
 			else
 				resultados.setText("resultados");
-
-			fbusqueda = false;
-
 			Noticia k;
 			try {
 				
@@ -369,12 +366,14 @@ public class Lnoticias extends Activity {
 							mandar.add(k);
 					}
 					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
+					lista.setSelectionFromTop(start-1, 0);
 				}
 				else{
 					noeffect = true;
 					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","",false);
 					mandar.add(k);
 					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
+					lista.setSelectionFromTop(start-1, 0);
 					roto = true;
 				}
 			} catch (JSONException e) {

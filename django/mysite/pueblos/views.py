@@ -583,7 +583,7 @@ def busqueda(resques,datos,int1,int2,id_user):
 			elif "_t" in i:
 				kwargs['noticia__dstitular__icontains'] = i.split(':')[1]
 			elif "_d" in i:
-				kwargs['noticia__fecha'] = i.split(':')[1]
+				kwargs['noticia__fecha__range'] = (i.split(':')[1],i.split(':')[2])
 			else:
 				return HttpResponse('{"ret":false,"comentario":"datos por parametros erroneos"}')
 		n = NC.objects.filter(**kwargs).order_by("noticia__fecha").reverse()[int1:int2]
@@ -607,7 +607,7 @@ def filternoticiabusqueda(n,u):
 			cuerpo = "noticia sin cuerpo"
 			fecha = "noticia sin fecha"
 			vista = "false"
-			if(u != 0):
+			if str(u) != "0":
 				us = Usuario.objects.filter(id = u)[0]
 				watch = NVistas.objects.filter(noticia = noticia.noticia, usuario = us)
 				if len(watch) == 1:
@@ -647,7 +647,7 @@ def filternoticia(n,u):
 				fecha = fecha.split("-")
 				fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
 			vista = "false"
-			if(u != 0):
+			if str(u) != "0":
 				us = Usuario.objects.filter(id = u)[0]
 				watch = NVistas.objects.filter(noticia = noticia, usuario = us)
 				if len(watch) == 1:

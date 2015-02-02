@@ -295,7 +295,7 @@ public class Logueado extends Activity {
 				nombreuser = datosuser.getString("dsusuario");
 				bienvenida.setText("Bienvenido "+datosuser.getString("dsusuario"));
 			    noticia.setText(datosuser.getString("dstitular"));
-			    pueblo.setText("Municipio: "+datosuser.getString("dspueblo"));
+			    pueblo.setText(datosuser.getString("dspueblo"));
 			    iduser=datosuser.getInt("id");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
