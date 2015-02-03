@@ -163,23 +163,27 @@ public class MainActivity extends Activity {
 			        SQLiteDatabase bd = admin.getWritableDatabase();
 					bd.execSQL("DELETE FROM pueblos");
 					bd.execSQL("DELETE FROM categorias");
-					int npueblos = pueblos.getInt("npueblos");
-					int ncategorias = categorias.getInt("ncategorias");
-					if(npueblos!=0 && vpmine != vpactual){
-						JSONArray p = pueblos.getJSONArray("pueblos");
-						for(int i = 0;i<npueblos;i++){
-							JSONObject f = (JSONObject)p.get(i);
-							bd.execSQL("INSERT INTO pueblos VALUES ("+f.getInt("idpueblo")+", '"+f.getString("nombre")+"')");
+					if(vpmine!=vpactual){
+						int npueblos = pueblos.getInt("npueblos");
+						if(npueblos!=0){
+							JSONArray p = pueblos.getJSONArray("pueblos");
+							for(int i = 0;i<npueblos;i++){
+								JSONObject f = (JSONObject)p.get(i);
+								bd.execSQL("INSERT INTO pueblos VALUES ("+f.getInt("idpueblo")+", '"+f.getString("nombre")+"')");
+							}
 						}
 					}
-					if(ncategorias!=0&&vcmine!=vcactual){
-						JSONArray c = categorias.getJSONArray("categorias");
-						for(int i = 0;i<ncategorias;i++){
-							JSONObject f = (JSONObject)c.get(i);
-							String cat = f.getString("dscategoria");
-							int idcat = f.getInt("id_categoria");
-							if(idcat != 53)
-								bd.execSQL("INSERT INTO categorias VALUES ("+idcat+", '"+cat+"')");
+					if(vcmine!=vcactual){
+						int ncategorias = categorias.getInt("ncategorias");
+						if(ncategorias!=0){
+							JSONArray c = categorias.getJSONArray("categorias");
+							for(int i = 0;i<ncategorias;i++){
+								JSONObject f = (JSONObject)c.get(i);
+								String cat = f.getString("dscategoria");
+								int idcat = f.getInt("id_categoria");
+								if(idcat != 53)
+									bd.execSQL("INSERT INTO categorias VALUES ("+idcat+", '"+cat+"')");
+							}
 						}
 					}
 					bd.close();

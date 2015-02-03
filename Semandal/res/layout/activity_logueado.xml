@@ -118,6 +118,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/Notrec"
+        android:textColor="#FFF"
+    	android:textStyle="bold|italic"
         android:background="@drawable/gradiente"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

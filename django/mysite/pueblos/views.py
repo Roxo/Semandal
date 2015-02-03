@@ -485,7 +485,7 @@ def verpueblo(request):
 	return HttpResponse(r)
 
 def vercategorias(request):
-	cat = Categorias_semandal.objects.all()
+	cat = Categorias_semandal.objects.all().order_by("dscategoria")
 	r=''
 	if len(cat) != 0:
 		for c in cat:
@@ -806,9 +806,9 @@ def addsig(request,id_p,id_u):
 		pueblo = Pueblo.objects.filter(id=id_p)[0]
 		u = SigP(id_user=usuario,id_p=pueblo)
 		u.save()
+		return HttpResponse('{"ret":true,"message":"Siguiendo el pueblo: '+pueblos.busqueda+'"}')
 	except:
 		return HttpResponse('{"ret":false,"message":"No se ha podido procesar su solicitud"}')
-	return HttpResponse('{"ret":true,"message":"Siguiendo el pueblo: '+pueblos.busqueda+'"}')
 
 
 def addliked(request,id_u,id_n):

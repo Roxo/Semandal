@@ -333,11 +333,6 @@ public class Deuda extends Activity{
 
 		if(addpueblo){
 			addpueblo=false;
-			Intent i = new Intent(Deuda.this, LPueblos.class);
-			i.putExtra("user_id", iduser);
-			i.putExtra("pb",puebloant);
-			i.putExtra("p_id", pid);
-			startActivity(i);
 			AsinDeuda tarea = new AsinDeuda(a,deuda,municipio,provincia,latitud,longitud,cp,urlweb,habitantes,
 					superficie,urlwiki,
 					Singleton.url+":8000/api/pueblos/"+puebloant,a,
@@ -484,6 +479,7 @@ public class Deuda extends Activity{
 			c = db1.rawQuery(sql, null);
 			if(c.getCount()==0){
 				b6.setEnabled(true);
+				b6.setText("Agregar Pueblo!");
 			}
 			else{
 				b6.setEnabled(true);

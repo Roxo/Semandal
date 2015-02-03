@@ -327,6 +327,7 @@ public class Blog extends Activity implements OnItemSelectedListener {
 					a = c.getCount();
 					lista2= new ArrayList<String>();
 					lista2.add("Categorias");
+					auxiliar.add(0);
 					if (c.moveToFirst()){
 						do{
 							lista2.add(c.getString(1));

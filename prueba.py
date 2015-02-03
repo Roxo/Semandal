@@ -2,7 +2,7 @@ import urllib2
 import json
 
 #response = '{"string":"pru'+"'"+'eba"}'
-url = "http://84.122.181.102:8000/api/usuario/1/"
+url = "http://95.39.221.207:8000/api/pueblos/"
 response = urllib2.urlopen(url)
 #print response.read()[570:580]
 

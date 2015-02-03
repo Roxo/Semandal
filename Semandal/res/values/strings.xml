@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Semandal</string>
-    <string name="comment">Ver comentarios!</string>
+    <string name="comment">Comentarios!</string>
     <string name="Nombre">Nombre</string>
     <string name="ap1">Primer Apellido</string>
     <string name="ap2">Segundo Apellido</string>
