@@ -49,23 +49,42 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Lnoticias extends Activity {
+	private static String PRIMERO = "PRIMERO";
+	private static String ULTIMO = "ULTIMO";
+	private static String FROM = "FROM";
+	private static String AEMPEZAR = "AEMPEZAR";
+
 	LinkedList<Integer> auxlist = new LinkedList<Integer>();
 	ArrayList<String> lista1= new ArrayList<String>();
 	LinkedList<Integer> aux1list = new LinkedList<Integer>();
 	String datos,pueblonuevo;
 	ListView lista;
 	int iduser,pid,indice;
-	boolean fbusqueda=false,noeffect=false,completado = false,roto = false,first = true;
+	boolean fbusqueda=false,noeffect=false,completado = false,roto = false,first = true,from = false;
 	private static AsincLN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	TextView resultados;
-	int start, last;
+	int start, last,aempezar=0;
 	Lnoticias a = this;
 	List<Noticia> mandar;
+	Bundle bundle;
+
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		bundle = savedInstanceState;
+	    // Save the user's current game state
+	    bundle.putInt(ULTIMO, last);
+	    bundle.putInt(PRIMERO, start);
+	    bundle.putBoolean(FROM, true);
+	    bundle.putInt(AEMPEZAR, aempezar);
+
+	    // Always call the superclass so it can save the view hierarchy state
+	    super.onSaveInstanceState(savedInstanceState);
+	}
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lnoticias);
 		Button b1 = (Button)this.findViewById(R.id.Amigos);
@@ -88,6 +107,7 @@ public class Lnoticias extends Activity {
 		indice = getIntent().getIntExtra("indice",0);
 		fbusqueda = getIntent().getBooleanExtra("busqueda",false);
 		lista = (ListView)this.findViewById(R.id.listView1);
+
 		AsincLN tarea = new AsincLN(resultados,
 				(Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/"+iduser).replace(" ","%20"),lista, this
 				);
@@ -98,8 +118,8 @@ public class Lnoticias extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(indice == lista1.size()-1)
-					indice = -2;
+				if(indice == lista1.size()-2)
+					indice = -1;
 				else
 					indice += 1;
 				Intent i = new Intent(Lnoticias.this, Lnoticias.class);
@@ -115,7 +135,7 @@ public class Lnoticias extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if(indice == -1)
-					indice = lista1.size();
+					indice = lista1.size()-2;
 				else
 					indice -= 1;
 				Intent i = new Intent(Lnoticias.this, Lnoticias.class);
@@ -196,6 +216,7 @@ public class Lnoticias extends Activity {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
 		        try{
 			        int k =  (Integer) lista.getAdapter().getItem(pos);
+		        	aempezar = k;
 		        	auxlist.get(k);
 		        }catch(Exception E){		        	
 		        	String string = "No existen noticias con estas características" +
@@ -366,14 +387,17 @@ public class Lnoticias extends Activity {
 							mandar.add(k);
 					}
 					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
-					lista.setSelectionFromTop(start-1, 0);
+
+					aempezar = start-2;
+					lista.setSelection(aempezar);
 				}
 				else{
 					noeffect = true;
 					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","",false);
 					mandar.add(k);
 					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
-					lista.setSelectionFromTop(start-1, 0);
+					aempezar = start-2;			
+					lista.setSelection(aempezar);
 					roto = true;
 				}
 			} catch (JSONException e) {
@@ -437,10 +461,22 @@ public class Lnoticias extends Activity {
 	}
 
 	public void onResume(){
-		super.onResume();
-		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
-			if(pleaseWaitDialog != null)
-				pleaseWaitDialog.show();
+		super. onResume();
+		if(bundle != null){
+			last = bundle.getInt(ULTIMO);
+			start = bundle.getInt(PRIMERO);
+			aempezar = bundle.getInt(AEMPEZAR);
+			bundle = null;
+			mandar.get(aempezar).setVista(true);
+			lista.setAdapter(new Plantilla_dispnot(this,mandar));
+			lista.setSelection(aempezar);
+
+		}else{
+
+			if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+				if(pleaseWaitDialog != null)
+					pleaseWaitDialog.show();
+			}
 		}
 	}
 	

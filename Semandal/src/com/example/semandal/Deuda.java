@@ -20,6 +20,8 @@ import com.example.semandal.Display_not_log.Asinadd;
 import com.example.semandal.Nolog.AsincronNolog;
 import com.example.semandal.aux.Singleton;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -30,8 +32,10 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
 import android.text.method.ScrollingMovementMethod;
@@ -44,6 +48,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +64,7 @@ public class Deuda extends Activity{
 	private List<Integer> lista1aux;
 	private Deuda a = this;
 	private int indice;
-	boolean fromdatos=false,addpueblo=false;
+	boolean fromdatos=false,addpueblo=false,enabled = false;
 	TextView deuda;
 	TextView municipio;
 	TextView provincia;
@@ -71,7 +76,8 @@ public class Deuda extends Activity{
 	TextView superficie;		
 	TextView urlwiki;
 	AutoCompleteTextView autotext;
-	Button b6,b7;
+	Button b7;
+	ImageView b6;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,7 +87,7 @@ public class Deuda extends Activity{
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
-		b6 = (Button)this.findViewById(R.id.button2);
+		b6 = (ImageView)this.findViewById(R.id.button2);
 		b7 = (Button)this.findViewById(R.id.irnoticias);
 		// DEFINICIÓN DE LOS TEXTVIEW
 		deuda = (TextView)this.findViewById(R.id.textodeuda);
@@ -161,10 +167,9 @@ public class Deuda extends Activity{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				String f =b6.getText().toString();
-				if(!b6.getText().toString().equalsIgnoreCase("Dejar de seguir"))
+				if(!enabled)
 					showDialogSigue(a,"Confirmación","¿Está seguro que quiere seguir este pueblo?");
-				if(b6.getText().toString().equalsIgnoreCase("Dejar de seguir"))
+				if(enabled)
 					showDialogNoSigue(a,"Confirmación","¿Está seguro que quiere dejar de seguir este pueblo?");
 			}
 			
@@ -352,7 +357,8 @@ public class Deuda extends Activity{
 	    private boolean completed;
 	    private Deuda activity;
 	    private Object _response;
-	    Button b6,b7;
+	    Button b7;
+	    ImageView  b6;
 		AutoCompleteTextView pob;
 
 		/*
@@ -363,7 +369,7 @@ public class Deuda extends Activity{
 		public AsinDeuda(Context contexto,TextView deuda,TextView municipio,TextView provincia,
 				TextView latitud,TextView longitud,TextView cp,TextView urlweb,TextView habitantes,
 				TextView superficie,TextView urlwiki,
-				String url,Deuda activity,String usersigue,Button b6,AutoCompleteTextView t,Button b7){
+				String url,Deuda activity,String usersigue,ImageView b6,AutoCompleteTextView t,Button b7){
 			this.usuario = usersigue;
 			this.contexto = contexto;
 			this.deuda = deuda;
@@ -440,7 +446,7 @@ public class Deuda extends Activity{
 			JSONArray p1 = d.getJSONArray("pueblos");
 			JSONObject pueblo = (JSONObject) p1.get(0);
 			deuda.setText(""+pueblo.getDouble("deuda"));
-			municipio.setText(pueblo.getString("dspueblo"));
+			municipio.setText(pueblo.getString("dspueblo")+"  ");
 			cp.setText(""+pueblo.getInt("cp"));
 			urlweb.setText(pueblo.getString("url"));
 			habitantes.setText(""+pueblo.getInt("habitantes"));
@@ -478,14 +484,19 @@ public class Deuda extends Activity{
 			sql = "SELECT * FROM siguiendo WHERE id="+puebloant ;
 			c = db1.rawQuery(sql, null);
 			if(c.getCount()==0){
+				enabled = false;
 				b6.setEnabled(true);
-				b6.setText("Agregar Pueblo!");
+				b6.setImageResource(R.drawable.soff);
+				b6.getLayoutParams().height = 30;
+				b6.getLayoutParams().width = 30;
 			}
 			else{
+				enabled = true;
 				b6.setEnabled(true);
-				b6.setText("Dejar de seguir");
-			}
-
+				b6.setImageResource(R.drawable.son);
+				b6.getLayoutParams().height = 30;
+				b6.getLayoutParams().width = 30;
+}
 			db1.close();
 			
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
@@ -617,7 +628,17 @@ public class Deuda extends Activity{
 
 
 	    public void onPostExecute(Object response){
-	    	
+	    	enabled = !enabled;
+	    	if(enabled){
+				b6.setImageResource(R.drawable.son);
+				b6.getLayoutParams().height = 20;
+				b6.getLayoutParams().width = 20;
+	    	}
+	    	else{
+				b6.setImageResource(R.drawable.soff);
+				b6.getLayoutParams().height = 20;
+				b6.getLayoutParams().width = 20;
+	    	}
 	        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
 	        SQLiteDatabase bd = admin.getWritableDatabase();
 	        try{

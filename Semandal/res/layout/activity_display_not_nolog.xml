@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
 
-
     <Button
         android:id="@+id/loggin"
         android:layout_width="wrap_content"
@@ -45,12 +44,12 @@
         android:layout_below="@+id/busqueda"
         android:src="@drawable/bandera_and" />
 
-        <ScrollView
-            android:id="@+id/scroll"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/button1"
-            android:layout_below="@+id/button2" >
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button1"
+        android:layout_below="@+id/textView3" >
 
         <LinearLayout
             android:id="@+id/LinearScroll"
@@ -58,52 +57,67 @@
             android:layout_height="match_parent"
             android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/fecha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/titular"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="10"
-        android:scrollbars="vertical"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    
-        <TextView
-        android:id="@+id/Noticia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="60000000"
-        android:scrollbars="vertical"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/fecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Categorias:"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/titular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="10"
+                android:scrollbars="vertical"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/Noticia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="60000000"
+                android:scrollbars="vertical"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <LinearLayout
+                android:id="@+id/LinearScroll2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categorias  "
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <ImageView
+                    android:id="@+id/b1"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:src="@drawable/edit" />
+            </LinearLayout>
 
             <ListView
                 android:id="@+id/listView1"
                 android:layout_width="match_parent"
-                android:minHeight="25dp"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent"
+                android:minHeight="25dp" >
             </ListView>
 
             <Button
-                android:id="@+id/b1"
+                android:id="@+id/button2"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Corrector categorias" />
-
-    	 </LinearLayout>
+                android:layout_below="@+id/imageView1"
+                android:layout_marginTop="14dp"
+                android:layout_toRightOf="@+id/info"
+                android:text="Vótame!" />
+        </LinearLayout>
     </ScrollView>
-    
+
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
@@ -111,7 +125,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:text="Web Noticia" />
-    
+
     <Button
         android:id="@+id/comment"
         android:layout_width="wrap_content"
@@ -121,31 +135,20 @@
         android:text="@string/comment" />
 
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button2"
-        android:layout_alignBottom="@+id/button2"
-        android:layout_toLeftOf="@+id/button2"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-      <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/imageView1" 
+        android:layout_below="@+id/imageView1"
         android:text="Pueblo: "
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/button2"
-        style="?android:attr/buttonStyleSmall"
+    <include
+        android:id="@+id/imageView2_ref"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView1"
-        android:layout_marginTop="14dp"
-        android:layout_toRightOf="@+id/info"
-        android:text="Vótame!" />
-    
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignRight="@+id/button1"
+        android:src="@drawable/soff" />
+
 </RelativeLayout>

@@ -37,6 +37,7 @@ import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -71,7 +72,7 @@ public class Display_not_nolog extends Activity {
 		Button b2 = (Button)this.findViewById(R.id.info);
 		Button b3 = (Button)this.findViewById(R.id.busqueda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
-		Button b6 = (Button)this.findViewById(R.id.button2);
+		ImageView b6 = (ImageView)this.findViewById(R.id.button2);
 	
 		
 		b6.setOnClickListener(new View.OnClickListener() {

@@ -19,6 +19,7 @@ import com.example.semandal.Deuda.Asinadd;
 import com.example.semandal.Seman.wrong_cat;
 import com.example.semandal.aux.Singleton;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -29,6 +30,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -39,11 +41,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class Display_not_log extends Activity {
 	int notid,pid;
 	String datos,url1;
@@ -71,7 +75,7 @@ public class Display_not_log extends Activity {
 		Button b5 = (Button)this.findViewById(R.id.comment);
 		Button b6 = (Button)this.findViewById(R.id.button1);
 		b7 = (Button)this.findViewById(R.id.button2);
-		Button categoriza = (Button)this.findViewById(R.id.b1);
+		ImageView categoriza = (ImageView)this.findViewById(R.id.b1);
 		lista = (ListView) this.findViewById(R.id.listView1);
 		/////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////
@@ -79,7 +83,7 @@ public class Display_not_log extends Activity {
 		indice = getIntent().getIntExtra("indice",0);
 		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
-		TextView mas = (TextView) findViewById(R.id.mas);
+		ImageView mas = (ImageView) findViewById(R.id.mas);
 		AsincronDNN tarea = null;
 		TextView pueblo = (TextView) findViewById(R.id.textView3);
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
@@ -304,17 +308,19 @@ public class Display_not_log extends Activity {
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(TextView) findViewById(R.id.mas));
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas));
 			tarea.execute();
 
 		}
 
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url,urlsig,urlvista="";
-		TextView titview,cuerpview,dateview,cat,mas;
+		TextView titview,cuerpview,dateview,cat;
+		ImageView mas;
 		Button b7,comentarios;
 		JSONObject html,sig;
 	    private Display_not_log activity;
@@ -331,7 +337,7 @@ public class Display_not_log extends Activity {
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 			TextView dateview, Button b7,String urlvista,
 			String url,String urlsig,Display_not_log activity,ListView lv,
-			Button comentarios,TextView pueblo,TextView mas){
+			Button comentarios,TextView pueblo,ImageView mas){
 			this.contexto = contexto;
 			this.mas = mas;
 			this.titview = titview;
@@ -350,7 +356,7 @@ public class Display_not_log extends Activity {
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 				TextView dateview, Button b7,
 				String url,String urlsig,Display_not_log activity,ListView lv,
-				Button comentarios,TextView pueblo,TextView mas){
+				Button comentarios,TextView pueblo,ImageView mas){
 				this.contexto = contexto;
 				this.mas = mas;
 				this.titview = titview;
@@ -475,8 +481,6 @@ public class Display_not_log extends Activity {
 			}
 			else{
 				sigue = true;
- 				mas.setText("");
-				mas.setEnabled(false);
 			}
 	           completed = true;
 	            _response = response;

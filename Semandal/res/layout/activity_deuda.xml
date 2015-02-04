@@ -67,12 +67,6 @@
             android:layout_height="wrap_content"
              android:orientation="vertical" >
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="14dp"
-                android:text="Agregar pueblo!" />
 
 	<TextView
 	    android:id="@+id/municipio"
@@ -80,14 +74,33 @@
 	    android:layout_height="wrap_content"
 	    android:text="Municipio:"
 	    android:textAppearance="?android:attr/textAppearanceMedium" />
-            
+    <LinearLayout
+            android:id="@+id/LinearScroll2"
+		    android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+	
 	<TextView
 	    android:id="@+id/textomunicipio"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+	<ImageView
+	    android:id="@+id/button2"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@android:drawable/btn_star_big_off" />
 	
+	           <!--   <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="14dp"
+                android:text="Agregar pueblo!" />
+	-->
+	</LinearLayout>
 	<TextView
 	    android:id="@+id/prov"
 	    android:layout_width="wrap_content"

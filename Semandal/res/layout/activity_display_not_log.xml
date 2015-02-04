@@ -71,30 +71,12 @@
         android:layout_alignParentRight="true"
         android:text="@string/comment" />
     
-       <Button
-        android:id="@+id/button2"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView3" 
-        android:text="Vótame" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button2"
-        android:layout_alignBottom="@+id/button2"
-        android:layout_toLeftOf="@+id/button2"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/button1"
-        android:layout_below="@+id/button2"
+        android:layout_below="@+id/textView3"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true" >
 
@@ -126,29 +108,45 @@
                 android:maxLines="60000000"
                 android:scrollbars="vertical"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
+        <LinearLayout
+            android:id="@+id/LinearScroll2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+            
+            
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Categorias:"
+                android:text="Categorias  "
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
+            <ImageView
+                android:id="@+id/b1"
+                android:layout_width="29dp"
+                android:layout_height="29dp"
+                android:src="@drawable/edit" />
+
+            </LinearLayout>
+            
             <ListView
                 android:id="@+id/listView1"
                 android:layout_width="match_parent"
                 android:minHeight="25dp"
                 android:layout_height="match_parent" >
             </ListView>
-
+         
+            
             <Button
-                android:id="@+id/b1"
+                android:id="@+id/button2"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Editor de Categorías" />
-        </LinearLayout>
-    </ScrollView>
+                android:text="Vótame" />
+            
+		</LinearLayout>
+        </ScrollView>
 
     <TextView
         android:id="@+id/textView3"
@@ -159,13 +157,12 @@
         android:text="Pueblo: "
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
+    <ImageView
         android:id="@+id/mas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button2"
+        android:layout_above="@+id/scroll"
         android:layout_toRightOf="@+id/textView3"
-        android:text="   +"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
+        android:src="@android:drawable/ic_input_add" />
+    
 </RelativeLayout>
