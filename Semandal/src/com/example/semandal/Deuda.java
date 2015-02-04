@@ -86,7 +86,7 @@ public class Deuda extends Activity{
 		Button b1 = (Button)this.findViewById(R.id.Amigos);
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
-		Button b5 = (Button)this.findViewById(R.id.button1);
+		ImageView b5 = (ImageView)this.findViewById(R.id.button1);
 		b6 = (ImageView)this.findViewById(R.id.button2);
 		b7 = (Button)this.findViewById(R.id.irnoticias);
 		// DEFINICIÓN DE LOS TEXTVIEW

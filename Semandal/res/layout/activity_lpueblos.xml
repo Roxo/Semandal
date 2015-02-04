@@ -54,34 +54,41 @@
         android:layout_marginTop="32dp"
         android:src="@drawable/bandera_and" />
         
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Ver datos del pueblo" />
 
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:ems="10"
-        android:hint="Pueblos" >
 
-    </AutoCompleteTextView>
 
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/autoCompleteTextView1"
+        android:layout_above="@+id/LinearScroll3"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/imageView1" >
 
     </ListView>
+
+<LinearLayout
+    android:id="@+id/LinearScroll3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentLeft="true"
+    android:orientation="horizontal" >
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.87"
+        android:ems="10"
+        android:hint="Pueblos" >
+    </AutoCompleteTextView>
+
+    <ImageView
+        android:id="@+id/button1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/lupa" />
+</LinearLayout>
    
 </RelativeLayout>

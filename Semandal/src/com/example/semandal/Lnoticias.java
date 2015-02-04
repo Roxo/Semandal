@@ -42,6 +42,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemClickListener;
@@ -101,8 +102,8 @@ public class Lnoticias extends Activity {
 		start = 0;
 		last = 9;
 		mandar = new ArrayList<Noticia>();
-		TextView fl = (TextView)this.findViewById(R.id.fl);
-		TextView fr = (TextView)this.findViewById(R.id.fr);
+		ImageView fl = (ImageView)this.findViewById(R.id.fl);
+		ImageView fr = (ImageView)this.findViewById(R.id.fr);
 		resultados = (TextView)this.findViewById(R.id.resultados);
 		indice = getIntent().getIntExtra("indice",0);
 		fbusqueda = getIntent().getBooleanExtra("busqueda",false);
@@ -244,6 +245,7 @@ public class Lnoticias extends Activity {
 	        	   if ((firstVisibleItem + visibleItemCount) >= totalItemCount) {
 	        			   start += 10;
 	        			   last +=10;
+	        			   aempezar = firstVisibleItem + 1;
 	        			   AsincLN tarea = new AsincLN(resultados,
 	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/"+iduser).replace(" ","%20"),lista, a
 	        					   );
@@ -387,8 +389,6 @@ public class Lnoticias extends Activity {
 							mandar.add(k);
 					}
 					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
-
-					aempezar = start-2;
 					lista.setSelection(aempezar);
 				}
 				else{
@@ -396,7 +396,7 @@ public class Lnoticias extends Activity {
 					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","",false);
 					mandar.add(k);
 					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
-					aempezar = start-2;			
+					aempezar = start;			
 					lista.setSelection(aempezar);
 					roto = true;
 				}

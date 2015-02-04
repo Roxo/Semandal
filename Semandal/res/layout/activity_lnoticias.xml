@@ -59,10 +59,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/busc"
-        android:divider="#000000"
-  		android:dividerHeight="1dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/resultados" >
+        android:layout_below="@+id/fl"
+        android:divider="#000000"
+        android:dividerHeight="1dp" >
 
     </ListView>
 
@@ -78,29 +78,27 @@
         android:id="@+id/resultados"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:layout_below="@+id/imageView1"
+        android:textColor="#008000"
+    	android:textStyle="bold|italic"
         android:layout_centerHorizontal="true"
         android:text="Resultados" />
 
-    <TextView
+    <ImageView
         android:id="@+id/fl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/resultados"
+ 	    android:layout_height= "30dp"
+	    android:layout_width= "30dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="14dp"
-        android:text="&lt;-"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_below="@+id/imageView1"
+        android:src="@drawable/fl" />
 
-    <TextView
+    <ImageView
         android:id="@+id/fr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/resultados"
-        android:layout_alignBottom="@+id/resultados"
+	    android:layout_height= "30dp"
+	    android:layout_width= "30dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="14dp"
-        android:text="->"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_below="@+id/imageView1"
+        android:src="@drawable/fr" />
 
 </RelativeLayout>

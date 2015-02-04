@@ -34,6 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,7 +57,7 @@ public class LPueblos extends Activity {
 		Button b2 = (Button)this.findViewById(R.id.Noticias);
 		Button b3 = (Button)this.findViewById(R.id.deuda);
 		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
-		Button busqueda = (Button)this.findViewById(R.id.button1);
+		ImageView busqueda = (ImageView)this.findViewById(R.id.button1);
 		iduser = getIntent().getIntExtra("user_id",0);
 		lv = (ListView)this.findViewById(R.id.listView1);
 		indice = getIntent().getIntExtra("indice",0);

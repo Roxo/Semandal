@@ -90,8 +90,7 @@
 	<ImageView
 	    android:id="@+id/button2"
 	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:src="@android:drawable/btn_star_big_off" />
+	    android:layout_height="wrap_content"/>
 	
 	           <!--   <Button
                 android:id="@+id/button2"
@@ -100,6 +99,9 @@
                 android:layout_marginRight="14dp"
                 android:text="Agregar pueblo!" />
 	-->
+
+	
+
 	</LinearLayout>
 	<TextView
 	    android:id="@+id/prov"
@@ -252,29 +254,31 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:text="Ver sus noticias" />
-	
-	
+
+	<LinearLayout
+            android:id="@+id/LinearScroll3"
+		    android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+		
 
 	<AutoCompleteTextView
 	    android:id="@+id/autoCompleteTextView1"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_above="@+id/button1"
-	    android:layout_alignParentLeft="true"
-	    android:layout_alignParentRight="true"
+        android:layout_weight="0.87"
 	    android:layout_gravity="center"
 	    android:ems="10"
 	    android:hint="Pueblo" >
 
 	</AutoCompleteTextView>
-
-	<Button
+<ImageView
 	    android:id="@+id/button1"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentBottom="true"
-	    android:layout_centerHorizontal="true"
-	    android:text="@string/Buscar" />
+	    android:layout_height= "30dp"
+	    android:layout_width= "30dp"
+	    android:src="@drawable/lupa" />
+	 </LinearLayout>
 	 </LinearLayout>
 </ScrollView>
 	

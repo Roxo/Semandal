@@ -61,6 +61,14 @@ public class Display_not_log extends Activity {
 	ListView lista ;
 	boolean sigue= false,aseguir = false;
 	LinkedList<Integer> idcats;
+	Bundle bundle;
+
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		bundle = savedInstanceState;
+	    // Save the user's current game state
+	    // Always call the superclass so it can save the view hierarchy state
+	    super.onSaveInstanceState(savedInstanceState);
+	}
 
 
 	@Override
@@ -252,13 +260,26 @@ public class Display_not_log extends Activity {
 
 	public void onResume(){
 		super.onResume();
-		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
-			if(pleaseWaitDialog != null)
-				pleaseWaitDialog.show();
+		if(bundle != null){
+			bundle = null;
+			AsincronDNN tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
+					(TextView) findViewById(R.id.Noticia),
+					(TextView) findViewById(R.id.fecha),b7,
+					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas));
+			tarea.execute();
+
 		}
-		if((backgroundTask1!=null)&&(backgroundTask1.getStatus()==Status.RUNNING)){
-			if(pleaseWaitDialog != null)
-				pleaseWaitDialog.show();
+		else{
+			if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+				if(pleaseWaitDialog != null)
+					pleaseWaitDialog.show();
+			}
+			if((backgroundTask1!=null)&&(backgroundTask1.getStatus()==Status.RUNNING)){
+				if(pleaseWaitDialog != null)
+					pleaseWaitDialog.show();
+			
+		}
 		}
 
 	}
