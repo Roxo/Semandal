@@ -48,9 +48,9 @@ public class Logueado extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_logueado);
-		Button b1 = (Button)this.findViewById(R.id.Amigos);
-		Button b2 = (Button)this.findViewById(R.id.Noticias);
-		Button b3 = (Button)this.findViewById(R.id.deuda);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
+		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
 		Button b5 = (Button)this.findViewById(R.id.button1);
 		ImageView b6 = (ImageView)this.findViewById(R.id.imageView2);
 		iduser = getIntent().getIntExtra("user_id",0);
@@ -65,7 +65,7 @@ public class Logueado extends Activity {
 				Singleton.url+":8000/api/logginuser/"+iduser,this
 				);
 		tarea.execute();
-		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		
 		
 		mispueblos.setOnClickListener(new View.OnClickListener() {

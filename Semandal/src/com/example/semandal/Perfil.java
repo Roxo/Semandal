@@ -38,6 +38,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,10 +59,10 @@ public class Perfil extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_perfil);
 		
-		Button b1 = (Button)this.findViewById(R.id.Amigos);
-		Button b2 = (Button)this.findViewById(R.id.Noticias);
-		Button b3 = (Button)this.findViewById(R.id.deuda);
-		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
+		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		Button exit = (Button)this.findViewById(R.id.modificar);
 		municipio = (TextView)this.findViewById(R.id.munc);
 		usuario = (TextView)this.findViewById(R.id.nperfil);

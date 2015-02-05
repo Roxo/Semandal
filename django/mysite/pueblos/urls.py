@@ -39,6 +39,7 @@ urlpatterns = patterns('',
     url(r'^api/addsigue/(?P<id_u>\d+)/(?P<id_p>\d+)/$',views.addsig, name='addsig'),      #Funciona #NOAPI
     url(r'^api/nliked/(?P<id_u>\d+)/(?P<id_n>\d+)/$',views.sign, name='sign'),            #Funciona 
     url(r'^api/addliked/(?P<id_u>\d+)/(?P<id_n>\d+)/$',views.addliked, name='addliked'),  #Funciona #NOAPI
+    url(r'^api/removeliked/(?P<id_u>\d+)/(?P<id_n>\d+)/$',views.removeliked, name='removeliked'),  #Funciona #NOAPI
     url(r'^api/votacion/(?P<id_n>\d+)/(?P<id_u>\d+)/(?P<id_c>\d+)/$',views.votaciones, name='votaciones'),          #Funciona #NOAPI
     url(r'^api/categoriza/(?P<id_n>\d+)/(?P<id_cnew>\w+)/(?P<id_u>\d+)/$',views.categorizar, name='categorizar'),   #Funciona #NOAPI
     url(r'^api/denunciar/(?P<id_u>\d+)/(?P<id_c>\d+)/$',views.denuncia, name='denuncia'),  #Funciona #NOAPI

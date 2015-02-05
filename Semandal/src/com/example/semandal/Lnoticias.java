@@ -88,10 +88,10 @@ public class Lnoticias extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lnoticias);
-		Button b1 = (Button)this.findViewById(R.id.Amigos);
-		Button b2 = (Button)this.findViewById(R.id.Noticias);
-		Button b3 = (Button)this.findViewById(R.id.deuda);
-		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
+		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		Button b5 = (Button)this.findViewById(R.id.busc);
 		pid = getIntent().getIntExtra("p_id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
@@ -243,7 +243,7 @@ public class Lnoticias extends Activity {
 	        	   if ((firstVisibleItem + visibleItemCount) >= totalItemCount) {
 	        			   start += 10;
 	        			   last +=10;
-	        			   aempezar = firstVisibleItem + 1;
+	        			   aempezar = totalItemCount-1;
 	        			   AsincLN tarea = new AsincLN(resultados,
 	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/"+iduser).replace(" ","%20"),lista, a
 	        					   );
@@ -484,6 +484,7 @@ public class Lnoticias extends Activity {
 			aempezar = bundle.getInt(AEMPEZAR);
 			bundle = null;
 			mandar.get(aempezar).setVista(true);
+			aempezar += 1;
 			lista.setAdapter(new Plantilla_dispnot(this,mandar));
 			lista.setSelection(aempezar);
 

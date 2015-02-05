@@ -55,9 +55,9 @@ public class Display_not_log extends Activity {
 	private static AsincronDNN backgroundTask;
 	private static Set backgroundTask1;
 	private static ProgressDialog pleaseWaitDialog;
-	private boolean set=false,enabled = false;
+	private boolean set=false,enabled = false,sigo = false;
 	private Display_not_log a = this;
-	Button b7;
+	ImageView b7;
 	ListView lista ;
 	boolean sigue= false,aseguir = false;
 	LinkedList<Integer> idcats;
@@ -77,13 +77,14 @@ public class Display_not_log extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display_not_log);
 		//yourTextView.setMovementMethod(new ScrollingMovementMethod())
-		Button b1 = (Button)this.findViewById(R.id.Amigos);
-		Button b2 = (Button)this.findViewById(R.id.Noticias);
-		Button b3 = (Button)this.findViewById(R.id.deuda);
-		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
+		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		Button b5 = (Button)this.findViewById(R.id.comment);
 		Button b6 = (Button)this.findViewById(R.id.button1);
-		b7 = (Button)this.findViewById(R.id.button2);
+		TextView votos = (TextView)this.findViewById(R.id.votos);
+		b7 = (ImageView)this.findViewById(R.id.button2);
 		ImageView categoriza = (ImageView)this.findViewById(R.id.b1);
 		lista = (ListView) this.findViewById(R.id.listView1);
 		/////////////////////////////////////////////////////////////////
@@ -100,7 +101,7 @@ public class Display_not_log extends Activity {
 				(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
 				Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
 				,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
-				pueblo,mas);
+				pueblo,mas,votos);
 		tarea.execute();
 		
 		mas.setOnClickListener(new View.OnClickListener() {
@@ -149,9 +150,15 @@ public class Display_not_log extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Set tarea = null;
-				tarea = new Set(Singleton.url+":8000/api/addliked/"+iduser+"/"+notid,a);
-				tarea.execute();
+				Asincheck tarea = null;
+				if(!sigo){
+					tarea= new Asincheck(Singleton.url+":8000/api/addliked/"+iduser+"/"+notid,a);
+					tarea.execute();
+				}
+				else{
+					tarea= new Asincheck(Singleton.url+":8000/api/removeliked/"+iduser+"/"+notid,a);
+					tarea.execute();				
+				}
 			}
 			
 		});				
@@ -284,7 +291,7 @@ public class Display_not_log extends Activity {
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas));
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView)findViewById(R.id.votos));
 			tarea.execute();
 
 		}
@@ -329,13 +336,12 @@ public class Display_not_log extends Activity {
 	private void onTaskCompleted(Object _response){
 		if(set){
 			set=false;
-			startActivity(getIntent());
 			AsincronDNN tarea = null;
 			tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas));
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView) findViewById(R.id.votos));
 			tarea.execute();
 
 		}
@@ -348,7 +354,8 @@ public class Display_not_log extends Activity {
 		String url,urlsig,urlvista="";
 		TextView titview,cuerpview,dateview,cat;
 		ImageView mas;
-		Button b7,comentarios;
+		Button comentarios;
+		ImageView b7;
 		JSONObject html,sig;
 	    private Display_not_log activity;
 	    private boolean completed;
@@ -356,15 +363,16 @@ public class Display_not_log extends Activity {
 	    ListView lv;
 	    TextView pueblo;
 	    JSONObject seguir;
+	    TextView votos;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-			TextView dateview, Button b7,String urlvista,
+			TextView dateview, ImageView b7,String urlvista,
 			String url,String urlsig,Display_not_log activity,ListView lv,
-			Button comentarios,TextView pueblo,ImageView mas){
+			Button comentarios,TextView pueblo,ImageView mas,TextView votos){
 			this.contexto = contexto;
 			this.mas = mas;
 			this.titview = titview;
@@ -378,12 +386,13 @@ public class Display_not_log extends Activity {
 			this.comentarios = comentarios;
 			this.pueblo = pueblo;
 			this.urlvista = urlvista;
+			this.votos = votos;
 		}
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-				TextView dateview, Button b7,
+				TextView dateview, ImageView b7,
 				String url,String urlsig,Display_not_log activity,ListView lv,
-				Button comentarios,TextView pueblo,ImageView mas){
+				Button comentarios,TextView pueblo,ImageView mas,TextView votos){
 				this.contexto = contexto;
 				this.mas = mas;
 				this.titview = titview;
@@ -396,7 +405,7 @@ public class Display_not_log extends Activity {
 				this.lv = lv;
 				this.comentarios = comentarios;
 				this.pueblo = pueblo;
-				
+				this.votos = votos;
 			}
 		  private String readAll(Reader rd) throws IOException {
 			    StringBuilder sb = new StringBuilder();
@@ -474,6 +483,7 @@ public class Display_not_log extends Activity {
 				aseguir=true;
 				ncomentarios = html.getInt("ncomentarios");
 				comentarios.setText("Comentarios ("+ncomentarios+")");
+				votos.setText(""+html.getInt("liked"));
 				JSONArray cat = html.getJSONArray("categoria");
 				String[] listacategorias = new String[cat.length()];
 			    for(int i=0;i<cat.length();i++){
@@ -485,13 +495,26 @@ public class Display_not_log extends Activity {
 						android.R.layout.simple_list_item_1, listacategorias);
 				lv.setAdapter(adapter);
 
-				if(sig.getBoolean("sigue"))
-					b7.setEnabled(false);
+				if(sig.getBoolean("sigue")){
+					sigo = true;
+				}
+				else{
+					sigo = false;
+				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			b7.setText("Vótame ("+likes+")");
+    		if(sigo){
+				b7.setImageResource(R.drawable.scheck);
+				b7.getLayoutParams().height = 40;
+				b7.getLayoutParams().width = 40;
+    		}
+    		else{
+				b7.setImageResource(R.drawable.ncheck);
+				b7.getLayoutParams().height = 40;
+				b7.getLayoutParams().width = 40;
+    		}
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);
 		    dateview.setText(fecha);
@@ -819,5 +842,123 @@ public class Display_not_log extends Activity {
 		});
 		b.show();
 	}	
+
+	public class Asincheck extends AsyncTask<Void, Void, Object> {
+		String url;
+		Context contexto;
+	    private Display_not_log activity;
+	    private boolean completed;
+	    private Object _response;
+	    JSONObject datosuser,html;
+
+		public Asincheck(String url,Display_not_log activity){
+			this.url=url;
+			this.activity = activity;
+			this.contexto = activity;
+		}
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				actualizar();
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		  public void actualizar() throws IOException, JSONException {
+			    InputStream is = new URL(url).openStream();
+			    try {
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			      String jsonText = readAll(rd);
+			       html = new JSONObject(jsonText);
+			    } finally {
+			      is.close();
+			    }
+			  }		  
+
+		
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Actualizando información", 
+	                                                       false);
+
+	    } 
+	    
+		  private String readAll(Reader rd) throws IOException {
+			    StringBuilder sb = new StringBuilder();
+			    int cp;
+			    while ((cp = rd.read()) != -1) {
+			      sb.append((char) cp);
+			    }
+			    return sb.toString();
+			  }
+
+
+
+	    public void onPostExecute(Object response){
+			String cadena;
+			try {
+				cadena = html.getString("message");
+
+			if(html.getBoolean("ret")){
+				sigo = !sigo;
+	    		if(sigo){
+					b7.setImageResource(R.drawable.scheck);
+					b7.getLayoutParams().height = 40;
+					b7.getLayoutParams().width = 40;
+	    		}
+	    		else{
+					b7.setImageResource(R.drawable.ncheck);
+					b7.getLayoutParams().height = 40;
+					b7.getLayoutParams().width = 40;
+	    		}
+
+			}
+
+			Toast.makeText(getApplicationContext(), cadena, Toast.LENGTH_LONG).show();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			
+			
+            completed = true;
+            _response = response;
+            notifyActivityTaskCompleted();
+        //Close the splash screen
+        if (pleaseWaitDialog != null)
+        {
+            pleaseWaitDialog.dismiss();
+            pleaseWaitDialog = null;
+        }
+	    }
+	    public void setActivity(Display_not_log activity) 
+	    { 
+	        this.activity = activity; 
+	        if ( completed ) { 
+	            notifyActivityTaskCompleted(); 
+	        } 
+	    } 
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	        	set = true;
+	            activity.onTaskCompleted(_response); 
+	        } 
+	    } 
+	}
+	
 
 }

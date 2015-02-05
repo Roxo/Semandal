@@ -42,6 +42,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -63,10 +64,10 @@ public class Blog extends Activity implements OnItemSelectedListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_blog);
-		Button b1 = (Button)this.findViewById(R.id.Amigos);
-		Button b2 = (Button)this.findViewById(R.id.Noticias);
-		Button b3 = (Button)this.findViewById(R.id.deuda);
-		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
+		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		Button b5 = (Button)this.findViewById(R.id.blog);
 		iduser = getIntent().getIntExtra("user_id",0);
 		indice = getIntent().getIntExtra("indice",0);

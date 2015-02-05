@@ -56,10 +56,10 @@ public class LPueblos extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lpueblos);
-		Button b1 = (Button)this.findViewById(R.id.Amigos);
-		Button b2 = (Button)this.findViewById(R.id.Noticias);
-		Button b3 = (Button)this.findViewById(R.id.deuda);
-		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
+		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		ImageView busqueda = (ImageView)this.findViewById(R.id.button1);
 		iduser = getIntent().getIntExtra("user_id",0);
 		lv = (ListView)this.findViewById(R.id.listView1);

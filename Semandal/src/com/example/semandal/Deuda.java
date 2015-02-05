@@ -83,9 +83,9 @@ public class Deuda extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_deuda);
 		// DEFINICIÓN DE LOS BOTONES
-		Button b1 = (Button)this.findViewById(R.id.Amigos);
-		Button b2 = (Button)this.findViewById(R.id.Noticias);
-		Button b3 = (Button)this.findViewById(R.id.deuda);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
+		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
 		ImageView b5 = (ImageView)this.findViewById(R.id.button1);
 		b6 = (ImageView)this.findViewById(R.id.button2);
 		b7 = (Button)this.findViewById(R.id.irnoticias);
@@ -106,7 +106,7 @@ public class Deuda extends Activity{
 		//////////////////////////////////////////////
 		indice = getIntent().getIntExtra("indice",0);
 		iduser = getIntent().getIntExtra("user_id",0);
-		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		AsinDeuda tarea = null;
 		puebloant= pid;
 		try{

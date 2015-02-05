@@ -7,6 +7,7 @@ import com.example.semandal.aux.Noticia;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,8 +57,6 @@ public class Plantilla_dispnot extends BaseAdapter{
 		textView1.setText(lista.get(position).getFecha());
 		TextView textView2 =(TextView)view.findViewById(R.id.titular);
 		textView2.setText(lista.get(position).getTitular());
-		TextView textView3 =(TextView)view.findViewById(R.id.categoria);
-		textView3.setText(lista.get(position).getCategoria());
 		TextView textView4 =(TextView)view.findViewById(R.id.nlikes);
 		textView4.setText(lista.get(position).getNlikes());
 		TextView textView5 =(TextView)view.findViewById(R.id.pueblo);
@@ -70,6 +69,17 @@ public class Plantilla_dispnot extends BaseAdapter{
 		}
 		else{
 			view.setBackgroundResource(R.drawable.gradiente);
+			textView1.setTextColor(Color.BLACK);
+			textView2.setTextColor(Color.BLACK);
+			textView4.setTextColor(Color.BLACK);
+			textView5.setTextColor(Color.BLACK);
+			textView6.setTextColor(Color.BLACK);
+			TextView textView7 = (TextView)view.findViewById(R.id.TextView01);
+			TextView textView8 = (TextView)view.findViewById(R.id.TextView02);
+			textView7.setTextColor(Color.BLACK);
+			textView8.setTextColor(Color.BLACK);
+
+
 		}
 		return view;
 		}

@@ -820,8 +820,20 @@ def addliked(request,id_u,id_n):
 		a = noticia[0].liked+1
 		noticia.update(liked = a)
 	except:
-		return HttpResponse("no agregado")
-	return HttpResponse("agregado")
+		return HttpResponse('{"ret":false,"message":"No se ha podido procesar su solicitud"}')
+	return HttpResponse('{"ret":true,"message":"Usted ha votado esta noticia"}')
+
+def removeliked(request,id_u,id_n):
+	try:
+		usuario = Usuario.objects.filter(id=id_u)[0]
+		noticia = Noticias.objects.filter(id=id_n)
+		u = T_Liked.objects.filter(id_user=usuario,id_n=noticia[0])
+		u.delete()
+		a = noticia[0].liked-1
+		noticia.update(liked = a)
+	except:
+		return HttpResponse('{"ret":false,"message":"No se ha podido procesar su solicitud"}')
+	return HttpResponse('{"ret":true,"message":"Usted ha quitado el voto a esta noticia"}')
 
 def sign(request,id_n,id_u):
 	sigue = T_Liked.objects.filter(id_user=id_u,id_n = id_n)
