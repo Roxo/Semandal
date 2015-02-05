@@ -96,8 +96,7 @@ public class Comentarios extends Activity {
 				i.putExtra("indice", indice);
 				startActivity(i);
 			*/
-				Intent i = new Intent(Comentarios.this, Nolog.class);
-				startActivity(i);
+				showDialogSalir(a,"Confirmación","Desea desloguearse?");
 			}
 			
 		});		
@@ -148,6 +147,27 @@ public class Comentarios extends Activity {
 
 	}
 	
+	
+	public void showDialogSalir(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Comentarios.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Comentarios.this, Nolog.class);
+				startActivity(i);
+		    }
+		});
+		b.show();
+	}	
+
+
 	public void onPause(){
 		super.onPause();
 		if (pleaseWaitDialog != null)

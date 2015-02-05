@@ -55,13 +55,14 @@ public class Display_not_log extends Activity {
 	private static AsincronDNN backgroundTask;
 	private static Set backgroundTask1;
 	private static ProgressDialog pleaseWaitDialog;
-	private boolean set=false;
+	private boolean set=false,enabled = false;
 	private Display_not_log a = this;
 	Button b7;
 	ListView lista ;
 	boolean sigue= false,aseguir = false;
 	LinkedList<Integer> idcats;
 	Bundle bundle;
+	ImageView mas;
 
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		bundle = savedInstanceState;
@@ -91,7 +92,7 @@ public class Display_not_log extends Activity {
 		indice = getIntent().getIntExtra("indice",0);
 		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
-		ImageView mas = (ImageView) findViewById(R.id.mas);
+		mas = (ImageView) findViewById(R.id.mas);
 		AsincronDNN tarea = null;
 		TextView pueblo = (TextView) findViewById(R.id.textView3);
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
@@ -106,14 +107,12 @@ public class Display_not_log extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				if(sigue){
-					showDialogSigue(a, "No puede agregar este pueblo", "Usted ya sigue este pueblo");
-				}
-				else{
-					showDialogNSigue(a,"Confirmación","¿Está seguro que quiere seguir este pueblo?");
-				}
+				// TODO Auto-generated method stub
+				if(!enabled)
+					showDialogSigue(a,"Confirmación","¿Está seguro que quiere seguir este pueblo?");
+				if(enabled)
+					showDialogNoSigue(a,"Confirmación","¿Está seguro que quiere dejar de seguir este pueblo?");
 			}
-			
 		});				
 
 		
@@ -192,8 +191,7 @@ public class Display_not_log extends Activity {
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice", indice);
 				startActivity(i);*/
-				Intent i = new Intent(Display_not_log.this, Nolog.class);
-				startActivity(i);
+				showDialogSalir(a,"Confirmación","Desea desloguearse?");
 
 			}
 			
@@ -252,6 +250,26 @@ public class Display_not_log extends Activity {
 	
 	}
 	
+	public void showDialogSalir(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Display_not_log.this, Nolog.class);
+				startActivity(i);
+		    }
+		});
+		b.show();
+	}	
+
+	
 	public void onPause(){
 		super.onPause();
 		if (pleaseWaitDialog != null)
@@ -285,18 +303,6 @@ public class Display_not_log extends Activity {
 	}
 
 
-	public void showDialogSigue(Activity activity, String title, CharSequence message) {
-		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
-		final AlertDialog builder = b.create();
-		b.setTitle(title);
-		b.setMessage(message);
-		b.setNegativeButton("Aceptar", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-		    	builder.cancel();
-		    }
-		});
-		b.show();
-	}	
 
 	public void showDialogNSigue(Activity activity, String title, CharSequence message) {
 		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
@@ -467,7 +473,7 @@ public class Display_not_log extends Activity {
 				p = html.getString("dspueblo");
 				aseguir=true;
 				ncomentarios = html.getInt("ncomentarios");
-				comentarios.setText("Ver Comentarios ("+ncomentarios+")");
+				comentarios.setText("Comentarios ("+ncomentarios+")");
 				JSONArray cat = html.getJSONArray("categoria");
 				String[] listacategorias = new String[cat.length()];
 			    for(int i=0;i<cat.length();i++){
@@ -498,10 +504,18 @@ public class Display_not_log extends Activity {
 			String sql = "SELECT * FROM siguiendo WHERE id="+pid;
 			Cursor c = db1.rawQuery(sql, null);
 			if(c.getCount()==0){
+				enabled = false;
 				mas.setEnabled(true);
+				mas.setImageResource(R.drawable.soff);
+				mas.getLayoutParams().height = 40;
+				mas.getLayoutParams().width = 40;
 			}
 			else{
-				sigue = true;
+				enabled = true;
+				mas.setEnabled(true);
+				mas.setImageResource(R.drawable.son);
+				mas.getLayoutParams().height = 40;
+				mas.getLayoutParams().width = 40;
 			}
 	           completed = true;
 	            _response = response;
@@ -622,7 +636,7 @@ public class Display_not_log extends Activity {
 	    private Display_not_log activity;
 	    private boolean completed;
 	    private Object _response;
-	    JSONObject datosuser;
+	    JSONObject datosuser,html;
 	    private String urlsigue = Singleton.url+":8000/api/logginuser/"+iduser;
 
 		public Asinadd(String url,Display_not_log activity){
@@ -648,17 +662,24 @@ public class Display_not_log extends Activity {
 			return null;
 		}
 
-		private void actualizar() throws MalformedURLException, IOException {
-		    InputStream is = new URL(url).openStream();
-		    is.close();
-		}
+		  public void actualizar() throws IOException, JSONException {
+			    InputStream is = new URL(url).openStream();
+			    try {
+			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			      String jsonText = readAll(rd);
+			       html = new JSONObject(jsonText);
+			    } finally {
+			      is.close();
+			    }
+			  }		  
+
 		
 	    @Override 
 	    protected void onPreExecute() {
 	            //Start the splash screen dialog
 	                pleaseWaitDialog= ProgressDialog.show(activity, 
 	                                                       "Espere un segundo", 
-	                                                       "Agregando pueblo", 
+	                                                       "Actualizando información", 
 	                                                       false);
 
 	    } 
@@ -702,6 +723,26 @@ public class Display_not_log extends Activity {
 					bd.execSQL("INSERT INTO siguiendo VALUES ("+f.getInt("id_pueblo")+", '"+f.getString("dspueblo")+"')");
 				}
 			bd.close();
+			
+			String cadena = html.getString("message");
+			
+			
+			if(html.getBoolean("ret")){
+				enabled = !enabled;
+	    		if(enabled){
+					mas.setImageResource(R.drawable.son);
+					mas.getLayoutParams().height = 40;
+					mas.getLayoutParams().width = 40;
+	    		}
+	    		else{
+					mas.setImageResource(R.drawable.soff);
+					mas.getLayoutParams().height = 40;
+					mas.getLayoutParams().width = 40;
+	    		}
+
+			}
+
+			Toast.makeText(getApplicationContext(), cadena, Toast.LENGTH_LONG).show();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -709,6 +750,8 @@ public class Display_not_log extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
@@ -734,4 +777,47 @@ public class Display_not_log extends Activity {
 	        } 
 	    } 
 	}
+	
+	public void showDialogSigue(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Asinadd tarea = new Asinadd(
+						Singleton.url+":8000/api/addsigue/"+iduser+"/"+pid,a
+						);
+					tarea.execute();
+		    }
+		});
+		b.show();
+	}	
+
+	public void showDialogNoSigue(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Asinadd tarea = new Asinadd(
+						Singleton.url+":8000/api/usuario/borraseguimiento/"+pid+"/"+iduser,a
+						);
+					tarea.execute();
+		    }
+		});
+		b.show();
+	}	
+
 }

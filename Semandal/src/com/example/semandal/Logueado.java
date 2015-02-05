@@ -19,8 +19,10 @@ import com.example.semandal.aux.AlmacenUsuario;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -40,6 +42,7 @@ public class Logueado extends Activity {
 	private static Asinlog backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	private String nombreuser = "";
+	Logueado a = this;
 	AlmacenUsuario j;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -129,8 +132,7 @@ public class Logueado extends Activity {
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice",indice);
 				startActivity(i);*/
-				Intent i = new Intent(Logueado.this, Nolog.class);
-				startActivity(i);
+				showDialogSalir(a,"Confirmación","Desea desloguearse?");
 
 			}
 			
@@ -176,6 +178,25 @@ public class Logueado extends Activity {
 
 	}
 	
+	public void showDialogSalir(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Logueado.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Logueado.this, Nolog.class);
+				startActivity(i);
+		    }
+		});
+		b.show();
+	}	
+
 	public void onPause(){
 		super.onPause();
 		if (pleaseWaitDialog != null)
@@ -293,7 +314,7 @@ public class Logueado extends Activity {
 				notid=datosuser.getInt("notid");
 				pid=datosuser.getInt("pid");
 				nombreuser = datosuser.getString("dsusuario");
-				bienvenida.setText("Bienvenido "+datosuser.getString("dsusuario"));
+				bienvenida.setText(datosuser.getString("dsusuario"));
 			    noticia.setText(datosuser.getString("dstitular"));
 			    pueblo.setText(datosuser.getString("dspueblo"));
 			    iduser=datosuser.getInt("id");

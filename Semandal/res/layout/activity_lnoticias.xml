@@ -82,8 +82,7 @@
         android:layout_below="@+id/imageView1"
         android:textColor="#008000"
     	android:textStyle="bold|italic"
-        android:layout_centerHorizontal="true"
-        android:text="Resultados" />
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:id="@+id/fl"

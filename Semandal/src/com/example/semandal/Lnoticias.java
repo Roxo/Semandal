@@ -156,9 +156,7 @@ public class Lnoticias extends Activity {
 				/*Intent i = new Intent(Lnoticias.this, Amigos.class);
 				i.putExtra("user_id", iduser);
 				startActivity(i);*/
-				Intent i = new Intent(Lnoticias.this, Nolog.class);
-				startActivity(i);
-
+				showDialogSalir(a,"Confirmación","Desea desloguearse?");
 			}
 			
 		});		
@@ -271,7 +269,25 @@ public class Lnoticias extends Activity {
 		 });
 	}
 	
-	
+	public void showDialogSalir(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Lnoticias.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Lnoticias.this, Nolog.class);
+				startActivity(i);
+		    }
+		});
+		b.show();
+	}	
+
 	public class AsincLN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
@@ -367,7 +383,7 @@ public class Lnoticias extends Activity {
 			else if(!pueblonuevo.equalsIgnoreCase(""))
 				resultados.setText(pueblonuevo);
 			else
-				resultados.setText("resultados");
+				resultados.setText("Noticias");
 			Noticia k;
 			try {
 				

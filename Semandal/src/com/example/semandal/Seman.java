@@ -50,7 +50,7 @@ public class Seman extends Activity {
 	private int idnot,indice,iduser;
 	Asincseman backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	private Seman t = this;
+	private Seman a = this;
 	private List<String> lista2;
 	boolean fromsend = false;
 	private LinkedList<Integer> auxiliar=new LinkedList<Integer>(),categorias;
@@ -82,7 +82,7 @@ public class Seman extends Activity {
 				if(!categoria.getText().toString().equalsIgnoreCase("")){
 					String cnew = categoria.getText().toString();
 					String url = (Singleton.url+":8000/api/noticias/"+idnot+"/addcat/"+iduser+"/"+cnew).replace(" ","%20");
-					Mandar tarea = new Mandar(url,t);
+					Mandar tarea = new Mandar(url,a);
 					tarea.execute();
 				}
 				else{
@@ -105,8 +105,7 @@ public class Seman extends Activity {
 				i.putExtra("user_id", iduser);
 				startActivity(i);
 			}*/
-				Intent i = new Intent(Seman.this, Nolog.class);
-				startActivity(i);
+				showDialogSalir(a,"Confirmación","Desea desloguearse?");
 			}
 			
 		});		
@@ -150,13 +149,31 @@ public class Seman extends Activity {
 
 		lista.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
-		    	showDialog(t,"Confimarcion","¿Confirma que la categoría es erronea?",categorias.get(pos));
+		    	showDialog(a,"Confimarcion","¿Confirma que la categoría es erronea?",categorias.get(pos));
 		    }
 		});
 	}
 
 	
-	
+	public void showDialogSalir(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Seman.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Seman.this, Nolog.class);
+				startActivity(i);
+		    }
+		});
+		b.show();
+	}	
+
 	public void onPause(){
 		super.onPause();
 		if (pleaseWaitDialog != null)
@@ -178,7 +195,7 @@ public class Seman extends Activity {
 		if(fromsend||from){
 			fromsend=false;
 			from =false;
-			Asincseman tarea = new Asincseman(t,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista,(AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1));
+			Asincseman tarea = new Asincseman(a,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista,(AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1));
 			tarea.execute();
 		}
 	}
@@ -545,7 +562,7 @@ public class Seman extends Activity {
 		});
 		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
 		    public void onClick(DialogInterface dialog, int id) {
-		    	wrong_cat k = new wrong_cat((Singleton.url+":8000/api/votacion/"+idnot+"/"+iduser+"/"+c+"/").replace(" ","%20"),t);
+		    	wrong_cat k = new wrong_cat((Singleton.url+":8000/api/votacion/"+idnot+"/"+iduser+"/"+c+"/").replace(" ","%20"),a);
 		    	k.execute();
 		    }
 		});

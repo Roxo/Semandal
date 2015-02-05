@@ -20,8 +20,10 @@ import com.example.semandal.Nolog.AsincronNolog;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -48,7 +50,7 @@ public class Perfil extends Activity {
 	boolean from = false;
 	TextView municipio;
 	TextView usuario;
-	Perfil t = this;
+	Perfil a = this;
 	AutoCompleteTextView auto;
 
 	@Override
@@ -78,7 +80,7 @@ public class Perfil extends Activity {
 			public void onClick(View v) {
 				String pueblo = auto.getText().toString().replace(" ","%20");
 				if(!auto.getText().toString().equalsIgnoreCase("")){
-					Cambiar tarea = new Cambiar(Singleton.url+":8000/api/usuario/mprincipal/"+iduser+"/"+pueblo,t);
+					Cambiar tarea = new Cambiar(Singleton.url+":8000/api/usuario/mprincipal/"+iduser+"/"+pueblo,a);
 					tarea.execute();
 				}
 			}
@@ -94,8 +96,7 @@ public class Perfil extends Activity {
 				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
 				startActivity(i);*/
-				Intent i = new Intent(Perfil.this, Nolog.class);
-				startActivity(i);
+				showDialogSalir(a,"Confirmación","Desea desloguearse?");
 
 			}
 			
@@ -162,6 +163,25 @@ public class Perfil extends Activity {
 				tarea.execute();
 			}
 		}
+
+		public void showDialogSalir(Activity activity, String title, CharSequence message) {
+			AlertDialog.Builder b = new AlertDialog.Builder(Perfil.this);
+			final AlertDialog builder = b.create();
+			b.setTitle(title);
+			b.setMessage(message);
+			b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			    public void onClick(DialogInterface dialog, int id) {
+			    	builder.cancel();
+			    }
+			});
+			b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+			    public void onClick(DialogInterface dialog, int id) {
+					Intent i = new Intent(Perfil.this, Nolog.class);
+					startActivity(i);
+			    }
+			});
+			b.show();
+		}	
 
 	public class Asincperfil extends AsyncTask<Void, Void, Object> {
 		Context contexto;

@@ -227,9 +227,7 @@ public class Deuda extends Activity{
 				i.putExtra("indice", indice);
 				i.putExtra("user_id", iduser);
 				startActivity(i);*/
-				Intent i = new Intent(Deuda.this, Nolog.class);
-				startActivity(i);
-
+				showDialogSalir(a,"Confirmación","Desea desloguearse?");
 			}
 			
 		});		
@@ -288,6 +286,25 @@ public class Deuda extends Activity{
 						Singleton.url+":8000/api/addsigue/"+iduser+"/"+puebloant,a
 						);
 					tarea.execute();
+		    }
+		});
+		b.show();
+	}	
+
+	public void showDialogSalir(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Deuda.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Deuda.this, Nolog.class);
+				startActivity(i);
 		    }
 		});
 		b.show();
@@ -487,15 +504,15 @@ public class Deuda extends Activity{
 				enabled = false;
 				b6.setEnabled(true);
 				b6.setImageResource(R.drawable.soff);
-				b6.getLayoutParams().height = 30;
-				b6.getLayoutParams().width = 30;
+				b6.getLayoutParams().height = 40;
+				b6.getLayoutParams().width = 40;
 			}
 			else{
 				enabled = true;
 				b6.setEnabled(true);
 				b6.setImageResource(R.drawable.son);
-				b6.getLayoutParams().height = 30;
-				b6.getLayoutParams().width = 30;
+				b6.getLayoutParams().height = 40;
+				b6.getLayoutParams().width = 40;
 }
 			db1.close();
 			
@@ -628,17 +645,6 @@ public class Deuda extends Activity{
 
 
 	    public void onPostExecute(Object response){
-	    	enabled = !enabled;
-	    	if(enabled){
-				b6.setImageResource(R.drawable.son);
-				b6.getLayoutParams().height = 20;
-				b6.getLayoutParams().width = 20;
-	    	}
-	    	else{
-				b6.setImageResource(R.drawable.soff);
-				b6.getLayoutParams().height = 20;
-				b6.getLayoutParams().width = 20;
-	    	}
 	        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
 	        SQLiteDatabase bd = admin.getWritableDatabase();
 	        try{
@@ -656,6 +662,20 @@ public class Deuda extends Activity{
 			bd.close();
 			
 			String cadena = html.getString("message");
+			if(html.getBoolean("ret")){
+				enabled = !enabled;
+	    		if(enabled){
+					b6.setImageResource(R.drawable.son);
+					b6.getLayoutParams().height = 40;
+					b6.getLayoutParams().width = 40;
+	    		}
+	    		else{
+					b6.setImageResource(R.drawable.soff);
+					b6.getLayoutParams().height = 40;
+					b6.getLayoutParams().width = 40;
+	    		}
+
+			}
 			Toast.makeText(getApplicationContext(), cadena, Toast.LENGTH_LONG).show();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

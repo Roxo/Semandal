@@ -161,9 +161,8 @@ public class MainActivity extends Activity {
 				try {
 			        BDClass admin = new BDClass(contexto,"administracion", null, 1);
 			        SQLiteDatabase bd = admin.getWritableDatabase();
-					bd.execSQL("DELETE FROM pueblos");
-					bd.execSQL("DELETE FROM categorias");
 					if(vpmine!=vpactual){
+						bd.execSQL("DELETE FROM pueblos");
 						int npueblos = pueblos.getInt("npueblos");
 						if(npueblos!=0){
 							JSONArray p = pueblos.getJSONArray("pueblos");
@@ -174,7 +173,8 @@ public class MainActivity extends Activity {
 						}
 					}
 					if(vcmine!=vcactual){
-						int ncategorias = categorias.getInt("ncategorias");
+					bd.execSQL("DELETE FROM categorias");
+					int ncategorias = categorias.getInt("ncategorias");
 						if(ncategorias!=0){
 							JSONArray c = categorias.getJSONArray("categorias");
 							for(int i = 0;i<ncategorias;i++){

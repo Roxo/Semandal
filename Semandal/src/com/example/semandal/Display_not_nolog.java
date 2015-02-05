@@ -268,7 +268,7 @@ public class Display_not_nolog extends Activity {
 				url1 = html.getString("url");
 				like = html.getInt("liked");
 				ncomentarios = html.getInt("ncomentarios");
-				comentarios.setText("Ver Comentarios ("+ncomentarios+")");
+				comentarios.setText("Comentarios ("+ncomentarios+")");
 				JSONArray cat = html.getJSONArray("categoria");
 				p = html.getString("dspueblo");
 				listacategorias =  new String[cat.length()];

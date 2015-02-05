@@ -681,7 +681,7 @@ def getdeuda(request,p_id):
 def insertcomment(request,n_id,dsc,u_id):
 	user = Usuario.objects.filter(id=u_id)[0]
 	noticia = Noticias.objects.filter(id=n_id)[0]
-	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc.replace("-"," "),fecha=datetime.datetime.today())
+	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc.replace("-"," "),fecha=datetime.today())
 	p.save()
 	return HttpResponse("")
 
@@ -806,7 +806,7 @@ def addsig(request,id_p,id_u):
 		pueblo = Pueblo.objects.filter(id=id_p)[0]
 		u = SigP(id_user=usuario,id_p=pueblo)
 		u.save()
-		return HttpResponse('{"ret":true,"message":"Siguiendo el pueblo: '+pueblos.busqueda+'"}')
+		return HttpResponse('{"ret":true,"message":"Siguiendo el pueblo: '+pueblo.busqueda+'"}')
 	except:
 		return HttpResponse('{"ret":false,"message":"No se ha podido procesar su solicitud"}')
 

@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.semandal.Bnolog.AsincBnolog;
+import com.example.semandal.Deuda.Asinadd;
 import com.example.semandal.aux.Singleton;
 
 import android.annotation.SuppressLint;
@@ -139,9 +140,9 @@ public class Blog extends Activity implements OnItemSelectedListener {
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice", indice);
 				startActivity(i);*/
-				Intent i = new Intent(Blog.this, Nolog.class);
-				startActivity(i);
+				showDialogSalir(a,"Confirmación","Desea desloguearse?");
 			}
+			
 			
 		});		
 		b2.setOnClickListener(new View.OnClickListener() {
@@ -182,6 +183,26 @@ public class Blog extends Activity implements OnItemSelectedListener {
 			
 		});
 	}
+	
+	public void showDialogSalir(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Blog.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(Blog.this, Nolog.class);
+				startActivity(i);
+		    }
+		});
+		b.show();
+	}	
+
 	
 	private void pasarbusqueda(String finit,String ffin){
 		String titular = "";

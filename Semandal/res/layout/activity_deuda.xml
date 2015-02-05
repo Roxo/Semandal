@@ -270,7 +270,7 @@
         android:layout_weight="0.87"
 	    android:layout_gravity="center"
 	    android:ems="10"
-	    android:hint="Pueblo" >
+	    android:hint="Municipio" >
 
 	</AutoCompleteTextView>
 <ImageView

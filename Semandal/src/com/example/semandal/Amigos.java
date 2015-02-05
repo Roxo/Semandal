@@ -64,6 +64,8 @@ public class Amigos extends Activity {
 		}catch(Exception e){
 			
 		}
+		
+		
 		if(busqueda==null){
 			url = ":8000/api/usuario/"+iduser+"/amigos/";
 		}
@@ -172,6 +174,8 @@ public class Amigos extends Activity {
 
 	}
 
+	
+	
 	public class AsincA extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;

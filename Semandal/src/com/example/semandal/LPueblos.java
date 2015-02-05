@@ -18,8 +18,10 @@ import com.example.semandal.Deuda.AsinDeuda;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -48,6 +50,7 @@ public class LPueblos extends Activity {
 	private List<Integer> lista1aux,lista2aux;
 	ListView lv;
 	AutoCompleteTextView pob;
+	LPueblos a = this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +120,7 @@ public class LPueblos extends Activity {
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice", indice);
 				startActivity(i);*/
-				Intent i = new Intent(LPueblos.this, Nolog.class);
-				startActivity(i);
+				showDialogSalir(a,"Confirmación","Desea desloguearse?");
 
 			}
 			
@@ -176,6 +178,25 @@ public class LPueblos extends Activity {
 
 	}
 	
+	public void showDialogSalir(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(LPueblos.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Intent i = new Intent(LPueblos.this, Nolog.class);
+				startActivity(i);
+		    }
+		});
+		b.show();
+	}	
+
 	public void onPause(){
 		super.onPause();
 		if (pleaseWaitDialog != null)

@@ -48,6 +48,7 @@
         android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/gradientesuave"
         android:layout_above="@+id/button1"
         android:layout_below="@+id/textView3" >
 
