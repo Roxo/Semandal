@@ -4,47 +4,41 @@
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
 
-  
-    <ImageButton
+      <ImageView
+        android:id="@+id/Amigos"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/Imagebtton"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/salir" />
+
+    <ImageView
+        android:id="@+id/Noticias"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/Amigos"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/Amigos"
+        android:src="@drawable/noticias" />
+
+    <ImageView
+        android:id="@+id/deuda"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/Amigos"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/Noticias"
+        android:src="@drawable/municipios" />
+    <ImageView
         android:id="@+id/Imagebtton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/deuda"
         android:src="@drawable/ic_launcher" />
-    
-    <Button
-        android:id="@+id/Amigos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="15dp"
-        android:enabled="true"
-        android:onClick="loguear"
-        android:text="@string/Amigos" />
-    
-        <Button
-        android:id="@+id/Noticias"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/Amigos"
-        android:layout_alignBottom="@+id/Amigos"
-        android:layout_toLeftOf="@+id/Amigos"
-        android:enabled="true"
-        android:onClick="buscar"
-        android:text="@string/Noticias" />
 
-    <Button
-        android:id="@+id/deuda"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/Noticias"
-        android:layout_alignBottom="@+id/Noticias"
-        android:layout_toLeftOf="@+id/Noticias"
-        android:enabled="true"
-        android:onClick="infor"
-        android:text="@string/Deuda" />
-    
 
     <ImageView
         android:id="@+id/imageView1"

@@ -20,6 +20,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignBottom="@+id/Imagebtton"
+        android:layout_marginRight="5dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:src="@drawable/salir" />
@@ -40,7 +41,7 @@
         android:layout_height="40dp"
         android:layout_alignBottom="@+id/Amigos"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="15dp"
+        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@+id/Noticias"
         android:src="@drawable/municipios" />
     <ImageView
@@ -48,6 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_launcher" />
+
     	
     <ListView
         android:id="@+id/listView1"
@@ -73,6 +75,7 @@
         android:id="@+id/resultados"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+         android:layout_marginTop="-10dp"
         android:textSize="20sp"
         android:layout_below="@+id/imageView1"
         android:textColor="#008000"
@@ -83,6 +86,7 @@
         android:id="@+id/fl"
  	    android:layout_height= "30dp"
 	    android:layout_width= "30dp"
+        android:layout_marginTop="-10dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/imageView1"
         android:src="@drawable/fl" />
@@ -91,6 +95,7 @@
         android:id="@+id/fr"
 	    android:layout_height= "30dp"
 	    android:layout_width= "30dp"
+        android:layout_marginTop="-10dp"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/imageView1"
         android:src="@drawable/fr" />

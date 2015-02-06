@@ -14,9 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.semandal.Comentarios.AsincCL;
-import com.example.semandal.Deuda.Asinadd;
-import com.example.semandal.Seman.wrong_cat;
 import com.example.semandal.aux.Singleton;
 
 import android.annotation.TargetApi;
@@ -43,6 +40,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -83,7 +81,7 @@ public class Display_not_log extends Activity {
 		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		Button b5 = (Button)this.findViewById(R.id.comment);
 		Button b6 = (Button)this.findViewById(R.id.button1);
-		TextView votos = (TextView)this.findViewById(R.id.votos);
+		final TextView votos = (TextView)this.findViewById(R.id.votos);
 		b7 = (ImageView)this.findViewById(R.id.button2);
 		ImageView categoriza = (ImageView)this.findViewById(R.id.b1);
 		lista = (ListView) this.findViewById(R.id.listView1);
@@ -94,14 +92,15 @@ public class Display_not_log extends Activity {
 		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		mas = (ImageView) findViewById(R.id.mas);
+
+		final TextView pueblo = (TextView) findViewById(R.id.textView3);
 		AsincronDNN tarea = null;
-		TextView pueblo = (TextView) findViewById(R.id.textView3);
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 				(TextView) findViewById(R.id.Noticia),
 				(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
 				Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
 				,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
-				pueblo,mas,votos);
+				pueblo,mas,votos,"");
 		tarea.execute();
 		
 		mas.setOnClickListener(new View.OnClickListener() {
@@ -150,14 +149,24 @@ public class Display_not_log extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Asincheck tarea = null;
+				AsincronDNN tarea = null;
 				if(!sigo){
-					tarea= new Asincheck(Singleton.url+":8000/api/addliked/"+iduser+"/"+notid,a);
+					tarea = new AsincronDNN(a,(TextView) findViewById(R.id.titular),
+							(TextView) findViewById(R.id.Noticia),
+							(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
+							Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,a
+							,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
+							pueblo,mas,votos,Singleton.url+":8000/api/addliked/"+iduser+"/"+notid);
 					tarea.execute();
 				}
 				else{
-					tarea= new Asincheck(Singleton.url+":8000/api/removeliked/"+iduser+"/"+notid,a);
-					tarea.execute();				
+					tarea = new AsincronDNN(a,(TextView) findViewById(R.id.titular),
+							(TextView) findViewById(R.id.Noticia),
+							(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
+							Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,a
+							,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
+							pueblo,mas,votos,Singleton.url+":8000/api/removeliked/"+iduser+"/"+notid);
+					tarea.execute();
 				}
 			}
 			
@@ -291,7 +300,7 @@ public class Display_not_log extends Activity {
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView)findViewById(R.id.votos));
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView)findViewById(R.id.votos),"");
 			tarea.execute();
 
 		}
@@ -341,7 +350,7 @@ public class Display_not_log extends Activity {
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView) findViewById(R.id.votos));
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView) findViewById(R.id.votos),"");
 			tarea.execute();
 
 		}
@@ -351,12 +360,12 @@ public class Display_not_log extends Activity {
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
-		String url,urlsig,urlvista="";
+		String url,urlsig,urlvista="",urlmegusta="";
 		TextView titview,cuerpview,dateview,cat;
 		ImageView mas;
 		Button comentarios;
 		ImageView b7;
-		JSONObject html,sig;
+		JSONObject html,sig,megusta;
 	    private Display_not_log activity;
 	    private boolean completed;
 	    private Object _response;
@@ -372,7 +381,8 @@ public class Display_not_log extends Activity {
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 			TextView dateview, ImageView b7,String urlvista,
 			String url,String urlsig,Display_not_log activity,ListView lv,
-			Button comentarios,TextView pueblo,ImageView mas,TextView votos){
+			Button comentarios,TextView pueblo,ImageView mas,TextView votos,
+			String urlmegusta){
 			this.contexto = contexto;
 			this.mas = mas;
 			this.titview = titview;
@@ -387,12 +397,14 @@ public class Display_not_log extends Activity {
 			this.pueblo = pueblo;
 			this.urlvista = urlvista;
 			this.votos = votos;
+			this.urlmegusta = urlmegusta;
 		}
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 				TextView dateview, ImageView b7,
 				String url,String urlsig,Display_not_log activity,ListView lv,
-				Button comentarios,TextView pueblo,ImageView mas,TextView votos){
+				Button comentarios,TextView pueblo,ImageView mas,TextView votos,
+				String urlmegusta){
 				this.contexto = contexto;
 				this.mas = mas;
 				this.titview = titview;
@@ -406,7 +418,8 @@ public class Display_not_log extends Activity {
 				this.comentarios = comentarios;
 				this.pueblo = pueblo;
 				this.votos = votos;
-			}
+				this.urlmegusta = urlmegusta;
+		}
 		  private String readAll(Reader rd) throws IOException {
 			    StringBuilder sb = new StringBuilder();
 			    int cp;
@@ -426,6 +439,17 @@ public class Display_not_log extends Activity {
 			      is.close();
 			    }
 			  }
+
+			  public void megusta() throws IOException, JSONException {
+				    InputStream is = new URL(urlmegusta).openStream();
+				    try {
+				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+				      String jsonText = readAll(rd);
+				       megusta = new JSONObject(jsonText);
+				    } finally {
+				      is.close();
+				    }
+				  }
 			  
 			  public void sigo() throws IOException, JSONException {
 				    InputStream is = new URL(urlsig).openStream();
@@ -447,6 +471,8 @@ public class Display_not_log extends Activity {
 		protected Void doInBackground(Void... params) {
 
 				try {
+					if(!urlmegusta.equalsIgnoreCase(""))
+						megusta();
 					if(!url.equalsIgnoreCase(""))
 						leernoticia();
 					if(!urlsig.equalsIgnoreCase(""))
@@ -501,6 +527,10 @@ public class Display_not_log extends Activity {
 				else{
 					sigo = false;
 				}
+				if(!urlmegusta.equalsIgnoreCase("")){
+					String cad = megusta.getString("message");
+					Toast.makeText(getApplicationContext(), cad, Toast.LENGTH_LONG).show();
+				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -540,6 +570,10 @@ public class Display_not_log extends Activity {
 				mas.getLayoutParams().height = 40;
 				mas.getLayoutParams().width = 40;
 			}
+				
+			ScrollView l = (ScrollView)a.findViewById(R.id.scroll);
+			l.fullScroll(ScrollView.FOCUS_UP);
+
 	           completed = true;
 	            _response = response;
 	            notifyActivityTaskCompleted();
@@ -843,122 +877,6 @@ public class Display_not_log extends Activity {
 		b.show();
 	}	
 
-	public class Asincheck extends AsyncTask<Void, Void, Object> {
-		String url;
-		Context contexto;
-	    private Display_not_log activity;
-	    private boolean completed;
-	    private Object _response;
-	    JSONObject datosuser,html;
-
-		public Asincheck(String url,Display_not_log activity){
-			this.url=url;
-			this.activity = activity;
-			this.contexto = activity;
-		}
-		@Override
-		protected Void doInBackground(Void... params) {
-			try {
-				actualizar();
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		  public void actualizar() throws IOException, JSONException {
-			    InputStream is = new URL(url).openStream();
-			    try {
-			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			      String jsonText = readAll(rd);
-			       html = new JSONObject(jsonText);
-			    } finally {
-			      is.close();
-			    }
-			  }		  
-
-		
-	    @Override 
-	    protected void onPreExecute() {
-	            //Start the splash screen dialog
-	                pleaseWaitDialog= ProgressDialog.show(activity, 
-	                                                       "Espere un segundo", 
-	                                                       "Actualizando información", 
-	                                                       false);
-
-	    } 
-	    
-		  private String readAll(Reader rd) throws IOException {
-			    StringBuilder sb = new StringBuilder();
-			    int cp;
-			    while ((cp = rd.read()) != -1) {
-			      sb.append((char) cp);
-			    }
-			    return sb.toString();
-			  }
-
-
-
-	    public void onPostExecute(Object response){
-			String cadena;
-			try {
-				cadena = html.getString("message");
-
-			if(html.getBoolean("ret")){
-				sigo = !sigo;
-	    		if(sigo){
-					b7.setImageResource(R.drawable.scheck);
-					b7.getLayoutParams().height = 40;
-					b7.getLayoutParams().width = 40;
-	    		}
-	    		else{
-					b7.setImageResource(R.drawable.ncheck);
-					b7.getLayoutParams().height = 40;
-					b7.getLayoutParams().width = 40;
-	    		}
-
-			}
-
-			Toast.makeText(getApplicationContext(), cadena, Toast.LENGTH_LONG).show();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-			
-			
-            completed = true;
-            _response = response;
-            notifyActivityTaskCompleted();
-        //Close the splash screen
-        if (pleaseWaitDialog != null)
-        {
-            pleaseWaitDialog.dismiss();
-            pleaseWaitDialog = null;
-        }
-	    }
-	    public void setActivity(Display_not_log activity) 
-	    { 
-	        this.activity = activity; 
-	        if ( completed ) { 
-	            notifyActivityTaskCompleted(); 
-	        } 
-	    } 
-	   //Notify activity of async task completion
-	    private void notifyActivityTaskCompleted() 
-	    { 
-	        if ( null != activity ) { 
-	        	set = true;
-	            activity.onTaskCompleted(_response); 
-	        } 
-	    } 
-	}
 	
 
 }

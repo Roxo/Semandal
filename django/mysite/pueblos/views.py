@@ -872,14 +872,19 @@ def catfromnot(request,id_n):
 
 
 def denuncia(resquest,id_u,id_c):
-	try:
-		u = Usuario.objects.filter(id=id_u)[0]
-		c = Comentarios.objects.filter(id=id_c)
-		d = Denuncias_C(comentario=c[0],id_user=u)
-		d.save()
-		c.update(puntuacion = c[0].puntuacion-1) 
-	except:
-		return HttpResponse('{"agregado":false}')
+#	try:
+	u = Usuario.objects.filter(id=id_u)[0]
+	c = Comentarios.objects.filter(id=id_c,id_user= u)
+	if len(c) != 0:
+		c.delete()
+		return HttpResponse('{"agregado":true}')
+	else:
+		c = Comentarios.objects.filter(id=id_c)	
+	d = Denuncias_C(comentario=c[0],id_user=u)
+	d.save()
+	c.update(puntuacion = c[0].puntuacion-1) 
+#	except:
+#		return HttpResponse('{"agregado":false}')
 	return HttpResponse('{"agregado":true}')
 
 #####################EXPERIMENTO 20 NOTICIAS DE TODOS LOS PUEBLOS QUE SIGO
@@ -954,8 +959,11 @@ def versiones(request):
 		return HttpResponse('{"ret":false}')
 
 def addnot(request,u_id,n_id):
-	u = Usuario.objects.filter(id = u_id)[0]
-	n = Noticias.objects.filter(id = n_id)[0]
-	k = NVistas(noticia = n, usuario = u)
-	k.save()
-	return HttpResponse("")
+	try:
+		u = Usuario.objects.filter(id = u_id)[0]
+		n = Noticias.objects.filter(id = n_id)[0]
+		k = NVistas(noticia = n, usuario = u)
+		k.save()
+		return HttpResponse('{"ret":true}')
+	except:		
+		return HttpResponse('{"ret":false}')

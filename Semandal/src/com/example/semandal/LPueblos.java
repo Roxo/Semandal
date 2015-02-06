@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.semandal.Deuda.AsinDeuda;
+import com.example.semandal.Display_not_log.AsincronDNN;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
@@ -51,6 +52,14 @@ public class LPueblos extends Activity {
 	ListView lv;
 	AutoCompleteTextView pob;
 	LPueblos a = this;
+	Bundle bundle;
+	
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		bundle = savedInstanceState;
+	    // Save the user's current game state
+	    // Always call the superclass so it can save the view hierarchy state
+	    super.onSaveInstanceState(savedInstanceState);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -205,10 +214,17 @@ public class LPueblos extends Activity {
 
 	public void onResume(){
 		super.onResume();
+		if(bundle != null){
+			bundle = null;
+			AsinLpueblo tarea = new AsinLpueblo(this,Singleton.url+":8000/api/usuario/seguimiento/"+iduser,lv,pob,this);
+			tarea.execute();
+		}
+		else{
 		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
 			if(pleaseWaitDialog != null)
 				pleaseWaitDialog.show();
 		}
+	}
 	}
 	
 	private void onTaskCompleted(Object _response) 

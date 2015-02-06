@@ -243,7 +243,7 @@ public class Lnoticias extends Activity {
 	        	   if ((firstVisibleItem + visibleItemCount) >= totalItemCount) {
 	        			   start += 10;
 	        			   last +=10;
-	        			   aempezar = totalItemCount-1;
+	        			   aempezar = firstVisibleItem+1;
 	        			   AsincLN tarea = new AsincLN(resultados,
 	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/"+iduser).replace(" ","%20"),lista, a
 	        					   );
@@ -484,7 +484,6 @@ public class Lnoticias extends Activity {
 			aempezar = bundle.getInt(AEMPEZAR);
 			bundle = null;
 			mandar.get(aempezar).setVista(true);
-			aempezar += 1;
 			lista.setAdapter(new Plantilla_dispnot(this,mandar));
 			lista.setSelection(aempezar);
 
