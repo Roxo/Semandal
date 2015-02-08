@@ -33,7 +33,9 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -79,8 +81,8 @@ public class Display_not_log extends Activity {
 		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
 		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
 		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
-		Button b5 = (Button)this.findViewById(R.id.comment);
-		Button b6 = (Button)this.findViewById(R.id.button1);
+		ImageView b5 = (ImageView)this.findViewById(R.id.comentario);
+		ImageView b6 = (ImageView)this.findViewById(R.id.button1);
 		final TextView votos = (TextView)this.findViewById(R.id.votos);
 		b7 = (ImageView)this.findViewById(R.id.button2);
 		ImageView categoriza = (ImageView)this.findViewById(R.id.b1);
@@ -99,7 +101,7 @@ public class Display_not_log extends Activity {
 				(TextView) findViewById(R.id.Noticia),
 				(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
 				Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-				,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
+				,(ListView) findViewById(R.id.listView1),(TextView)findViewById(R.id.comment),
 				pueblo,mas,votos,"");
 		tarea.execute();
 		
@@ -155,7 +157,7 @@ public class Display_not_log extends Activity {
 							(TextView) findViewById(R.id.Noticia),
 							(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
 							Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,a
-							,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
+							,(ListView) findViewById(R.id.listView1),(TextView)findViewById(R.id.comment),
 							pueblo,mas,votos,Singleton.url+":8000/api/addliked/"+iduser+"/"+notid);
 					tarea.execute();
 				}
@@ -164,7 +166,7 @@ public class Display_not_log extends Activity {
 							(TextView) findViewById(R.id.Noticia),
 							(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
 							Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,a
-							,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
+							,(ListView) findViewById(R.id.listView1),(TextView)findViewById(R.id.comment),
 							pueblo,mas,votos,Singleton.url+":8000/api/removeliked/"+iduser+"/"+notid);
 					tarea.execute();
 				}
@@ -263,6 +265,18 @@ public class Display_not_log extends Activity {
 				startActivity(i);
 		    }
 		});
+		
+		lista.setOnTouchListener(new OnTouchListener() {
+		    // Setting on Touch Listener for handling the touch inside ScrollView
+		    @Override
+		    public boolean onTouch(View v, MotionEvent event) {
+		    // Disallow the touch request for parent scroll on touch of child view
+		    v.getParent().requestDisallowInterceptTouchEvent(true);
+		    return false;
+		    }
+
+		});
+
 	
 	}
 	
@@ -300,7 +314,7 @@ public class Display_not_log extends Activity {
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView)findViewById(R.id.votos),"");
+					,(ListView) findViewById(R.id.listView1),(TextView) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView)findViewById(R.id.votos),"");
 			tarea.execute();
 
 		}
@@ -343,7 +357,7 @@ public class Display_not_log extends Activity {
 	}	
 
 	private void onTaskCompleted(Object _response){
-sc.smoothScrollTo(0,0);
+		sc.smoothScrollTo(0,0);
 	if(set){
 			set=false;
 			AsincronDNN tarea = null;
@@ -351,7 +365,7 @@ sc.smoothScrollTo(0,0);
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView) findViewById(R.id.votos),"");
+					,(ListView) findViewById(R.id.listView1),(TextView) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView) findViewById(R.id.votos),"");
 			tarea.execute();
 
 		}
@@ -362,9 +376,8 @@ sc.smoothScrollTo(0,0);
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url,urlsig,urlvista="",urlmegusta="";
-		TextView titview,cuerpview,dateview,cat;
+		TextView titview,cuerpview,dateview,cat,comentarios;
 		ImageView mas;
-		Button comentarios;
 		ImageView b7;
 		JSONObject html,sig,megusta;
 	    private Display_not_log activity;
@@ -382,7 +395,7 @@ sc.smoothScrollTo(0,0);
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 			TextView dateview, ImageView b7,String urlvista,
 			String url,String urlsig,Display_not_log activity,ListView lv,
-			Button comentarios,TextView pueblo,ImageView mas,TextView votos,
+			TextView comentarios,TextView pueblo,ImageView mas,TextView votos,
 			String urlmegusta){
 			this.contexto = contexto;
 			this.mas = mas;
@@ -404,7 +417,7 @@ sc.smoothScrollTo(0,0);
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 				TextView dateview, ImageView b7,
 				String url,String urlsig,Display_not_log activity,ListView lv,
-				Button comentarios,TextView pueblo,ImageView mas,TextView votos,
+				TextView comentarios,TextView pueblo,ImageView mas,TextView votos,
 				String urlmegusta){
 				this.contexto = contexto;
 				this.mas = mas;
@@ -509,7 +522,7 @@ sc.smoothScrollTo(0,0);
 				p = html.getString("dspueblo");
 				aseguir=true;
 				ncomentarios = html.getInt("ncomentarios");
-				comentarios.setText("Comentarios ("+ncomentarios+")");
+				comentarios.setText(""+ncomentarios);
 				votos.setText(""+html.getInt("liked"));
 				JSONArray cat = html.getJSONArray("categoria");
 				String[] listacategorias = new String[cat.length()];

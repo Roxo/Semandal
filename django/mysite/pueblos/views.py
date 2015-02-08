@@ -689,24 +689,19 @@ def ulog(request,id_user):
 	user = Usuario.objects.filter(id= id_user)
 	if len(user) != 0:
 		user = user[0]
+		obj = ""
 		t = user.pueblo.id
 		pob = Pueblo.objects.filter(id = t)[0]
 		dstitular = ""
 		sig = SigP.objects.filter(id_user = user)
 		try:
-			noticia = Noticias.objects.filter(pueblo = pob).latest("fecha")
-			if noticia.dstitular is not "":
-				dstitular = noticia.dstitular
-			if dstitular == None:
-				dstitular = "Esta noticia no tiene titular"
-			elif dstitular == "":
-				dstitular = "Esta noticia no tiene titular"
-			idnot = str(noticia.id)
+			noticia = Noticias.objects.filter(pueblo = pob).order_by("fecha").reverse()[0:5]
+			obj = filternoticia(noticia,user.id)
 		except:
 			dstitular = "No existen noticias en su municipio"
 			idnot = "0"
 		seguir = follow(sig)
-		ret = '{"id":'+str(user.id)+',"dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":'+str(pob.id)+',"busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","dstitular":"'+dstitular+'","notid":'+idnot+',"siguiendo":['+seguir+']}'
+		ret = '{"id":'+str(user.id)+',"dsusuario":"'+user.dsusuario+'","dspueblo":"'+pob.dspueblo+'","pid":'+str(pob.id)+',"busquedaimagenes":"'+pob.busqueda.replace(" ","_")+'","noticias":['+obj+'],"siguiendo":['+seguir+']}'
 	else:
 		ret = '{"id":"este usuario no existe"}'
 	agregarabd("api/usuario/"+id_user)

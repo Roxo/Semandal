@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 import com.example.semandal.Log.loguear;
 import com.example.semandal.Nolog.AsincronNolog;
 import com.example.semandal.aux.AlmacenUsuario;
+import com.example.semandal.aux.Noticia;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
@@ -31,19 +33,40 @@ import android.os.AsyncTask.Status;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class Logueado extends Activity {
+	LinkedList<Integer> auxlist = new LinkedList<Integer>();
 	int pid=0,notid=0,iduser=0;
 	private static Asinlog backgroundTask;
+	private int click = 0;
 	private static ProgressDialog pleaseWaitDialog;
 	private String nombreuser = "";
+	List<Noticia> mandar = new LinkedList<Noticia>();
 	Logueado a = this;
 	AlmacenUsuario j;
+	Bundle bundle;
+	 ListView noticia;
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		bundle = savedInstanceState;
+	    // Save the user's current game state
+	    bundle.putInt("CLICK", click);
+
+	    // Always call the superclass so it can save the view hierarchy state
+	    super.onSaveInstanceState(savedInstanceState);
+	}
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,9 +79,9 @@ public class Logueado extends Activity {
 		iduser = getIntent().getIntExtra("user_id",0);
 		j = new AlmacenUsuario(this);
 		TextView bienvenida=(TextView) this.findViewById(R.id.bienvenida);
-		TextView noticia=(TextView) this.findViewById(R.id.noticias);
+		noticia=(ListView) this.findViewById(R.id.noticias);
 		TextView pueblo=(TextView) this.findViewById(R.id.pueblo);
-		TextView mispueblos=(TextView) this.findViewById(R.id.button2);
+		ImageView mispueblos=(ImageView) this.findViewById(R.id.button2);
 		Asinlog tarea = null;
 		final int indice = getIntent().getIntExtra("indice", -1);
 		tarea = new Asinlog(this,bienvenida,noticia,pueblo,
@@ -83,19 +106,34 @@ public class Logueado extends Activity {
 		});		
 
 		
-		noticia.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(Logueado.this, Display_not_log.class);
-				i.putExtra("user_id", iduser);
-				i.putExtra("id",notid);
-				i.putExtra("indice",indice);
-				startActivity(i);
-			}			
-			
-		});		
+		noticia.setOnItemClickListener(new OnItemClickListener() {
+		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
+		    	try{
+			        int k =  (Integer) noticia.getAdapter().getItem(pos);
+			        click = k;
+		        	auxlist.get(k);			
+		        	Intent i= new Intent(Logueado.this,Display_not_log.class);
+		        	int s =  (Integer) noticia.getAdapter().getItem(pos);
+		        	i.putExtra("id",auxlist.get(s));
+		        	i.putExtra("user_id", iduser);
+		        	startActivity(i);	   
+		        }catch(Exception E){		        	
+		        }
+		    }
+		    
+		});
 	
+		noticia.setOnTouchListener(new OnTouchListener() {
+		    // Setting on Touch Listener for handling the touch inside ScrollView
+		    @Override
+		    public boolean onTouch(View v, MotionEvent event) {
+		    // Disallow the touch request for parent scroll on touch of child view
+		    v.getParent().requestDisallowInterceptTouchEvent(true);
+		    return false;
+		    }
+
+		});
+
 	
 		b5.setOnClickListener(new View.OnClickListener() {
 
@@ -205,15 +243,24 @@ public class Logueado extends Activity {
 
 	public void onResume(){
 		super.onResume();
-		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
-			if(pleaseWaitDialog != null)
-				pleaseWaitDialog.show();
+		if(bundle != null){
+			click = bundle.getInt("CLICK");
+			bundle = null;
+			mandar.get(click).setVista(true);
+			noticia.setAdapter(new Plantilla_dispnot(this,mandar));
+		}
+		else{	
+			if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+				if(pleaseWaitDialog != null)
+					pleaseWaitDialog.show();
+			}
 		}
 	}
 
 
 		void onTaskCompleted(Object _response) 
 		{ 
+			((ScrollView)a.findViewById(R.id.scroll)).smoothScrollTo(0,0);
 			int f = Integer.parseInt(j.GetUsuario().split("-")[1]);
 			if(iduser != f){
 				j.GuardaridUsuario(iduser);
@@ -224,7 +271,8 @@ public class Logueado extends Activity {
 	public class Asinlog extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
-		TextView bienvenida,noticia,pueblo;
+		ListView noticia;
+		TextView bienvenida,pueblo;
 		JSONObject datosuser;
 	    private Logueado activity;
 	    private boolean completed;
@@ -234,7 +282,7 @@ public class Logueado extends Activity {
 		 * 
 		 * */
 		
-		public Asinlog(Context contexto,TextView bienvenida,TextView noticia,TextView pueblo,String url,Logueado activity){
+		public Asinlog(Context contexto,TextView bienvenida,ListView noticia,TextView pueblo,String url,Logueado activity){
 			this.contexto = contexto;
 			this.noticia = noticia;
 			this.url = url;
@@ -309,11 +357,26 @@ public class Logueado extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				notid=datosuser.getInt("notid");
+				JSONArray lcoment = datosuser.getJSONArray("noticias");
+				for(int i = 0; i<lcoment.length();i++){
+						JSONObject coment = (JSONObject) lcoment.get(i);
+						int autor = coment.getInt("id_noticia");
+						String comentario = coment.getString("titular");
+						String puntuacion = coment.getString("fecha");
+						int nlikes = coment.getInt("liked");
+						int comentarios = coment.getInt("ncomentarios");
+						String categoria = "";
+						String dspueblo = coment.getString("dspueblo");
+						boolean vista = coment.getBoolean("vista");
+						auxlist.add(autor);
+						Noticia k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo,vista);
+						mandar.add(k);
+				}
+				noticia.setAdapter(new Plantilla_dispnot(activity,mandar));
+
 				pid=datosuser.getInt("pid");
 				nombreuser = datosuser.getString("dsusuario");
 				bienvenida.setText(datosuser.getString("dsusuario"));
-			    noticia.setText(datosuser.getString("dstitular"));
 			    pueblo.setText(datosuser.getString("dspueblo"));
 			    iduser=datosuser.getInt("id");
 			} catch (JSONException e) {
@@ -344,8 +407,8 @@ public class Logueado extends Activity {
 	    protected void onPreExecute() {
 	            //Start the splash screen dialog
 	            if (pleaseWaitDialog == null)
-	                pleaseWaitDialog= ProgressDialog.show(activity, "Entrando",
-	                                                       "Verificando credenciales", 
+	                pleaseWaitDialog= ProgressDialog.show(activity, "Espere un momento",
+	                                                       "Recopilando las 5 primeras noticias de su municipio principal", 
 	                                                       false);
 
 	    } 

@@ -68,6 +68,8 @@ public class Plantilla_dispnot extends BaseAdapter{
 			TextView votos = (TextView)view.findViewById(R.id.TextView01);
 			comentarios.setVisibility(View.GONE);
 			votos.setVisibility(View.GONE);
+			view.findViewById(R.id.nlikes).setVisibility(View.GONE);
+			view.findViewById(R.id.ncomentarios).setVisibility(View.GONE);			
 		}
 		boolean cambiocolor = lista.get(position).isVista();
 		if(cambiocolor){

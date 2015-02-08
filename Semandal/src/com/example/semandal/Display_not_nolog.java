@@ -73,8 +73,8 @@ public class Display_not_nolog extends Activity {
 		ImageView b2 = (ImageView)this.findViewById(R.id.Info);
 		ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
 		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
-		Button b5 = (Button)this.findViewById(R.id.comment);
-		Button b6 = (Button)this.findViewById(R.id.button1);
+		ImageView b5 = (ImageView)this.findViewById(R.id.comentario);
+		ImageView b6 = (ImageView)this.findViewById(R.id.button1);
 		final TextView votos = (TextView)this.findViewById(R.id.votos);
 		b7 = (ImageView)this.findViewById(R.id.button2);
 		ImageView categoriza = (ImageView)this.findViewById(R.id.b1);
@@ -90,7 +90,7 @@ public class Display_not_nolog extends Activity {
 				(TextView) findViewById(R.id.Noticia),
 				(TextView) findViewById(R.id.fecha),b7,
 				Singleton.url+":8000/api/noticias/"+notid,this
-				,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
+				,(ListView) findViewById(R.id.listView1),(TextView)findViewById(R.id.comment),
 				pueblo,mas,votos,"");
 		tarea.execute();
 		
@@ -218,7 +218,7 @@ public class Display_not_nolog extends Activity {
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),b7,
 					Singleton.url+":8000/api/noticias/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView)findViewById(R.id.votos),"");
+					,(ListView) findViewById(R.id.listView1),(TextView) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView)findViewById(R.id.votos),"");
 			tarea.execute();
 
 		}
@@ -243,7 +243,7 @@ public class Display_not_nolog extends Activity {
 					(TextView) findViewById(R.id.Noticia),
 					(TextView) findViewById(R.id.fecha),b7,
 					Singleton.url+":8000/api/noticias/",this
-					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView) findViewById(R.id.votos),"");
+					,(ListView) findViewById(R.id.listView1),(TextView) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView) findViewById(R.id.votos),"");
 			tarea.execute();
 
 		}
@@ -254,9 +254,8 @@ public class Display_not_nolog extends Activity {
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
-		TextView titview,cuerpview,dateview,cat;
+		TextView titview,cuerpview,dateview,cat,comentarios;
 		ImageView mas;
-		Button comentarios;
 		ImageView b7;
 		JSONObject html;
 	    private Display_not_nolog activity;
@@ -274,7 +273,7 @@ public class Display_not_nolog extends Activity {
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 			TextView dateview, ImageView b7,String urlvista,
 			String url,String urlsig,Display_not_nolog activity,ListView lv,
-			Button comentarios,TextView pueblo,ImageView mas,TextView votos,
+			TextView comentarios,TextView pueblo,ImageView mas,TextView votos,
 			String urlmegusta){
 			this.contexto = contexto;
 			this.mas = mas;
@@ -293,7 +292,7 @@ public class Display_not_nolog extends Activity {
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
 				TextView dateview, ImageView b7,
 				String url,Display_not_nolog activity,ListView lv,
-				Button comentarios,TextView pueblo,ImageView mas,TextView votos,
+				TextView comentarios,TextView pueblo,ImageView mas,TextView votos,
 				String urlmegusta){
 				this.contexto = contexto;
 				this.mas = mas;
@@ -362,7 +361,7 @@ public class Display_not_nolog extends Activity {
 				likes = html.getString("liked");
 				p = html.getString("dspueblo");
 				ncomentarios = html.getInt("ncomentarios");
-				comentarios.setText("Comentarios ("+ncomentarios+")");
+				comentarios.setText(""+ncomentarios);
 				votos.setText(""+html.getInt("liked"));
 				JSONArray cat = html.getJSONArray("categoria");
 				String[] listacategorias = new String[cat.length()];
