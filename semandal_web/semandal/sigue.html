@@ -33,7 +33,9 @@
     function updatephp(){
     	var j = document.getElementById('formid');
     	var name = j.value;
-        var newurl = 'http://95.39.221.207:8000/api/pueblos/'+name
+        var l = document.getElementById('idpueblo');
+        var pueblo = l.value;
+       var newurl = 'http://95.39.221.207:8000/api/usuario/seguimiento/'+pueblo+'/'+name
         var xhr = new XMLHttpRequest();
         var k = xhr.open('get', 'prueba.php?uno='+newurl);
         xhr.onreadystatechange = function(){
@@ -58,8 +60,7 @@
 <p>
 GET METHOD
 </p>
-Este método muestra todos los atributos de un pueblo con el id que le indiquemos.
-Existe un número total de 8118 pueblos, por tanto el id debe estar entre 1 y 8118 en un intervalo cerrado.
+Este sencillo método nos indicará si un usuario con ID_U sigue al pueblo con ID_P
 <p>
 ESTRUCTURA DEVUELTA
 </p>
@@ -67,41 +68,25 @@ ESTRUCTURA DEVUELTA
 
 {
 <ul name = "tipos" style="list-style: none;">
-  <li>id_provincia:"integer",</li>
-  <li>dsprovincia:"string",</li>
-  <li>npueblos:"integer",</li>
-  <li>pueblos:[</li>
-    <ul style="list-style: none;">  
-        {
-        <li>id:"int",</li>
-        <li>dspueblo:"string",</li>
-        <li>coordenadas:{
-            <ul style="list-style: none;">
-                <li>longitud:"double",</li>
-                <li>longitud:"double"</li>
-            </ul>
-            }
-        <li>url:"string",</li>
-        <li>opencms:"boolean",</li>
-        <li>habitantes:"integer",</li>
-        <li>deuda:"double",</li>
-        <li>deudaxhab:"double",</li>
-        <li>fecha_inscripcion:"string",</li>
-        <li>superficie:"double",</li>
-        <li>wiki:"string",</li>
-        <li>cp:"integer"</li>
-        }
-  </ul>
-  ]
+  <li>sigue:"boolean",</li>
 </ul>
 }
 
+
+<p>
+ID_P: <input id="idpueblo" idtype="text" name="id_insert" autofocus required />
+</p>
 <p>
 <form name ="subscribe" id="subscribe_frm" action="#">
-ID: <input id="formid" idtype="text" name="id_insert" autofocus required />
+ID_U: <input id="formid" idtype="text" name="id_insert" autofocus required />
+
+</p>
+
+<p>
 <input type="button" name="submit" value="Pruébalo!" id="submit" onclick="updatephp()"/>
 </form>
 </p>
+
 <div id ="ipllamada"></div>
 <p>
 </p>

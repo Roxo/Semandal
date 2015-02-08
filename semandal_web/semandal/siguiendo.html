@@ -33,7 +33,7 @@
     function updatephp(){
     	var j = document.getElementById('formid');
     	var name = j.value;
-        var newurl = 'http://95.39.221.207:8000/api/noticias/'+name
+        var newurl = 'http://95.39.221.207:8000/api/usuario/seguimiento/'+name
         var xhr = new XMLHttpRequest();
         var k = xhr.open('get', 'prueba.php?uno='+newurl);
         xhr.onreadystatechange = function(){
@@ -58,31 +58,23 @@
 <p>
 GET METHOD
 </p>
-Este método nos muestra la noticia con el ID que le indiquemos.
-
-Los saltos de linea "\n" se sustituyen por el caracter - al no ser compatible con json.
-tanto en el campo cuerpo como en el campo titular.
-Se recomienda volver a cambiarlo a la hora de capturar la consulta json.
+Devuelve los pueblos (id y nombre) que sigue el usuario con el ID que le especifiquemos 
 <p>
+ESTRUCTURA DEVUELTA
 </p>
+
 
 {
 <ul name = "tipos" style="list-style: none;">
-  <li>existe:"boolean"</li>
-  <li>id_noticia:"integer",</li>
-  <li>titular:"string",</li>
-  <li>cuerpo:"string",</li>
-  <li>url:"string",</li>
-  <li>liked:"integer",</li>
-  <li>dspueblo:"string",</li>
-  <li>ncomentarios:"integer",</li>
- <li>categoría:[</li>
+  <li>npueblos:"integer",</li>
+  <li>pueblos:[</li>
     <ul style="list-style: none;">  
         {
-        <li>id_categoria:"int",</li>
-        <li>dscategoria:"string"</li>
+        <li>id_pueblo:"int",</li>
+        <li>dspueblo:"string",</li>
+        <li>busquedaimagenes:"string"</li>
         }
-    </ul>
+  </ul>
   ]
 </ul>
 }
@@ -90,7 +82,6 @@ Se recomienda volver a cambiarlo a la hora de capturar la consulta json.
 <p>
 <form name ="subscribe" id="subscribe_frm" action="#">
 ID: <input id="formid" idtype="text" name="id_insert" autofocus required />
-
 <input type="button" name="submit" value="Pruébalo!" id="submit" onclick="updatephp()"/>
 </form>
 </p>

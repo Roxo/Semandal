@@ -31,18 +31,34 @@
     function updatephp(){
         var j = document.getElementById('titular');
         var titular = j.value;
-        var k = document.getElementById('fecha');
-        var fecha = k.value;
+        var k = document.getElementById('fechai');
+        var fecha_i = k.value;
+        var n = document.getElementById('fechaf');
+        var fecha_f = n.value;
         var l = document.getElementById('idc');
         var cat = l.value;
         var m = document.getElementById('idp');
         var pob = m.value;
+        var u = document.getElementById('idu');
+        var idu = u.value;        
+        var rin = document.getElementById('ri');
+        var ri = rin.value;        
+        var rfn = document.getElementById('rf');
+        var rf = rfn.value;        
         var stringfinal="";
+
+
         if (titular !== ""){
             stringfinal = stringfinal+"_t:"+titular+",";
         }
-        if (fecha !== ""){
-            stringfinal = stringfinal+"_d:"+fecha+",";
+        if (fecha_i !== "" && fecha_f ===""){
+            stringfinal = stringfinal+"_d:"+fecha_i+":"+fecha_i+",";
+        }
+        if (fecha_i === "" && fecha_f !==""){
+            stringfinal = stringfinal+"_d:"+fecha_f+":"+fecha_f+",";
+        }
+        if (fecha_i !== "" && fecha_f !==""){
+            stringfinal = stringfinal+"_d:"+fecha_i+":"+fecha_f+",";
         }
         if (cat !== ""){
             stringfinal = stringfinal+"_c:"+cat+",";
@@ -50,11 +66,23 @@
         if (pob !== ""){
             stringfinal = stringfinal+"_p:"+pob+",";
         }
+        if (ri===""){
+        	ri="0";
+        }
+        if(rf===""){
+        	rf="10";
+        }
+        if(idu===""){
+        	idu="0";
+        }
+
+
+
         if (stringfinal !== ""){
         stringfinal = stringfinal.substring(0,stringfinal.length-1)
         }
 
-        var newurl = 'http://95.39.221.207:8000/api/busqueda/('+stringfinal+')';
+        var newurl = 'http://95.39.221.207:8000/api/busqueda/('+stringfinal+')'+'/'+ri+'/'+rf+'/'+idu;
         var xhr = new XMLHttpRequest();
         var k = xhr.open('get', 'prueba.php?uno='+newurl);
         xhr.onreadystatechange = function(){
@@ -80,7 +108,10 @@
 GET METHOD
 </p>
 <p>
-Devuelve una noticia según los datos de búsqueda que le pasemos por parámetros.
+Devuelve una noticia según los datos de búsqueda que le pasemos por parámetros. También nos dice si, dado un usuario, la noticia ha sido ya vista.
+</p>
+<p>
+El formato de la fecha debe ser DD-MM-AAAA (los 0 a la izquierda son opcionales.)
 </p>
 
 <p>
@@ -107,7 +138,8 @@ ESTRUCTURA DEVUELTA
         <li>dscategoria:"string"</li>
       }
       </ul>
-      ]
+      ],
+      <li>vista:"boolean"</li>
 </ul>
 }
 
@@ -118,7 +150,12 @@ titular: <input id="titular" idtype="text" name="titular" autofocus required />
 </p>
 <p>
 
-fecha: <input id="fecha" idtype="text" name="fecha" autofocus required />
+fecha inicio: <input id="fechai" idtype="text" name="fechai" autofocus required />
+</p>
+
+<p>
+
+fecha fin: <input id="fechaf" idtype="text" name="fechaf" autofocus required />
 </p>
 <p>
 
@@ -127,6 +164,20 @@ id_categoria: <input id="idc" idtype="text" name="id_c" autofocus required />
 <p>
 
 id_pueblo: <input id="idp" idtype="text" name="id_p" autofocus required />
+
+</p>
+
+rango inicio: <input id="ri" idtype="text" name="ri" autofocus required />
+</p>
+
+
+</p>
+
+rango final: <input id="rf" idtype="text" name="rf" autofocus required />
+</p>
+</p>
+
+id_usuario: <input id="idu" idtype="text" name="idu" autofocus required />
 </p>
 
 <input type="button" name="submit" value="Pruébalo!" id="submit" onclick="updatephp()"/>

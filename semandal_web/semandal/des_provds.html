@@ -9,7 +9,7 @@
     function updatephp(){
         var j = document.getElementById('jurjol');
         var name = j.value;
-        var newurl = 'http://0.0.0.0:8000/api/provincias/'+name
+        var newurl = 'http://95.39.221.207:8000/api/provincias/'+name
         var xhr = new XMLHttpRequest();
         var k = xhr.open('get', 'prueba.php?uno='+newurl);
         xhr.onreadystatechange = function(){
@@ -41,9 +41,44 @@
 Este método muestra todos los pueblos de una provincia con el nombre que le indiquemos.
 El nombre de la provincia puede estar en mayúsculas o minúsculas y :
     - No se acentúan las palabras
+
+
 <p>
-Los resultados se muestran en formato json.
+ESTRUCTURA DEVUELTA
 </p>
+
+
+{
+<ul name = "tipos" style="list-style: none;">
+  <li>id_provincia:"integer",</li>
+  <li>dsprovincia:"string",</li>
+  <li>npueblos:"integer",</li>
+  <li>pueblos:[</li>
+    <ul style="list-style: none;">  
+        {
+        <li>id:"int",</li>
+        <li>dspueblo:"string",</li>
+        <li>coordenadas:{
+            <ul style="list-style: none;">
+                <li>longitud:"double",</li>
+                <li>longitud:"double"</li>
+            </ul>
+            }
+        <li>url:"string",</li>
+        <li>opencms:"boolean",</li>
+        <li>habitantes:"integer",</li>
+        <li>deuda:"double",</li>
+        <li>deudaxhab:"double",</li>
+        <li>fecha_inscripcion:"string",</li>
+        <li>superficie:"double",</li>
+        <li>wiki:"string",</li>
+        <li>cp:"integer"</li>
+        <li>n_noticias:"integer"</li>
+        }
+  </ul>
+  ]
+</ul>
+}
 
 <p>
 <form name ="subscribe" id="subscribe_frm" action="#">

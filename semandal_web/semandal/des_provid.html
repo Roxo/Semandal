@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?> 
 <meta charset="UTF-8">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"> 
 <head> 
 <title>XHTML Example Page</title> 
 
@@ -28,12 +28,11 @@
     box-shadow: 0px 0px 1px #777;
 }<
 </style>
-
 <script type="text/javascript"> 
     function updatephp(){
-    	var j = document.getElementById('formid');
-    	var name = j.value;
-        var newurl = 'http://95.39.221.207:8000/api/usuario/seguimiento/'+name
+        var j = document.getElementById('jurjol');
+        var name = j.value;
+        var newurl = 'http://95.39.221.207:8000/api/provincias/'+name
         var xhr = new XMLHttpRequest();
         var k = xhr.open('get', 'prueba.php?uno='+newurl);
         xhr.onreadystatechange = function(){
@@ -42,7 +41,8 @@
             // 200 is a successful return
             if(xhr.status === 200){
               document.getElementById('actualizar').innerHTML=xhr.responseText;
-              document.getElementById('ipllamada').innerHTML=newurl;
+            document.getElementById('ipllamada').innerHTML="ip request = http://opendatalab.uhu.es:8000/api/provincias/"+name;
+
               // alert(xhr.responseText); // 'This is the returned text.'
             }else{
                 alert('Error: '+xhr.status); // An error occurred during the request
@@ -58,7 +58,10 @@
 <p>
 GET METHOD
 </p>
-Devuelve los pueblos (id y nombre) que sigue el usuario con el ID que le especifiquemos 
+Este método muestra todos los pueblos de una provincia con el id que le indiquemos.
+Existe un número total de 52 provincias, por tanto el id debe estar entre 1 y 52 en un intervalo cerrado.
+
+
 <p>
 ESTRUCTURA DEVUELTA
 </p>
@@ -66,13 +69,31 @@ ESTRUCTURA DEVUELTA
 
 {
 <ul name = "tipos" style="list-style: none;">
+  <li>id_provincia:"integer",</li>
+  <li>dsprovincia:"string",</li>
   <li>npueblos:"integer",</li>
   <li>pueblos:[</li>
     <ul style="list-style: none;">  
         {
-        <li>id_pueblo:"int",</li>
+        <li>id:"int",</li>
         <li>dspueblo:"string",</li>
-
+        <li>coordenadas:{
+            <ul style="list-style: none;">
+                <li>longitud:"double",</li>
+                <li>longitud:"double"</li>
+            </ul>
+            }
+        <li>url:"string",</li>
+        <li>opencms:"boolean",</li>
+        <li>habitantes:"integer",</li>
+        <li>deuda:"double",</li>
+        <li>deudaxhab:"double",</li>
+        <li>fecha_inscripcion:"string",</li>
+        <li>superficie:"double",</li>
+        <li>wiki:"string",</li>
+        <li>cp:"integer"</li>
+        <li>n_noticias:"integer"</li>
+        }
   </ul>
   ]
 </ul>
@@ -80,7 +101,7 @@ ESTRUCTURA DEVUELTA
 
 <p>
 <form name ="subscribe" id="subscribe_frm" action="#">
-ID: <input id="formid" idtype="text" name="id_insert" autofocus required />
+ID: <input id="jurjol" idtype="text" name="id_insert" autofocus required />
 <input type="button" name="submit" value="Pruébalo!" id="submit" onclick="updatephp()"/>
 </form>
 </p>
@@ -89,5 +110,5 @@ ID: <input id="formid" idtype="text" name="id_insert" autofocus required />
 </p>
 <div id ="actualizar"></div>
 </body> 
-</meta>
 </html>
+</meta>
