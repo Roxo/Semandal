@@ -12,7 +12,7 @@ class Provincia(models.Model):
 )	
 	def __str__(self):
 		return self.id
-
+			
 class Pueblo(models.Model):
 	dspueblo = models.CharField(max_length=200)
 	dsopcional = models.CharField(max_length=200)
@@ -42,7 +42,7 @@ class Pueblo_infoExtra(models.Model):
 	contrato_temp = models.PositiveIntegerField()
 	contrato_indef = models.PositiveIntegerField()
 	url_datos = models.CharField(max_length=500)
-		
+
 class Usuario(models.Model):
 	dsusuario =  models.CharField(max_length=100,unique=True)
 	dsnombre = models.CharField(max_length=100)
@@ -53,8 +53,8 @@ class Usuario(models.Model):
 	correo = models.CharField(max_length=100,null=True,unique=True)
 
 class Categorias_semandal(models.Model):
-	dscategoria = models.CharField(max_length=100,unique = True)
-
+	dscategoria = models.CharField(max_length=100)
+	
 class Categoria(models.Model):
 	etiqueta_padre = models.ForeignKey(Categorias_semandal)
 	etiqueta = models.CharField(max_length=100)
@@ -68,7 +68,7 @@ class Noticias(models.Model):
 	url = models.CharField(max_length=300,null=True)
 	liked = models.PositiveIntegerField(default=0)
 	fecha_ins = models.DateTimeField()
-	
+
 class Status(models.Model):
 	dsstatus = models.CharField(max_length=20)
 
@@ -77,7 +77,7 @@ class NC(models.Model):
 	categoria = models.ForeignKey(Categorias_semandal)
 	confirmada = models.ForeignKey(Status)
 	class Meta:
-		unique_together = ('noticia','categoria')
+		unique_together = ('noticia','categoria')	
 
 class Classify(models.Model):
 	id_n = models.ForeignKey(Noticias)
@@ -93,7 +93,7 @@ class Votaciones(models.Model):
 	votacion = models.BooleanField()
 	class Meta:
 		unique_together = ('id_n', 'id_user', 'categoria')
-
+		
 class Amigode(models.Model):
 	idamistad = models.ForeignKey(Usuario,related_name='soy_amigo')
 	idamigode = models.ForeignKey(Usuario,related_name='es_mi_amigo')
@@ -138,3 +138,18 @@ class NVistas(models.Model):
 	usuario = models.ForeignKey(Usuario)
 	class Meta:
 		unique_together = ('usuario', 'noticia')
+	
+class Reglas_Ontologia(models.Model):
+	etiqueta = models.ForeignKey(Categorias_semandal, related_name='Reglas_ontologia_etiqueta')
+	subcategoria_de = models.ForeignKey(Categorias_semandal, related_name='Reglas_ontologia_subcategoria')
+	class Meta:
+		unique_together = ('etiqueta', 'subcategoria_de')
+
+class log_update(models.Model):
+	fecha_update = models.DateTimeField()
+
+class log_update_web(models.Model):
+	fecha = models.ForeignKey(log_update)
+	municipio = models.ForeignKey(Pueblo)
+	class Meta:
+		unique_together = ('fecha', 'municipio')		
