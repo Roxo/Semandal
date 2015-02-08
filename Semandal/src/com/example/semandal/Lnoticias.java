@@ -75,7 +75,7 @@ public class Lnoticias extends Activity {
 	    // Save the user's current game state
 	    bundle.putInt(ULTIMO, last);
 	    bundle.putInt(PRIMERO, start);
-	    bundle.putBoolean(FROM, true);
+	    bundle.putBoolean(FROM, roto);
 	    bundle.putInt(AEMPEZAR, aempezar);
 
 	    // Always call the superclass so it can save the view hierarchy state
@@ -92,7 +92,7 @@ public class Lnoticias extends Activity {
 		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
 		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
 		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
-		Button b5 = (Button)this.findViewById(R.id.busc);
+		ImageView b5 = (ImageView)this.findViewById(R.id.busc);
 		pid = getIntent().getIntExtra("p_id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
@@ -411,7 +411,7 @@ public class Lnoticias extends Activity {
 					noeffect = true;
 					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","",false);
 					mandar.add(k);
-					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
+					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
 					aempezar = start;			
 					lista.setSelection(aempezar);
 					roto = true;
@@ -482,6 +482,7 @@ public class Lnoticias extends Activity {
 			last = bundle.getInt(ULTIMO);
 			start = bundle.getInt(PRIMERO);
 			aempezar = bundle.getInt(AEMPEZAR);
+			roto = bundle.getBoolean(FROM);
 			bundle = null;
 			mandar.get(aempezar).setVista(true);
 			lista.setAdapter(new Plantilla_dispnot(this,mandar));

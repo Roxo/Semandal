@@ -66,7 +66,7 @@ public class Seman extends Activity {
 		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
 		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
 		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
-		Button b5 = (Button)this.findViewById(R.id.corregir);
+		ImageView b5 = (ImageView)this.findViewById(R.id.corregir);
 		idnot = getIntent().getIntExtra("id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
 		indice = getIntent().getIntExtra("indice",0);

@@ -51,13 +51,6 @@
         android:src="@drawable/ic_launcher" />
 
 
-    <Button
-        android:id="@+id/corregir"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Agregar Categoría" />
 
     <TextView        
         android:id="@+id/categoria"
@@ -68,35 +61,36 @@
         android:text="Categorías actuales:"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Spinner
-        android:id="@+id/cat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/autoCompleteTextView1"
-        android:layout_alignParentLeft="true"
-        android:text="@string/Selectcat" />
-
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/cat"
+        android:layout_above="@+id/autoCompleteTextView1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/categoria" >
 
     </ListView>
 
+    <ImageView
+        android:id="@+id/corregir"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/enviar" />
+
     <AutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/corregir"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@+id/corregir"
         android:ems="10"
         android:hint="Categoría" >
 
+        <requestFocus />
     </AutoCompleteTextView>
 
 </RelativeLayout>

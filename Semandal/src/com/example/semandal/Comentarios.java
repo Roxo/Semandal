@@ -56,7 +56,7 @@ public class Comentarios extends Activity {
 		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
 		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		notid=getIntent().getIntExtra("id",0);
-		Button b6 = (Button)this.findViewById(R.id.enviar);
+		ImageView b6 = (ImageView)this.findViewById(R.id.enviar);
 		final EditText comentario = (EditText)this.findViewById(R.id.DwEdit);
 		iduser = getIntent().getIntExtra("user_id",0);
 		indice = getIntent().getIntExtra("indice",0);

@@ -51,7 +51,7 @@ public class Logueado extends Activity {
 		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
 		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
 		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
-		Button b5 = (Button)this.findViewById(R.id.button1);
+		ImageView b5 = (ImageView)this.findViewById(R.id.button1);
 		ImageView b6 = (ImageView)this.findViewById(R.id.imageView2);
 		iduser = getIntent().getIntExtra("user_id",0);
 		j = new AlmacenUsuario(this);
@@ -61,7 +61,7 @@ public class Logueado extends Activity {
 		TextView mispueblos=(TextView) this.findViewById(R.id.button2);
 		Asinlog tarea = null;
 		final int indice = getIntent().getIntExtra("indice", -1);
-		tarea = new Asinlog(b5,this,bienvenida,noticia,pueblo,
+		tarea = new Asinlog(this,bienvenida,noticia,pueblo,
 				Singleton.url+":8000/api/logginuser/"+iduser,this
 				);
 		tarea.execute();
@@ -226,7 +226,6 @@ public class Logueado extends Activity {
 		String url;
 		TextView bienvenida,noticia,pueblo;
 		JSONObject datosuser;
-		Button b5;
 	    private Logueado activity;
 	    private boolean completed;
 	     private Object _response;
@@ -235,8 +234,7 @@ public class Logueado extends Activity {
 		 * 
 		 * */
 		
-		public Asinlog(Button b5, Context contexto,TextView bienvenida,TextView noticia,TextView pueblo,String url,Logueado activity){
-			this.b5 = b5;
+		public Asinlog(Context contexto,TextView bienvenida,TextView noticia,TextView pueblo,String url,Logueado activity){
 			this.contexto = contexto;
 			this.noticia = noticia;
 			this.url = url;

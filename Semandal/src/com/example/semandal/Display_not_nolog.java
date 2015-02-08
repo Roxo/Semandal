@@ -14,18 +14,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.semandal.Display_not_log.Asinadd;
 import com.example.semandal.Display_not_log.AsincronDNN;
+import com.example.semandal.Display_not_log.Set;
 import com.example.semandal.Nolog.AsincronNolog;
 import com.example.semandal.aux.Singleton;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
 import android.text.method.ScrollingMovementMethod;
@@ -49,42 +55,77 @@ public class Display_not_nolog extends Activity {
 	int notid=0;
 	private static AsincronDNN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	private Display_not_nolog a = this;
 	LinkedList<Integer> idcats;
-
+	int iduser,indice;
+	private boolean set=false,enabled = false,sigo = false;
+	private Display_not_nolog a = this;
+	ImageView b7;
+	ListView lista ;
+	boolean sigue= false,aseguir = false;
+	Bundle bundle;
+	ImageView mas;
+	ScrollView sc;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display_not_nolog);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Entrar);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Info);
+		ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
+		Button b5 = (Button)this.findViewById(R.id.comment);
+		Button b6 = (Button)this.findViewById(R.id.button1);
+		final TextView votos = (TextView)this.findViewById(R.id.votos);
+		b7 = (ImageView)this.findViewById(R.id.button2);
+		ImageView categoriza = (ImageView)this.findViewById(R.id.b1);
+		lista = (ListView) this.findViewById(R.id.listView1);
+		/////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////
 		notid=getIntent().getIntExtra("id",0);
+		mas = (ImageView) findViewById(R.id.mas);
+		sc = (ScrollView)this.findViewById(R.id.scroll);
+		final TextView pueblo = (TextView) findViewById(R.id.textView3);
 		AsincronDNN tarea = null;
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 				(TextView) findViewById(R.id.Noticia),
-				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),
-				Singleton.url+":8000/api/noticias/"+notid,this,
-				(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment)
-				,(TextView) findViewById(R.id.textView3));
+				(TextView) findViewById(R.id.fecha),b7,
+				Singleton.url+":8000/api/noticias/"+notid,this
+				,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
+				pueblo,mas,votos,"");
 		tarea.execute();
-
 		
-		Button b4 = (Button)this.findViewById(R.id.comment);
-		Button b1 = (Button)this.findViewById(R.id.loggin);
-		Button b2 = (Button)this.findViewById(R.id.info);
-		Button b3 = (Button)this.findViewById(R.id.busqueda);
-		Button b5 = (Button)this.findViewById(R.id.button1);
-		ImageView b6 = (ImageView)this.findViewById(R.id.button2);
-	
-		
-		b6.setOnClickListener(new View.OnClickListener() {
+		mas.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				showDialog(a,"Advertencia","Para indicar que te gusta una noticia debe entrar o registrarse, ¿Desea usted hacerlo ahora?");
+				// TODO Auto-generated method stub
+					showDialog(a,"Confirmación","Para seguir pueblos necesita entrar o registrarse. ¿Desea hacerlo ahora?");
+			}
+		});				
+
+		
+		categoriza.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				showDialog(a,"Confirmación","Para categorizar noticias necesita entrar o registrarse. ¿Desea hacerlo ahora?");
 			}
 			
-		});	
+		});				
+
+		b7.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				showDialog(a,"Confirmación","Para votar noticias necesita entrar o registrarse. ¿Desea hacerlo ahora?");
+			}
+			
+		});				
+
 		
-		b5.setOnClickListener(new View.OnClickListener() {
+		b6.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -93,7 +134,19 @@ public class Display_not_nolog extends Activity {
 				startActivity(browserIntent);
 			}
 			
-		});	
+		});				
+
+		b5.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Display_not_nolog.this, Comentarios_nolog.class);
+				i.putExtra("id", notid);
+				startActivity(i);
+			}
+			
+		});				
 		
 		b1.setOnClickListener(new View.OnClickListener() {
 
@@ -102,7 +155,7 @@ public class Display_not_nolog extends Activity {
 				// TODO Auto-generated method stub
 				Intent i = new Intent(Display_not_nolog.this, Log.class);
 				startActivity(i);
-			}
+		}
 			
 		});		
 		b2.setOnClickListener(new View.OnClickListener() {
@@ -124,47 +177,33 @@ public class Display_not_nolog extends Activity {
 				startActivity(i);
 			}
 			
-	});
+		});
 		
 		b4.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Display_not_nolog.this, Comentarios_nolog.class);
-				i.putExtra("id", notid);
+				Intent i = new Intent(Display_not_nolog.this, Nolog.class);
 				startActivity(i);
 			}
 			
-	});
-
+		});
 		
-		
-		ListView lv = (ListView) findViewById(R.id.listView1);
-		
-		
-		lv.setOnItemClickListener(new OnItemClickListener() {
+		lista.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
 				Intent i = new Intent(Display_not_nolog.this, Bnologres.class);
 				String stringfinal = "id_c:"+idcats.get(pos);
 				stringfinal = "("+stringfinal+")";
 				i.putExtra("datos", stringfinal);
+				i.putExtra("busqueda", true);
 				startActivity(i);
 		    }
 		});
-
-		
-		lv.setOnTouchListener(new OnTouchListener() {
-		    // Setting on Touch Listener for handling the touch inside ScrollView
-		    @Override
-		    public boolean onTouch(View v, MotionEvent event) {
-		    // Disallow the touch request for parent scroll on touch of child view
-		    v.getParent().requestDisallowInterceptTouchEvent(true);
-		    return false;
-		    }
-		});
-
-	}
+	
+}
+	
+	
 	public void onPause(){
 		super.onPause();
 		if (pleaseWaitDialog != null)
@@ -173,49 +212,102 @@ public class Display_not_nolog extends Activity {
 
 	public void onResume(){
 		super.onResume();
-		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
-			if(pleaseWaitDialog != null)
-				pleaseWaitDialog.show();
+		if(bundle != null){
+			bundle = null;
+			AsincronDNN tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
+					(TextView) findViewById(R.id.Noticia),
+					(TextView) findViewById(R.id.fecha),b7,
+					Singleton.url+":8000/api/noticias/"+notid,this
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView)findViewById(R.id.votos),"");
+			tarea.execute();
+
 		}
+		else{
+			if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+				if(pleaseWaitDialog != null)
+					pleaseWaitDialog.show();
+			}
+		}
+
 	}
+
 
 
 
 	private void onTaskCompleted(Object _response){
+		sc.smoothScrollTo(0,0);
+		if(set){
+			set=false;
+			AsincronDNN tarea = null;
+			tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
+					(TextView) findViewById(R.id.Noticia),
+					(TextView) findViewById(R.id.fecha),b7,
+					Singleton.url+":8000/api/noticias/",this
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView) findViewById(R.id.votos),"");
+			tarea.execute();
+
+		}
+
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
-		TextView titview,cuerpview,dateview,likes;
-		JSONObject html, Comentario;
+		TextView titview,cuerpview,dateview,cat;
+		ImageView mas;
+		Button comentarios;
+		ImageView b7;
+		JSONObject html;
 	    private Display_not_nolog activity;
 	    private boolean completed;
 	    private Object _response;
-	    String[] listacategorias;
 	    ListView lv;
-	    Button comentarios;
 	    TextView pueblo;
+	    JSONObject seguir;
+	    TextView votos;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-			TextView dateview,TextView likes,String url,Display_not_nolog activity,
-			ListView lv,Button comentarios,TextView pueblo){
+			TextView dateview, ImageView b7,String urlvista,
+			String url,String urlsig,Display_not_nolog activity,ListView lv,
+			Button comentarios,TextView pueblo,ImageView mas,TextView votos,
+			String urlmegusta){
 			this.contexto = contexto;
+			this.mas = mas;
 			this.titview = titview;
 			this.cuerpview = cuerpview;
 			this.dateview = dateview;
 			this.url = url;
 			this.activity = activity;
-			this.likes = likes;
+			this.b7 = b7;
 			this.lv = lv;
 			this.comentarios = comentarios;
 			this.pueblo = pueblo;
+			this.votos = votos;
 		}
 		
+		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
+				TextView dateview, ImageView b7,
+				String url,Display_not_nolog activity,ListView lv,
+				Button comentarios,TextView pueblo,ImageView mas,TextView votos,
+				String urlmegusta){
+				this.contexto = contexto;
+				this.mas = mas;
+				this.titview = titview;
+				this.cuerpview = cuerpview;
+				this.dateview = dateview;
+				this.url = url;
+				this.activity = activity;
+				this.b7 = b7;
+				this.lv = lv;
+				this.comentarios = comentarios;
+				this.pueblo = pueblo;
+				this.votos = votos;
+		}
 		  private String readAll(Reader rd) throws IOException {
 			    StringBuilder sb = new StringBuilder();
 			    int cp;
@@ -235,19 +327,20 @@ public class Display_not_nolog extends Activity {
 			      is.close();
 			    }
 			  }
-			  
 
+			  
 		@Override
 		protected Void doInBackground(Void... params) {
 
 				try {
-					leernoticia();
+					if(!url.equalsIgnoreCase(""))
+						leernoticia();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (JSONException e) {
-					 String answer = "Ha ocurrido un error en el servidor de Semandal";
-					 Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
 			return null;
@@ -257,8 +350,8 @@ public class Display_not_nolog extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			String titular="",cuerpo="", fecha="",p="";
-			int like=0,ncomentarios=0;
+			String p = "",titular = "ROTO",cuerpo="ROTO", fecha = "Roto",likes="roto",ca="roto";
+			int ncomentarios=0;
 			try {
 				idcats = new LinkedList<Integer>();
 				titular = html.getString("titular").replace("-","\n");
@@ -266,12 +359,13 @@ public class Display_not_nolog extends Activity {
 				fecha = html.getString("fecha");
 				notid = html.getInt("id_noticia");
 				url1 = html.getString("url");
-				like = html.getInt("liked");
+				likes = html.getString("liked");
+				p = html.getString("dspueblo");
 				ncomentarios = html.getInt("ncomentarios");
 				comentarios.setText("Comentarios ("+ncomentarios+")");
+				votos.setText(""+html.getInt("liked"));
 				JSONArray cat = html.getJSONArray("categoria");
-				p = html.getString("dspueblo");
-				listacategorias =  new String[cat.length()];
+				String[] listacategorias = new String[cat.length()];
 			    for(int i=0;i<cat.length();i++){
 			    	JSONObject j = cat.getJSONObject(i);
 			    	listacategorias[i] = j.getString("dscategoria");
@@ -280,17 +374,19 @@ public class Display_not_nolog extends Activity {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto,
 						android.R.layout.simple_list_item_1, listacategorias);
 				lv.setAdapter(adapter);
-				likes.setText(""+like);
-			    titview.setText(titular);
-			    pueblo.setText(p);
-			    cuerpview.setText(cuerpo);
-			    dateview.setText(fecha);
-			    cuerpview.setMovementMethod(new ScrollingMovementMethod());
+				
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				 String answer = "Ha ocurrido un error en el parseo json";
-				 Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
+				e.printStackTrace();
 			}
+		    titview.setText(titular);
+		    cuerpview.setText(cuerpo);
+		    dateview.setText(fecha);
+		    pueblo.setText(p);
+		    cuerpview.setMovementMethod(new ScrollingMovementMethod());
+		    
+		    
+
 	           completed = true;
 	            _response = response;
 	            notifyActivityTaskCompleted();
@@ -327,6 +423,7 @@ public class Display_not_nolog extends Activity {
 	    { 
 	        if ( null != activity ) { 
 	            activity.onTaskCompleted(_response); 
+
 	        } 
 	    } 
 

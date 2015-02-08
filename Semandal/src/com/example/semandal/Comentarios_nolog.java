@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,9 +47,10 @@ public class Comentarios_nolog extends Activity {
 		setContentView(R.layout.activity_comentarios_nolog);
 	ListView lista =(ListView)this.findViewById(R.id.listacomentarios);
 	Button b4 = (Button)this.findViewById(R.id.registro);
-	Button b1 = (Button)this.findViewById(R.id.loggin);
-	Button b2 = (Button)this.findViewById(R.id.info);
-	Button b3 = (Button)this.findViewById(R.id.busqueda);
+	ImageView b1 = (ImageView)this.findViewById(R.id.Entrar);
+	ImageView b2 = (ImageView)this.findViewById(R.id.Info);
+	ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
+	ImageView b5 = (ImageView)this.findViewById(R.id.Imagebtton);
 	int notid=getIntent().getIntExtra("id",0);
 	AsincCNL tarea = null;
 	tarea = new AsincCNL(this,
@@ -76,6 +78,18 @@ public class Comentarios_nolog extends Activity {
 		}
 		
 	});		
+	
+	b5.setOnClickListener(new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			Intent i = new Intent(Comentarios_nolog.this, Nolog.class);
+			startActivity(i);
+		}
+		
+	});
+
 	b2.setOnClickListener(new View.OnClickListener() {
 
 		@Override

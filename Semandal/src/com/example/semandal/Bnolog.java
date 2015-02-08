@@ -45,6 +45,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,10 +67,11 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 	protected void onCreate(Bundle savedInstanceState) {
 	   super.onCreate(savedInstanceState);
 	   setContentView(R.layout.activity_bnolog);
-		Button b1 = (Button)this.findViewById(R.id.loggin);
-		Button b2 = (Button)this.findViewById(R.id.info);
-		Button b3 = (Button)this.findViewById(R.id.busqueda);
-		Button resultado = (Button)this.findViewById(R.id.button1);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Entrar);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Info);
+		ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
+		Button resultado = (Button)this.findViewById(R.id.blog);
 		Titular = (EditText)this.findViewById(R.id.Tit_nolog);
 		autotext  = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 		AsincBnolog tarea = null;
@@ -161,7 +163,17 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 			}
 			
 		});
-		
+		b4.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Bnolog.this, Nolog.class);
+				startActivity(i);
+			}
+			
+		});
+
 	}
 	
 	private void pasarbusqueda(String finit,String ffin){
@@ -215,7 +227,7 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 		else{
 			stringfinal = stringfinal.substring(0,stringfinal.length()-1);
 			stringfinal = "("+stringfinal+")";
-			Intent i = new Intent(Bnolog.this, Lnoticias.class);
+			Intent i = new Intent(Bnolog.this, Bnologres.class);
 			i.putExtra("datos",stringfinal);
 			i.putExtra("busqueda",true);
 			startActivity(i);

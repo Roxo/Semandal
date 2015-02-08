@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class Informacion extends Activity {
 
@@ -14,10 +15,23 @@ public class Informacion extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_informacion);
-		Button b1 = (Button)this.findViewById(R.id.loggin);
-		Button b2 = (Button)this.findViewById(R.id.info);
-		Button b3 = (Button)this.findViewById(R.id.busqueda);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Entrar);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Info);
+		ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 
+		b4.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Informacion.this, Nolog.class);
+				startActivity(i);
+			}
+			
+		});
+	
+		
 		b1.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -48,5 +62,6 @@ public class Informacion extends Activity {
 			}
 			
 		});
+
 	}
 }

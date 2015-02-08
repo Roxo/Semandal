@@ -44,7 +44,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class Display_not_log extends Activity {
 	int notid,pid;
@@ -61,6 +60,7 @@ public class Display_not_log extends Activity {
 	LinkedList<Integer> idcats;
 	Bundle bundle;
 	ImageView mas;
+	ScrollView sc;
 
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		bundle = savedInstanceState;
@@ -92,7 +92,7 @@ public class Display_not_log extends Activity {
 		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		mas = (ImageView) findViewById(R.id.mas);
-
+		sc = (ScrollView)this.findViewById(R.id.scroll);
 		final TextView pueblo = (TextView) findViewById(R.id.textView3);
 		AsincronDNN tarea = null;
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
@@ -343,7 +343,8 @@ public class Display_not_log extends Activity {
 	}	
 
 	private void onTaskCompleted(Object _response){
-		if(set){
+sc.smoothScrollTo(0,0);
+	if(set){
 			set=false;
 			AsincronDNN tarea = null;
 			tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
@@ -571,8 +572,6 @@ public class Display_not_log extends Activity {
 				mas.getLayoutParams().width = 40;
 			}
 				
-			ScrollView l = (ScrollView)a.findViewById(R.id.scroll);
-			l.fullScroll(ScrollView.FOCUS_UP);
 
 	           completed = true;
 	            _response = response;
@@ -610,6 +609,7 @@ public class Display_not_log extends Activity {
 	    { 
 	        if ( null != activity ) { 
 	            activity.onTaskCompleted(_response); 
+
 	        } 
 	    } 
 
@@ -681,6 +681,7 @@ public class Display_not_log extends Activity {
 	        if ( null != activity ) { 
 	            set = true;
 	            activity.onTaskCompleted(_response); 
+	            
 	        } 
 	    } 
 	}
@@ -830,7 +831,7 @@ public class Display_not_log extends Activity {
 	    private void notifyActivityTaskCompleted() 
 	    { 
 	        if ( null != activity ) { 
-	            activity.onTaskCompleted(_response); 
+	            activity.onTaskCompleted(_response);
 	        } 
 	    } 
 	}

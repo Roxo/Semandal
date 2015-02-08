@@ -34,6 +34,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,12 +50,12 @@ public class Nolog extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.activity_nolog);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Entrar);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Info);
+		ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		AlmacenUsuario j = new AlmacenUsuario(this);
 		j.GuardaridUsuario(0);
-		Button b1 = (Button)this.findViewById(R.id.loggin);
-		Button b2 = (Button)this.findViewById(R.id.info);
-		Button b3 = (Button)this.findViewById(R.id.busqueda);
-	//	Button b4 = (Button)this.findViewById(R.id.auxiliar);
 		final ListView lvTest = (ListView) findViewById(R.id.listView1);
 		AsincronNolog tarea = null;
 		tarea = new AsincronNolog(this,lvTest,
@@ -94,7 +95,17 @@ public class Nolog extends Activity {
 		});
 
 
-		
+		b4.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Nolog.this, Nolog.class);
+				startActivity(i);
+			}
+			
+		});
+	
 		
 		b1.setOnClickListener(new View.OnClickListener() {
 
@@ -245,8 +256,8 @@ private void onTaskCompleted(Object _response)
 							}
 							else if(comentarios.length()==0){
 								fechas.add("");
-								coments.add("Esta noticia no tiene comentarios");
-								autores.add("");
+								coments.add("");
+								autores.add("Esta noticia no tiene comentarios");
 								fechas.add("");
 								coments.add("");
 								autores.add("");

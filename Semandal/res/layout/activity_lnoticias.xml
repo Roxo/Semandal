@@ -14,8 +14,19 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="35dp"
         android:src="@drawable/bandera_and" />
-
-    <ImageView
+ 
+        
+      <ImageView
+        android:id="@+id/busc"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/Amigos"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/deuda"
+        android:src="@drawable/busqueda" />
+        
+   <ImageView
         android:id="@+id/Amigos"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -55,7 +66,6 @@
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/busc"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/fl"
         android:divider="#000000"
@@ -63,13 +73,6 @@
 
     </ListView>
 
-    <Button
-        android:id="@+id/busc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/Buscador" />
 
     <TextView
         android:id="@+id/resultados"
@@ -99,5 +102,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/imageView1"
         android:src="@drawable/fr" />
+
 
 </RelativeLayout>

@@ -681,7 +681,7 @@ def getdeuda(request,p_id):
 def insertcomment(request,n_id,dsc,u_id):
 	user = Usuario.objects.filter(id=u_id)[0]
 	noticia = Noticias.objects.filter(id=n_id)[0]
-	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc.replace("-"," "),fecha=datetime.today())
+	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc.replace("-","\n"),fecha=datetime.now())
 	p.save()
 	return HttpResponse("")
 
