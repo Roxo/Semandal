@@ -85,7 +85,6 @@ public class Bnologres extends Activity{
 		setContentView(R.layout.activity_bnologres);
 		mandar = new ArrayList<Noticia>();
 		final String datos = getIntent().getStringExtra("datos");
-		Button b5 = (Button)this.findViewById(R.id.button1);
 		ImageView b1 = (ImageView)this.findViewById(R.id.Entrar);
 		ImageView b2 = (ImageView)this.findViewById(R.id.Info);
 		ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
@@ -132,12 +131,12 @@ public class Bnologres extends Activity{
 			}
 			
 		});
-		b5.setOnClickListener(new View.OnClickListener() {
+		b4.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(Bnologres.this, Bnolog.class);
+				Intent i = new Intent(Bnologres.this, Nolog.class);
 				startActivity(i);
 			}
 			
