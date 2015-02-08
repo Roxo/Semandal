@@ -144,8 +144,13 @@ public class Comentarios extends Activity {
 		
 		lista.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
-		    	showDialog(a,"Confimarcion","¿Deseea denunciar el comentario? Si es el autor, el comentario se borrará",listacomment.get(pos));
-		    }
+		    	try{
+		    		listacomment.get(pos);
+		    		showDialog(a,"Confimarcion","¿Deseea denunciar el comentario? Si es el autor, el comentario se borrará",listacomment.get(pos));
+		    	}catch(Exception e){
+		    	}
+		    	
+			}
 		});
 
 	}

@@ -101,8 +101,8 @@ public class Deuda extends Activity{
 		superficie = (TextView)this.findViewById(R.id.superficie);		
 		urlwiki = (TextView)this.findViewById(R.id.wikiurl);
 		autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
-		urlwiki.setTextColor(Color.BLUE);
-		urlweb.setTextColor(Color.BLUE);
+		urlwiki.setTextColor(Color.parseColor("#008000"));
+		urlweb.setTextColor(Color.parseColor("#008000"));
 		//////////////////////////////////////////////
 		indice = getIntent().getIntExtra("indice",0);
 		iduser = getIntent().getIntExtra("user_id",0);

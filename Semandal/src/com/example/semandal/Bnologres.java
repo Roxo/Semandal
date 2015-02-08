@@ -149,17 +149,13 @@ public class Bnologres extends Activity{
 			        int k =  (Integer) lista.getAdapter().getItem(pos);
 		        	aempezar = k;
 		        	auxlist.get(k);
+			    	Intent i= new Intent(Bnologres.this,Display_not_nolog.class);
+			        int s =  (Integer) lista.getAdapter().getItem(pos);
+			        i.putExtra("id",auxlist.get(s));
+					i.putExtra("user_id", iduser);
+					startActivity(i);	   
 		        }catch(Exception E){		        	
-		        	String string = "No existen noticias con estas características" +
-	        			"realice una búsqueda con otras especificaciones.";
-	        	Toast.makeText(getApplicationContext(), string, Time.SECOND).show();
-		        }
-		    	Intent i= new Intent(Bnologres.this,Display_not_nolog.class);
-		        int k =  (Integer) lista.getAdapter().getItem(pos);
-		        i.putExtra("id",auxlist.get(k));
-				i.putExtra("user_id", iduser);
-				startActivity(i);	   
-				
+		        }				
 		    }
 		    
 		});

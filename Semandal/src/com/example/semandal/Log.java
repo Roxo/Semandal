@@ -34,6 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
@@ -50,9 +51,10 @@ public class Log extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_log);
-		Button b1 = (Button)this.findViewById(R.id.loggin);
-		Button b2 = (Button)this.findViewById(R.id.info);
-		Button b3 = (Button)this.findViewById(R.id.busqueda);
+		ImageView b1 = (ImageView)this.findViewById(R.id.Entrar);
+		ImageView b2 = (ImageView)this.findViewById(R.id.Info);
+		ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
+		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		Button loguear = (Button)this.findViewById(R.id.entrar);
 		Button registrarse = (Button)this.findViewById(R.id.registro);
 		TextView notificacion = (TextView)this.findViewById(R.id.notificacion);
@@ -84,6 +86,17 @@ public class Log extends Activity {
 			
 		});	
 		
+		b4.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(Log.this, Nolog.class);
+				startActivity(i);
+			}
+			
+		});
+
 		loguear.setOnClickListener(new View.OnClickListener() {
 			
 			

@@ -213,21 +213,17 @@ public class Lnoticias extends Activity {
 		
 		lista.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
-		        try{
+		    	try{
 			        int k =  (Integer) lista.getAdapter().getItem(pos);
 		        	aempezar = k;
-		        	auxlist.get(k);
+		        	auxlist.get(k);			
+		        	Intent i= new Intent(Lnoticias.this,Display_not_log.class);
+		        	int s =  (Integer) lista.getAdapter().getItem(pos);
+		        	i.putExtra("id",auxlist.get(s));
+		        	i.putExtra("user_id", iduser);
+		        	startActivity(i);	   
 		        }catch(Exception E){		        	
-		        	String string = "No existen noticias con estas características" +
-	        			"realice una búsqueda con otras especificaciones.";
-	        	Toast.makeText(getApplicationContext(), string, Time.SECOND).show();
 		        }
-		    	Intent i= new Intent(Lnoticias.this,Display_not_log.class);
-		        int k =  (Integer) lista.getAdapter().getItem(pos);
-		        i.putExtra("id",auxlist.get(k));
-				i.putExtra("user_id", iduser);
-				startActivity(i);	   
-				
 		    }
 		    
 		});
