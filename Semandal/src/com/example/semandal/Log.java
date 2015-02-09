@@ -36,6 +36,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 
@@ -72,7 +73,7 @@ public class Log extends Activity {
 			
 		}
 		if (message != null){
-			notificacion.setText(message);
+			 Toast.makeText(this.getApplicationContext(), message, Toast.LENGTH_LONG).show();
 		}
 		registrarse.setOnClickListener(new View.OnClickListener() {
 			

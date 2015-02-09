@@ -268,6 +268,7 @@ public class Comentarios extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
+		try{
 			List<Comentario> mandar = new ArrayList<Comentario>();
 			Comentario k;
 			try {
@@ -296,7 +297,9 @@ public class Comentarios extends Activity {
 				e.printStackTrace();
 			}
 			lista.setAdapter(new Plantilla_Comment(activity,mandar));
-
+		}catch(Exception e){
+			
+		}
 			
 	           completed = true;
 	            _response = response;

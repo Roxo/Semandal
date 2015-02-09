@@ -412,9 +412,8 @@ public class Lnoticias extends Activity {
 					lista.setSelection(aempezar);
 					roto = true;
 				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				roto = true;
 			}
 
 				

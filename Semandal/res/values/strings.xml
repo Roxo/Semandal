@@ -63,5 +63,6 @@
     <string name="title_activity_plantilla_inicio">Plantilla_inicio</string>
     <string name="title_activity_dcategorias">DCategorias</string>
     <string name="title_activity_plantilla_check_cat">Plantilla_checkCat</string>
+    <string name="title_activity_plantilla_pueblos">Plantilla_pueblos</string>
 
 </resources>

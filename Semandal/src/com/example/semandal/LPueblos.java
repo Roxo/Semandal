@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
@@ -49,6 +50,7 @@ public class LPueblos extends Activity {
 	private static ProgressDialog pleaseWaitDialog;
 	private List<String> lista1,lista2;
 	private List<Integer> lista1aux,lista2aux;
+	private List<Drawable> banderas;
 	ListView lv;
 	AutoCompleteTextView pob;
 	LPueblos a = this;
@@ -293,7 +295,8 @@ public class LPueblos extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			lista2= new ArrayList<String>();
+			try{
+				lista2= new ArrayList<String>();
 			lista2aux= new ArrayList<Integer>();	
 	        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
 		    SQLiteDatabase db = admin.getReadableDatabase();
@@ -326,7 +329,8 @@ public class LPueblos extends Activity {
 			pob.setAdapter(adaptador1);
 			ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(contexto,android.R.layout.simple_list_item_1,lista2);
 			lv.setAdapter(adaptador2);
-
+		}catch(Exception e){
+		}
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();

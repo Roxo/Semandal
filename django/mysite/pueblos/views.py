@@ -710,7 +710,7 @@ def ulog(request,id_user):
 def follow(sig):
 	r = ""
 	for i in sig:
-		obj = '{"id_pueblo":'+str(i.id_p.id)+',"dspueblo":"'+i.id_p.dspueblo+'","busquedaimagenes":"'+i.id_p.busqueda+'"},'
+		obj = '{"id_pueblo":'+str(i.id_p.id)+',"dspueblo":"'+i.id_p.dspueblo+'","busquedaimagenes":"'+i.id_p.busqueda.replace(" ","_")+'"},'
 		r = r+obj
 	r = r[0:len(r)-1]
 	return r
@@ -789,7 +789,7 @@ def siguiendo(request,id_u):
 	r=''
 	obj=''
 	for p in pueblos:
-		obj = '{"id_pueblo":'+str(p.id_p.id)+',"dspueblo":"'+p.id_p.dspueblo+'","busquedaimagenes":"'+p.id_p.busqueda+'"},'
+		obj = '{"id_pueblo":'+str(p.id_p.id)+',"dspueblo":"'+p.id_p.dspueblo+'","busquedaimagenes":"'+p.id_p.busqueda.replace(" ","_")+'"},'
 		r = r + obj
 	r = r[0:len(r)-1]
 	devolver = '{"npueblos":'+str(len(pueblos))+',pueblos":['+r+']}'

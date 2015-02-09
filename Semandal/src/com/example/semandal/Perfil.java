@@ -249,7 +249,9 @@ public class Perfil extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
+			try{
 				String name = "",mun = "";
+			
 		        BDClass admin = new BDClass(contexto,"administracion", null, 1);
 			    SQLiteDatabase db = admin.getReadableDatabase();
 				String sql = "SELECT * FROM pueblos" ;
@@ -277,7 +279,9 @@ public class Perfil extends Activity {
 			
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
 			auto.setAdapter(adaptador1);
-
+			}catch(Exception e){
+				
+			}
 	           completed = true;
 	            _response = response;
 	            notifyActivityTaskCompleted();

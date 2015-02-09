@@ -293,9 +293,9 @@ public class Bnologres extends Activity{
 					lista.setSelection(aempezar);
 					roto = true;
 				}
-			} catch (JSONException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+					roto = true;
 			}
 
 				

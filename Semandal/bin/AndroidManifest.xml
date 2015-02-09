@@ -183,6 +183,10 @@
             android:name=".Plantilla_checkCat"
             android:label="@string/title_activity_plantilla_check_cat" >
         </activity>
+        <activity
+            android:name=".Plantilla_pueblos"
+            android:label="@string/title_activity_plantilla_pueblos" >
+        </activity>
     </application>
 
 </manifest>

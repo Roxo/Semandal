@@ -56,6 +56,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class Deuda extends Activity{
 	int iduser,pid,puebloant,puebloact;
+	private String urlgmaps;
 	private static AsinDeuda backgroundTask;
 	private static Asinadd backgroundTask1;
 
@@ -74,10 +75,9 @@ public class Deuda extends Activity{
 	TextView urlweb;
 	TextView habitantes;
 	TextView superficie;		
-	TextView urlwiki;
+	TextView urlwiki,nnots;
 	AutoCompleteTextView autotext;
-	Button b7;
-	ImageView b6;
+	ImageView b6,ulg,b7;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -88,7 +88,7 @@ public class Deuda extends Activity{
 		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
 		ImageView b5 = (ImageView)this.findViewById(R.id.button1);
 		b6 = (ImageView)this.findViewById(R.id.button2);
-		b7 = (Button)this.findViewById(R.id.irnoticias);
+		b7 = (ImageView)this.findViewById(R.id.snots);
 		// DEFINICIÓN DE LOS TEXTVIEW
 		deuda = (TextView)this.findViewById(R.id.textodeuda);
 		municipio = (TextView)this.findViewById(R.id.textomunicipio);
@@ -100,6 +100,8 @@ public class Deuda extends Activity{
 		habitantes = (TextView)this.findViewById(R.id.habitantes);
 		superficie = (TextView)this.findViewById(R.id.superficie);		
 		urlwiki = (TextView)this.findViewById(R.id.wikiurl);
+		ulg = (ImageView)a.findViewById(R.id.gmaps1);
+		nnots = (TextView)this.findViewById(R.id.nnots);
 		autotext = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 		urlwiki.setTextColor(Color.parseColor("#008000"));
 		urlweb.setTextColor(Color.parseColor("#008000"));
@@ -139,7 +141,7 @@ public class Deuda extends Activity{
 				superficie,urlwiki,
 				Singleton.url+":8000/api/pueblos/"+puebloant,this,
 				Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,
-				autotext,b7
+				autotext,nnots
 				);
 		tarea.execute();
      
@@ -161,6 +163,16 @@ public class Deuda extends Activity{
 
             }  
         });  
+
+      ulg.setOnClickListener(new OnClickListener() {  
+          @Override  
+          public void onClick(View v) {  
+              // TODO Auto-generated method stub  
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlgmaps));
+				startActivity(browserIntent);
+
+          }  
+      });  
 
 		b6.setOnClickListener(new View.OnClickListener() {
 
@@ -195,7 +207,7 @@ public class Deuda extends Activity{
 							superficie,urlwiki,
 							Singleton.url+":8000/api/pueblos/"+puebloant,a,
 							Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,
-							autotext,b7
+							autotext,nnots
 							);
 					tarea.execute();
 				}
@@ -359,7 +371,7 @@ public class Deuda extends Activity{
 					superficie,urlwiki,
 					Singleton.url+":8000/api/pueblos/"+puebloant,a,
 					Singleton.url+":8000/api/usuario/seguimiento/"+puebloant+"/"+iduser,b6,
-					autotext,b7
+					autotext,nnots
 					);
 			tarea.execute();
 		}
@@ -368,13 +380,12 @@ public class Deuda extends Activity{
 	public class AsinDeuda extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		TextView deuda,municipio,provincia,latitud,longitud,cp,urlweb,habitantes,
-		superficie,urlwiki;
+		superficie,urlwiki,ulg;
 		String url,usuario;
 		JSONObject pueblos,d,usig;
 	    private boolean completed;
 	    private Deuda activity;
 	    private Object _response;
-	    Button b7;
 	    ImageView  b6;
 		AutoCompleteTextView pob;
 
@@ -386,7 +397,7 @@ public class Deuda extends Activity{
 		public AsinDeuda(Context contexto,TextView deuda,TextView municipio,TextView provincia,
 				TextView latitud,TextView longitud,TextView cp,TextView urlweb,TextView habitantes,
 				TextView superficie,TextView urlwiki,
-				String url,Deuda activity,String usersigue,ImageView b6,AutoCompleteTextView t,Button b7){
+				String url,Deuda activity,String usersigue,ImageView b6,AutoCompleteTextView t,TextView ulg){
 			this.usuario = usersigue;
 			this.contexto = contexto;
 			this.deuda = deuda;
@@ -401,9 +412,9 @@ public class Deuda extends Activity{
 			this.activity=activity;
 			this.b6 = b6;
 			this.pob = t;
-			this.b7 = b7;
 			this.latitud=latitud;
 			this.longitud = longitud;
+			this.ulg = ulg;
 		}
 		
 		  private String readAll(Reader rd) throws IOException {
@@ -467,20 +478,20 @@ public class Deuda extends Activity{
 			cp.setText(""+pueblo.getInt("cp"));
 			urlweb.setText(pueblo.getString("url"));
 			habitantes.setText(""+pueblo.getInt("habitantes"));
-			provincia.setText(d.getString("provincia"));
+			provincia.setText(d.getString("dsprovincia"));
 			superficie.setText(""+pueblo.getDouble("superficie"));
 			urlwiki.setText(pueblo.getString("wiki"));
 			JSONObject c=  pueblo.getJSONObject("coordenadas");
 			latitud.setText(""+c.getDouble("latitud"));
 			longitud.setText(""+c.getDouble("longitud"));
+			urlgmaps =("http://maps.google.es/?q="+c.getDouble("latitud")+"%20"+c.getDouble("longitud"));
 			///////////////////////////////////////////////////////////////////////
-			numnot = pueblo.getInt("n_noticias");
+			ulg.setText(""+pueblo.getInt("n_noticias"));
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			b7.setText("Ver sus noticias ("+numnot+")");
+			try{
 	        BDClass admin = new BDClass(contexto,"administracion", null, 1);
 		    SQLiteDatabase db = admin.getReadableDatabase();
 			String sql = "SELECT * FROM pueblos" ;
@@ -518,7 +529,8 @@ public class Deuda extends Activity{
 			
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
 			pob.setAdapter(adaptador1);
-
+		}catch(Exception e){
+		}
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();

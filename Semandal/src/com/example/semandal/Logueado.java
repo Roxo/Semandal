@@ -244,6 +244,7 @@ public class Logueado extends Activity {
 	public void onResume(){
 		super.onResume();
 		if(bundle != null){
+			
 			click = bundle.getInt("CLICK");
 			bundle = null;
 			mandar.get(click).setVista(true);
@@ -357,6 +358,7 @@ public class Logueado extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
 				JSONArray lcoment = datosuser.getJSONArray("noticias");
 				for(int i = 0; i<lcoment.length();i++){
 						JSONObject coment = (JSONObject) lcoment.get(i);
@@ -372,6 +374,10 @@ public class Logueado extends Activity {
 						Noticia k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo,vista);
 						mandar.add(k);
 				}
+				if(lcoment.length()==0){
+					Noticia k = new Noticia(0,"","No tenemos noticias de su municipio principal",0,0,"","",false);
+					mandar.add(k);
+				}
 				noticia.setAdapter(new Plantilla_dispnot(activity,mandar));
 
 				pid=datosuser.getInt("pid");
@@ -379,7 +385,7 @@ public class Logueado extends Activity {
 				bienvenida.setText(datosuser.getString("dsusuario"));
 			    pueblo.setText(datosuser.getString("dspueblo"));
 			    iduser=datosuser.getInt("id");
-			} catch (JSONException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

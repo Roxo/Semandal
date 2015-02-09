@@ -549,6 +549,7 @@ public class Display_not_log extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			try{
     		if(sigo){
 				b7.setImageResource(R.drawable.scheck);
 				b7.getLayoutParams().height = 40;
@@ -585,7 +586,9 @@ public class Display_not_log extends Activity {
 				mas.getLayoutParams().width = 40;
 			}
 				
-
+			}catch(Exception e){
+				
+			}
 	           completed = true;
 	            _response = response;
 	            notifyActivityTaskCompleted();

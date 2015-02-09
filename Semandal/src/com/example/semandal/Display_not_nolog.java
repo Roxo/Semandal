@@ -378,12 +378,15 @@ public class Display_not_nolog extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			try{
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);
 		    dateview.setText(fecha);
 		    pueblo.setText(p);
 		    cuerpview.setMovementMethod(new ScrollingMovementMethod());
-		    
+			}catch(Exception e){
+		    	
+		    }
 		    
 
 	           completed = true;

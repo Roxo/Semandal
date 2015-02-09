@@ -334,12 +334,12 @@ public void onResume(){
 						lista1aux.add(c.getInt(0));
 					}while(c.moveToNext());
 				}				
+			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
+			pob.setAdapter(adaptador1);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
-	       pob.setAdapter(adaptador1);
 
             completed = true;
             _response = response;

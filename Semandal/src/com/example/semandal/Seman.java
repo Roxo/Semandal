@@ -299,7 +299,6 @@ public class Seman extends Activity {
 				    db.close();
 				    c.close();
 				} catch (Exception e) {
-					e.printStackTrace();
 				}
 				return null;
 			}
