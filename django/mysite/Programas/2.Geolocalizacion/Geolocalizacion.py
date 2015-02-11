@@ -6,7 +6,6 @@ import json
 from pueblos.models import Pueblo
 from pueblos.models import Provincia
 
-# Abrimos el xls y elegimos el libro en el que se encuentran las poblaciones.
 p = Pueblo.objects.filter(longitud = None)
 for i in range(p[0].id,p[len(p)-1].id+1):
 	p=Pueblo.objects.filter(id = i)

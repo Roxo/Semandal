@@ -91,11 +91,11 @@ public class LPueblos extends Activity {
 				if(!pueblo.equalsIgnoreCase("")){
 					p = buscapuebloid(pueblo);
 				}
-				int idpueblo = 0;
-				if(p != 0){
+				int idpueblo = -1;
+				if(p != -1){
 					idpueblo = lista1aux.get(p);
 				}
-				if(idpueblo!= 0){
+				if(idpueblo!= -1){
 					Intent i = new Intent(LPueblos.this, Deuda.class);
 					i.putExtra("user_id", iduser);
 					i.putExtra("indice",indice);
@@ -117,7 +117,7 @@ public class LPueblos extends Activity {
 					}
 					i++;
 				}
-				return 0;				
+				return -1;				
 			}
 
 		});		

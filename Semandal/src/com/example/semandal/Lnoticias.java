@@ -61,7 +61,8 @@ public class Lnoticias extends Activity {
 	String datos,pueblonuevo;
 	ListView lista;
 	int iduser,pid,indice;
-	boolean fbusqueda=false,noeffect=false,completado = false,roto = false,first = true,from = false;
+	boolean preguntar_vecinos = false;
+	boolean fbusqueda=false,noeffect=false,completado = false,roto = false,first = true,from = false,vecinos = false,fromvecinos=false;
 	private static AsincLN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	TextView resultados;
@@ -382,7 +383,12 @@ public class Lnoticias extends Activity {
 				resultados.setText("Noticias");
 			Noticia k;
 			try {
-				
+				if(!fromvecinos){
+					fromvecinos = true;
+					vecinos = Noticias.getBoolean("vecinos");
+				}
+				else
+					vecinos = false;
 				if(Noticias.getBoolean("ret")){
 					JSONArray lcoment = Noticias.getJSONArray("resultado");
 					for(int i = 0; i<lcoment.length();i++){
@@ -411,6 +417,9 @@ public class Lnoticias extends Activity {
 					aempezar = start;			
 					lista.setSelection(aempezar);
 					roto = true;
+			/*		if((start == 0 && mandar.size()==1 && !fromvecinos) && url.contains("id_p") ){
+						preguntar_vecinos = true;
+					}			*/			
 				}
 			} catch (Exception e) {
 				roto = true;
@@ -494,7 +503,22 @@ public class Lnoticias extends Activity {
 	
 	private void onTaskCompleted(Object _response) 
 	{ 
+		if(vecinos)
+			showDialogVecinos(a,"No existen noticias con ese pueblo","A continuación se le mostrará el resultado de pueblos colindantes, es posible que tampoco tengamos noticias de dichos pueblos");
 	}
+
+	public void showDialogVecinos(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Lnoticias.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("Aceptar", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.show();
+	}	
 
 	
 }

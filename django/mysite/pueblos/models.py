@@ -153,3 +153,7 @@ class log_update_web(models.Model):
 	municipio = models.ForeignKey(Pueblo)
 	class Meta:
 		unique_together = ('fecha', 'municipio')		
+
+class vecinos(models.Model):
+	id1 = models.ForeignKey(Pueblo,related_name='pi')
+	id2 = models.ForeignKey(Pueblo,related_name='pvecino')

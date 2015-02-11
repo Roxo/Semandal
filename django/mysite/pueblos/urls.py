@@ -44,5 +44,6 @@ urlpatterns = patterns('',
     url(r'^api/categoriza/(?P<id_n>\d+)/(?P<id_cnew>\w+)/(?P<id_u>\d+)/$',views.categorizar, name='categorizar'),   #Funciona #NOAPI
     url(r'^api/denunciar/(?P<id_u>\d+)/(?P<id_c>\d+)/$',views.denuncia, name='denuncia'),  #Funciona #NOAPI
     url(r'^api/versiones/$',views.versiones, name='versiones'),  #Funciona #NOAPI
+    url(r'^api/vecinos/(?P<id_p>\d+)/(?P<id_u>\d+)/(?P<init>\d+)/(?P<fin>\d+)/$',views.not_vecinos,name='not_vecinos')
 # url(r'^pueblos/(?P<p_id>\d+)/noticias/?P<id_noticia>\d+/$', views.idpueblo, name='idpueblo'),
 )

@@ -30,6 +30,9 @@ from pueblos.models import NVistas
 from pueblos.models import Votaciones
 from pueblos.models import Status
 from pueblos.models import Denuncias_C
+from pueblos.models import vecinos
+
+
 def index(request):
     return HttpResponse("Bienvenidos a SEMANDAL")
     # pueblos = Pueblo.objects.all().order_by('dspueblo')[:5]
@@ -572,12 +575,14 @@ def busqueda(resques,datos,int1,int2,id_user):
 	kwargs={}
 	datos = datos[1:len(datos)-1]
 	c=[]
+	puebloconsulta =""
 	if datos is not "":
 		datos = datos.split(',')
 		for i in datos:
 			if "id_p" in i :
 				p = Pueblo.objects.filter(id=i.split(':')[1])
 				kwargs['noticia__pueblo_id'] = p
+				puebloconsulta=p;
 			elif "id_c" in i:
 				kwargs['categoria__id'] = i.split(':')[1]
 			elif "_t" in i:
@@ -589,12 +594,28 @@ def busqueda(resques,datos,int1,int2,id_user):
 		n = NC.objects.filter(**kwargs).order_by("noticia__fecha").reverse()[int1:int2]
 		if len(n) is not 0:
 			r = filternoticiabusqueda(n,id_user)
-			r = '{"ret":true,"resultado":['+r+']}'
+			r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 			return HttpResponse(r)
+		elif puebloconsulta != "":
+			consultas = []
+			vec = vecinos.objects.filter(id1_id__id = puebloconsulta)
+			for i in vec:
+				tupla = ('noticia__pueblo_id',str(i.id2_id))
+				consultas.append(tupla)
+			mylist = [Q(x) for x in consultas]
+			del kwargs["noticia__pueblo_id"]
+			n = NC.objects.filter(reduce(operator.or_, mylist),**kwargs).order_by("noticia__fecha").reverse()[int1:int2]
+			if len(n) != 0:
+				r = filternoticiabusqueda(n,id_user)
+				r = '{"ret":true,"vecinos":true,"resultado":['+r+']}'
+				return HttpResponse(r)
+			else:
+				r = '{"ret":false,"vecinos":true,"resultado":[]}'
+				return  HttpResponse(r)
 		else:
-			return HttpResponse('{"ret":false,"resultado":[]}')
+			return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]')
 	else:
-		return HttpResponse('{"ret":false,"resultado":[]')
+		return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]')
 
 def filternoticiabusqueda(n,u):
 	obj = ''
@@ -893,7 +914,7 @@ def todosnot(request,id_u,init,fin):
 	mylist = [Q(x) for x in consultas]
 	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[init:fin]
 	r = filternoticia(n,id_u)
-	r = '{"ret":true,"resultado":['+r+']}'
+	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)
 
 
@@ -938,7 +959,7 @@ def mdfy(request,id_u,pueblo):
 def todasnoticias(request,init,fin,iduser):
 	n = Noticias.objects.all().order_by("fecha").reverse()[init:fin]
 	r = filternoticia(n,iduser)
-	r = '{"ret":true,"resultado":['+r+']}'
+	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)
 
 def versiones(request):
@@ -962,3 +983,16 @@ def addnot(request,u_id,n_id):
 		return HttpResponse('{"ret":true}')
 	except:		
 		return HttpResponse('{"ret":false}')
+
+def not_vecinos(request,id_p,id_u,init,fin):
+	consultas = []
+	vec = vecinos.objects.filter(id1_id__id = id_p)
+	for i in vec:
+		tupla = ('pueblo_id__id',str(i.id2_id))
+		consultas.append(tupla)
+	mylist = [Q(x) for x in consultas]
+	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[init:fin]
+	r = filternoticia(n,id_u)
+	r = '{"ret":true,"resultado":['+r+']}'
+	return HttpResponse(r)
+
