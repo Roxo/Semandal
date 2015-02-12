@@ -32,6 +32,7 @@ from pueblos.models import Status
 from pueblos.models import Denuncias_C
 from pueblos.models import vecinos
 
+ancho = 20;
 
 def index(request):
     return HttpResponse("Bienvenidos a SEMANDAL")
@@ -617,6 +618,54 @@ def busqueda(resques,datos,int1,int2,id_user):
 	else:
 		return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]')
 
+
+def busqueda1(resques,datos,pagina,id_user):
+	kwargs={}
+	datos = datos[1:len(datos)-1]
+	c=[]
+	puebloconsulta =""
+	if datos is not "":
+		datos = datos.split(',')
+		for i in datos:
+			if "id_p" in i :
+				p = Pueblo.objects.filter(id=i.split(':')[1])
+				kwargs['noticia__pueblo_id'] = p
+				puebloconsulta=p;
+			elif "id_c" in i:
+				kwargs['categoria__id'] = i.split(':')[1]
+			elif "_t" in i:
+				kwargs['noticia__dstitular__icontains'] = i.split(':')[1]
+			elif "_d" in i:
+				kwargs['noticia__fecha__range'] = (i.split(':')[1],i.split(':')[2])
+			else:
+				return HttpResponse('{"ret":false,"comentario":"datos por parametros erroneos"}')
+		n = NC.objects.filter(**kwargs).order_by("noticia__fecha").reverse()[(pagina*ancho):(pagina*ancho)+(ancho)-1]
+		if len(n) is not 0:
+			r = filternoticiabusqueda(n,id_user)
+			r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
+			return HttpResponse(r)
+		elif puebloconsulta != "":
+			consultas = []
+			vec = vecinos.objects.filter(id1_id__id = puebloconsulta)
+			for i in vec:
+				tupla = ('noticia__pueblo_id',str(i.id2_id))
+				consultas.append(tupla)
+			mylist = [Q(x) for x in consultas]
+			del kwargs["noticia__pueblo_id"]
+			n = NC.objects.filter(reduce(operator.or_, mylist),**kwargs).order_by("noticia__fecha").reverse()[(pagina*ancho):(pagina*ancho)+(ancho)-1]
+			if len(n) != 0:
+				r = filternoticiabusqueda(n,id_user)
+				r = '{"ret":true,"vecinos":true,"resultado":['+r+']}'
+				return HttpResponse(r)
+			else:
+				r = '{"ret":false,"vecinos":true,"resultado":[]}'
+				return  HttpResponse(r)
+		else:
+			return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]')
+	else:
+		return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]')
+
+
 def filternoticiabusqueda(n,u):
 	obj = ''
 	r = ''
@@ -917,6 +966,18 @@ def todosnot(request,id_u,init,fin):
 	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)
 
+def todosnot1(request,pagina,fin):
+	consultas = []
+	sigo = SigP.objects.filter(id_user__id = id_u)
+	for i in sigo:
+		tupla = ('pueblo_id__id',str(i.id_p.id))
+		consultas.append(tupla)
+	mylist = [Q(x) for x in consultas]
+	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[(pagina*ancho):(pagina*ancho)+(ancho)-1]
+	r = filternoticia(n,id_u)
+	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
+	return HttpResponse(r)
+
 
 def llamadas(request):
 	ll = Llamadas.objects.all()
@@ -958,6 +1019,12 @@ def mdfy(request,id_u,pueblo):
 
 def todasnoticias(request,init,fin,iduser):
 	n = Noticias.objects.all().order_by("fecha").reverse()[init:fin]
+	r = filternoticia(n,iduser)
+	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
+	return HttpResponse(r)
+
+def todasnoticias1(request,pagina,iduser):
+	n = Noticias.objects.all().order_by("fecha").reverse()[(pagina*ancho):(pagina*ancho)+(ancho)-1]
 	r = filternoticia(n,iduser)
 	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)
