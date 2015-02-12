@@ -55,6 +55,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:divider="#000000"
+        android:dividerHeight="1dp"
         android:layout_below="@+id/imageView1" >
 
     </ListView>

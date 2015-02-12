@@ -55,6 +55,7 @@
     	    android:layout_width="match_parent"
     	    android:layout_height="wrap_content"
     	    android:layout_above="@+id/registro"
+	        android:background="@drawable/gradientesuave"
     	    android:layout_alignParentLeft="true"
     	    android:layout_below="@+id/imageView1"
     	    android:scrollbarAlwaysDrawVerticalTrack="true"

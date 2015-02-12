@@ -50,8 +50,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Lnoticias extends Activity {
-	private static String PRIMERO = "PRIMERO";
-	private static String ULTIMO = "ULTIMO";
+	private static String PAGINA = "PRIMERO";
 	private static String FROM = "FROM";
 	private static String AEMPEZAR = "AEMPEZAR";
 
@@ -66,7 +65,7 @@ public class Lnoticias extends Activity {
 	private static AsincLN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	TextView resultados;
-	int start, last,aempezar=0;
+	int pagina,aempezar=0;
 	Lnoticias a = this;
 	List<Noticia> mandar;
 	Bundle bundle;
@@ -74,8 +73,7 @@ public class Lnoticias extends Activity {
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		bundle = savedInstanceState;
 	    // Save the user's current game state
-	    bundle.putInt(ULTIMO, last);
-	    bundle.putInt(PRIMERO, start);
+	    bundle.putInt(PAGINA, pagina);
 	    bundle.putBoolean(FROM, roto);
 	    bundle.putInt(AEMPEZAR, aempezar);
 
@@ -100,8 +98,7 @@ public class Lnoticias extends Activity {
 		pueblonuevo = getIntent().getStringExtra("pueblito");
 		if(pueblonuevo==null)
 			pueblonuevo = "";
-		start = 0;
-		last = 9;
+		pagina = 0;
 		mandar = new ArrayList<Noticia>();
 		ImageView fl = (ImageView)this.findViewById(R.id.fl);
 		ImageView fr = (ImageView)this.findViewById(R.id.fr);
@@ -111,7 +108,7 @@ public class Lnoticias extends Activity {
 		lista = (ListView)this.findViewById(R.id.listView1);
 
 		AsincLN tarea = new AsincLN(resultados,
-				(Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/"+iduser).replace(" ","%20"),lista, this
+				(Singleton.url+":8000/api/busqueda/"+datos+"/"+pagina+"/"+iduser).replace(" ","%20"),lista, this
 				);
 		tarea.execute();
 
@@ -238,11 +235,10 @@ public class Lnoticias extends Activity {
 			 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 	           if(completado){
 	        	   if ((firstVisibleItem + visibleItemCount) >= totalItemCount) {
-	        			   start += 10;
-	        			   last +=10;
+	        		   pagina += 1;
 	        			   aempezar = firstVisibleItem+1;
 	        			   AsincLN tarea = new AsincLN(resultados,
-	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/"+iduser).replace(" ","%20"),lista, a
+	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+pagina+"/"+iduser).replace(" ","%20"),lista, a
 	        					   );
 	        			   tarea.execute();	
 	        			   completado = false;
@@ -351,11 +347,11 @@ public class Lnoticias extends Activity {
 			}
 			db.close();
 			if(indice == -1 && !fbusqueda)
-				url = Singleton.url+":8000/api/noticias/"+start+"/"+last+"/"+iduser;
+				url = Singleton.url+":8000/api/noticias/"+pagina+"/"+iduser;
 			else if(indice == 0 && !fbusqueda)
-				url = Singleton.url+":8000/api/"+iduser+"/noticias/"+start+"/"+last;
+				url = Singleton.url+":8000/api/"+iduser+"/noticias/"+pagina;
 			else if(!fbusqueda)
-				url = Singleton.url+":8000/api/busqueda/"+"(id_p:"+aux1list.get(indice+1)+")/"+start+"/"+last+"/"+iduser;
+				url = Singleton.url+":8000/api/busqueda/"+"(id_p:"+aux1list.get(indice+1)+")/"+pagina+"/"+iduser;
 				leercomentario();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -414,7 +410,6 @@ public class Lnoticias extends Activity {
 					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","",false);
 					mandar.add(k);
 					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
-					aempezar = start;			
 					lista.setSelection(aempezar);
 					roto = true;
 			/*		if((start == 0 && mandar.size()==1 && !fromvecinos) && url.contains("id_p") ){
@@ -483,8 +478,7 @@ public class Lnoticias extends Activity {
 	public void onResume(){
 		super. onResume();
 		if(bundle != null){
-			last = bundle.getInt(ULTIMO);
-			start = bundle.getInt(PRIMERO);
+			pagina = bundle.getInt(PAGINA);
 			aempezar = bundle.getInt(AEMPEZAR);
 			roto = bundle.getBoolean(FROM);
 			bundle = null;

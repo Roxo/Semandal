@@ -139,8 +139,7 @@
        <ListView
            android:id="@+id/noticias"
            android:layout_width="match_parent"
-           android:layout_height="208dp"
-           android:layout_weight="1.70"
+           android:layout_height="match_parent"
            android:background="@drawable/gradientesuave" />
    </LinearLayout>
 

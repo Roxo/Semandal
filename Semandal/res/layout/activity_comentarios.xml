@@ -53,7 +53,10 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_above="@+id/DwEdit"
-	    android:layout_alignParentLeft="true"
+        android:divider="#000000"
+        android:dividerHeight="1dp"
+        android:background="@drawable/gradientesuave"
+        android:layout_alignParentLeft="true"
 	    android:layout_below="@+id/imageView1"
 	    android:scrollbarAlwaysDrawVerticalTrack="true"
 	    android:scrollbars="vertical" >

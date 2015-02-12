@@ -292,7 +292,7 @@ def getlastcomentarios(id_usuario):
 
 #####################################################MODIFICAR GET NOTICIAS#############################################
 def getcomentarios(request,n_id):
-	rez = Comentarios.objects.filter(id_not=n_id)
+	rez = Comentarios.objects.filter(id_not=n_id).order_by('fecha').reverse()
 	if len(rez) != 0:
 		obj=""
 		for i in rez:
@@ -639,7 +639,9 @@ def busqueda1(resques,datos,pagina,id_user):
 				kwargs['noticia__fecha__range'] = (i.split(':')[1],i.split(':')[2])
 			else:
 				return HttpResponse('{"ret":false,"comentario":"datos por parametros erroneos"}')
-		n = NC.objects.filter(**kwargs).order_by("noticia__fecha").reverse()[(pagina*ancho):(pagina*ancho)+(ancho)-1]
+		inicio = (int(pagina)*ancho)
+		fin = (int(pagina)*ancho)+(ancho)-1
+		n = NC.objects.filter(**kwargs).order_by("noticia__fecha").reverse()[inicio:fin]
 		if len(n) is not 0:
 			r = filternoticiabusqueda(n,id_user)
 			r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
@@ -652,7 +654,9 @@ def busqueda1(resques,datos,pagina,id_user):
 				consultas.append(tupla)
 			mylist = [Q(x) for x in consultas]
 			del kwargs["noticia__pueblo_id"]
-			n = NC.objects.filter(reduce(operator.or_, mylist),**kwargs).order_by("noticia__fecha").reverse()[(pagina*ancho):(pagina*ancho)+(ancho)-1]
+			inicio = (int(pagina)*ancho)
+			fin = (int(pagina)*ancho)+(ancho)-1
+			n = NC.objects.filter(reduce(operator.or_, mylist),**kwargs).order_by("noticia__fecha").reverse()[inicio:fin]
 			if len(n) != 0:
 				r = filternoticiabusqueda(n,id_user)
 				r = '{"ret":true,"vecinos":true,"resultado":['+r+']}'
@@ -730,7 +734,7 @@ def filternoticia(n,u):
 	return r
 
 def getcategorias(n):
-	n = NC.objects.filter(noticia = n)
+	n = NC.objects.filter(noticia = n).order_by('id').reverse()
 	res = ''
 	for k in n:
 		obj = '{"id_categoria":'+str(k.categoria.id)+',"dscategoria":"'+k.categoria.dscategoria+'"},'
@@ -973,7 +977,9 @@ def todosnot1(request,pagina,fin):
 		tupla = ('pueblo_id__id',str(i.id_p.id))
 		consultas.append(tupla)
 	mylist = [Q(x) for x in consultas]
-	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[(pagina*ancho):(pagina*ancho)+(ancho)-1]
+	inicio = (int(pagina)*ancho)
+	fin = (int(pagina)*ancho)+(ancho)-1
+	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[inicio:fin]
 	r = filternoticia(n,id_u)
 	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)
@@ -1024,7 +1030,9 @@ def todasnoticias(request,init,fin,iduser):
 	return HttpResponse(r)
 
 def todasnoticias1(request,pagina,iduser):
-	n = Noticias.objects.all().order_by("fecha").reverse()[(pagina*ancho):(pagina*ancho)+(ancho)-1]
+	inicio = (int(pagina)*ancho)
+	fin = (int(pagina)*ancho)+(ancho)-1
+	n = Noticias.objects.all().order_by("fecha").reverse()[inicio:fin]
 	r = filternoticia(n,iduser)
 	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)

@@ -47,8 +47,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Bnologres extends Activity{
-	private static String PRIMERO = "PRIMERO";
-	private static String ULTIMO = "ULTIMO";
+	private static String PAGINA = "PRIMERO";
 	private static String FROM = "FROM";
 	private static String AEMPEZAR = "AEMPEZAR";
 
@@ -61,7 +60,7 @@ public class Bnologres extends Activity{
 	boolean fbusqueda=false,noeffect=false,completado = false,roto = false,first = true,from = false;
 	private static AsincLN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	int start, last,aempezar=0;
+	int pagina,aempezar=0;
 	Bnologres a = this;
 	List<Noticia> mandar;
 	Bundle bundle;	
@@ -71,8 +70,7 @@ public class Bnologres extends Activity{
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		bundle = savedInstanceState;
 	    // Save the user's current game state
-	    bundle.putInt(ULTIMO, last);
-	    bundle.putInt(PRIMERO, start);
+	    bundle.putInt(PAGINA, pagina);
 	    bundle.putBoolean(FROM, true);
 	    bundle.putInt(AEMPEZAR, aempezar);
 
@@ -89,15 +87,14 @@ public class Bnologres extends Activity{
 		ImageView b2 = (ImageView)this.findViewById(R.id.Info);
 		ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
 		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
-		start = 0;
-		last = 9;
+		pagina = 0;
 		mandar = new ArrayList<Noticia>();
 		fbusqueda = getIntent().getBooleanExtra("busqueda",false);
 		lista = (ListView)this.findViewById(R.id.listView1);
 
 		AsincBNL tarea = null;
 		tarea = new AsincBNL(
-				Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/0",lista, this
+				Singleton.url+":8000/api/busqueda/"+datos+"/"+pagina+"/0",lista, this
 				);
 		tarea.execute();
 
@@ -169,11 +166,10 @@ public class Bnologres extends Activity{
 			 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 	           if(completado){
 	        	   if ((firstVisibleItem + visibleItemCount) >= totalItemCount) {
-	        			   start += 10;
-	        			   last +=10;
+	        			   pagina += 1;
 	        			   aempezar = firstVisibleItem+1;
 	        			   AsincBNL tarea = new AsincBNL(
-	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last+"/"+iduser).replace(" ","%20"),lista, a
+	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+pagina+"/"+iduser).replace(" ","%20"),lista, a
 	        					   );
 	        			   tarea.execute();	
 	        			   completado = false;
@@ -289,7 +285,6 @@ public class Bnologres extends Activity{
 					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","",false);
 					mandar.add(k);
 					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
-					aempezar = start;			
 					lista.setSelection(aempezar);
 					roto = true;
 				}
@@ -356,8 +351,7 @@ public class Bnologres extends Activity{
 	public void onResume(){
 		super. onResume();
 		if(bundle != null){
-			last = bundle.getInt(ULTIMO);
-			start = bundle.getInt(PRIMERO);
+			pagina = bundle.getInt(PAGINA);
 			aempezar = bundle.getInt(AEMPEZAR);
 			bundle = null;
 			mandar.get(aempezar).setVista(true);

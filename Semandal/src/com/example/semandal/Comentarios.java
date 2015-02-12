@@ -77,6 +77,8 @@ public class Comentarios extends Activity {
 				// para pasarle los datos actualizados
 				String coment= comentario.getText().toString();
 				String prueba = Singleton.url+":8000/api/C_insert/"+notid+"/"+iduser+"/"+coment.replace("\n","-").replace(" ", "%20");
+				comentario.setText("");
+				comentario.clearFocus();
 				AsincCL tarea = null;
 				tarea = new AsincCL(a,
 						Singleton.url+":8000/api/noticias/"+notid+"/comentarios",lista,a

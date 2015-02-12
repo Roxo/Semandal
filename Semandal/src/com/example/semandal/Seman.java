@@ -17,6 +17,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.semandal.Blog.AsincBlog;
+import com.example.semandal.aux.Categoria;
+import com.example.semandal.aux.Noticia;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
@@ -56,6 +58,7 @@ public class Seman extends Activity {
 	boolean fromsend = false;
 	private LinkedList<Integer> auxiliar=new LinkedList<Integer>(),categorias;
 	ListView lista ;
+	List<Categoria> mandar;
 	boolean votado = false,from=false;
 	private AutoCompleteTextView categoria;
 	@Override
@@ -83,6 +86,8 @@ public class Seman extends Activity {
 				if(!categoria.getText().toString().equalsIgnoreCase("")){
 					String cnew = categoria.getText().toString();
 					String url = (Singleton.url+":8000/api/noticias/"+idnot+"/addcat/"+iduser+"/"+cnew).replace(" ","%20");
+					categoria.setText("");
+					categoria.clearFocus();
 					Asincseman tarea = new Asincseman(a,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista,categoria,url);
 					tarea.execute();
 				}
@@ -262,6 +267,8 @@ public class Seman extends Activity {
 		@Override
 		protected Void doInBackground(Void... params) {
 				try {
+					mandar = new LinkedList<Categoria>();
+					Categoria k;
 					categorias = new LinkedList<Integer>();
 					if(!urlcorregir.equalsIgnoreCase("")){
 						corr();
@@ -273,6 +280,8 @@ public class Seman extends Activity {
 					if (f.length() != 0){
 						for(int i = 0;i<f.length();i++){
 							JSONObject b = f.getJSONObject(i);
+							k=new Categoria(b.getString("dscategoria"));
+							mandar.add(k);
 							categorias.add(b.getInt("id_categoria"));
 							listacategorias[i]= b.getString("dscategoria");
 						}
@@ -322,11 +331,12 @@ public class Seman extends Activity {
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto,
 					android.R.layout.simple_list_item_1, listacategorias);
 			lv.setAdapter(adapter);
-			
+			lv.setAdapter(new Plantilla_categoria(activity,mandar));
+
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista2);
 			cat.setAdapter(adaptador1);
 			if(!urlcorregir.equalsIgnoreCase("")){
-				String answer =  votado ?   "Se ha agregado la categoría" :  "Usted ya ha agregado esta categoria para esta noticia";
+				String answer =  votado ?   "Se ha aplicado la corrección" :  "Usted ya ha agregado/votado esta categoria para esta noticia";
 				Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
 				votado = false;
 			}
