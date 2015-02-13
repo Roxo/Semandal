@@ -972,7 +972,7 @@ def todosnot(request,id_u,init,fin):
 	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)
 
-def todosnot1(request,pagina,fin):
+def todosnot1(request,id_u,pagina):
 	consultas = []
 	sigo = SigP.objects.filter(id_user__id = id_u)
 	for i in sigo:
