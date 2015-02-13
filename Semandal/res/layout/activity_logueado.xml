@@ -67,7 +67,7 @@
    <LinearLayout
        android:id="@+id/LinearScroll"
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
+       android:layout_height="wrap_content"
        android:layout_above="@+id/textView2"
        android:orientation="vertical" >
 
@@ -138,7 +138,7 @@
        <ListView
            android:id="@+id/noticias"
            android:layout_width="match_parent"
-           android:layout_height="125dp"
+           android:layout_height="252dp"
            android:background="@drawable/gradientesuave" />
    </LinearLayout>
 

@@ -46,12 +46,18 @@ public class Plantilla_Comment extends BaseAdapter{
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = actividad.getLayoutInflater();
 		View view = inflater.inflate(R.layout.activity_plantilla__comment,null,true);
-		TextView textView1 =(TextView)view.findViewById(R.id.p_autor);
-		textView1.setText(lista.get(position).getAutor());
 		TextView textView3 =(TextView)view.findViewById(R.id.p_comentario);
 		textView3.setText(lista.get(position).getComentario());
+		TextView textView1 =(TextView)view.findViewById(R.id.p_autor);
 		TextView textView4 =(TextView)view.findViewById(R.id.fecha);
-		textView4.setText(lista.get(position).getFecha());
-		return view;
+		if(!lista.get(position).getAutor().equalsIgnoreCase("")){
+			textView1.setText(lista.get(position).getAutor());
+			textView4.setText(lista.get(position).getFecha());
 		}
+		else{
+			textView1.setVisibility(View.GONE);
+			textView4.setVisibility(View.GONE);
+		}
+		return view;
+	}	
 }
