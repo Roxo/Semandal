@@ -784,12 +784,9 @@ public class Display_not_log extends Activity {
 	    public void onPostExecute(Object response){
 	        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
 	        SQLiteDatabase bd = admin.getWritableDatabase();
-	        try{
-	        	admin.onCreate(bd);
-	        }catch(Exception e){}
 			bd.execSQL("DELETE FROM siguiendo");
-	        bd.execSQL("INSERT INTO siguiendo VALUES ("+(-1)+", '"+"Todos"+"')");
-	        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Sigo"+"')");
+	        bd.execSQL("INSERT INTO siguiendo VALUES ("+(-1)+", '"+"Todos"+"',' ')");
+	        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Sigo"+"',' ')");
 			try {
 				JSONArray psig = datosuser.getJSONArray("siguiendo");
 				for (int i = 0;i<psig.length(); i++){

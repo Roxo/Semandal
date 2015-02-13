@@ -877,7 +877,7 @@ def addsig(request,id_p,id_u):
 		pueblo = Pueblo.objects.filter(id=id_p)[0]
 		u = SigP(id_user=usuario,id_p=pueblo)
 		u.save()
-		return HttpResponse('{"ret":true,"message":"Siguiendo el pueblo: '+pueblo.busqueda+'"}')
+		return HttpResponse('{"ret":true,"message":"Siguiendo el pueblo '+pueblo.busqueda+'"}')
 	except:
 		return HttpResponse('{"ret":false,"message":"No se ha podido procesar su solicitud"}')
 
@@ -998,16 +998,19 @@ def llamadas(request):
 	return HttpResponse(obj)
 
 def borrasig(request,id_p,id_u):
-	sigo = SigP.objects.filter(id_user__id = id_u)
-	if len(sigo) == 1:
-		return HttpResponse('{"ret":false,"message":"Debe seguir al menos un pueblo"}')
-	usuario = Usuario.objects.filter(id = id_u, pueblo__id = id_p)
-	if len(usuario) == 1:
-		return HttpResponse('{"ret":false,"message":"No puede eliminar su pueblo. Puede modificarlo en la pantalla principal"}')
-	sigo = SigP.objects.filter(id_user__id = id_u, id_p__id = id_p)
-	sigo.delete()
-	pueblo = Pueblo.objects.filter(id = id_p)
-	return HttpResponse('{"ret":true,"message":"Ha dejado de seguir '+pueblo[0].busqueda+'"}')
+	try:
+		sigo = SigP.objects.filter(id_user__id = id_u)
+		if len(sigo) == 1:
+			return HttpResponse('{"ret":false,"message":"Debe seguir al menos un pueblo"}')
+		usuario = Usuario.objects.filter(id = id_u, pueblo__id = id_p)
+		if len(usuario) == 1:
+			return HttpResponse('{"ret":false,"message":"No puede eliminar su pueblo. Puede modificarlo en la pantalla principal"}')
+		sigo = SigP.objects.filter(id_user__id = id_u, id_p__id = id_p)
+		sigo.delete()
+		pueblo = Pueblo.objects.filter(id = id_p)
+		return HttpResponse('{"ret":true,"message":"Ha dejado de seguir '+pueblo[0].busqueda+'"}')
+	except:
+		return HttpResponse('{"ret":false,"message":"Ha ocurrido un error"}')
 
 def mdfy(request,id_u,pueblo):
 	try:
