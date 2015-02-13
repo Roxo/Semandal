@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -199,6 +201,14 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 		}
 		catch(Exception e){}
 		titular = Titular.getText().toString();
+		try {
+			titular = titular.replace(" ","aX1_2Bc");
+			titular = URLEncoder.encode(titular,"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		titular = titular.replace("aX1_2Bc","%20");
 		String pueblo = autotext.getText().toString();
 		int p = 0;
 		if(!pueblo.equalsIgnoreCase("")){

@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -76,7 +78,16 @@ public class Comentarios extends Activity {
 				// comentario y posteriormente realizar una consulta en json
 				// para pasarle los datos actualizados
 				String coment= comentario.getText().toString();
-				String prueba = Singleton.url+":8000/api/C_insert/"+notid+"/"+iduser+"/"+coment.replace("\n","-").replace(" ", "%20");
+				coment = coment.replace("\n","-");
+				try {
+					coment = URLEncoder.encode(coment,"UTF-8");
+					coment = coment.replace(" ","aX1_2Bc");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				coment = coment.replace("aX1_2Bc","%20");
+				String prueba = Singleton.url+":8000/api/C_insert/"+notid+"/"+iduser+"/"+coment;
 				comentario.setText("");
 				comentario.clearFocus();
 				AsincCL tarea = null;
@@ -281,7 +292,7 @@ public class Comentarios extends Activity {
 						JSONObject coment = (JSONObject) lcoment.get(i);
 						listacomment.add(coment.getInt("id_comentario"));
 						String autor = coment.getString("usuario");
-						String comentario = coment.getString("comentario").replace("-", " ");
+						String comentario = coment.getString("comentario").replace("-", "\n");
 						String fecha = coment.getString("fecha");
 						k = new Comentario(autor,comentario,fecha);
 						mandar.add(k);

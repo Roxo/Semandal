@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -104,6 +107,15 @@ public class Seman extends Activity{
 					cnew = lista2.get(cposicion);
 				}
 				if(!cnew.equalsIgnoreCase("")){
+					cnew = cnew.replace(" ","aX1_2Bc");
+					try {
+						cnew = URLEncoder.encode(cnew,"UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					cnew = cnew.replace("aX1_2Bc","%20");
+
 					String url = (Singleton.url+":8000/api/noticias/"+idnot+"/addcat/"+iduser+"/"+cnew).replace(" ","%20");
 					categoria.setText("");
 					categoria.clearFocus();
@@ -126,6 +138,14 @@ public class Seman extends Activity{
 				// TODO Auto-generated method stub
 				if(!categoria.getText().toString().equalsIgnoreCase("")){
 					String cnew = categoria.getText().toString();
+					cnew = cnew.replace(" ","aX1_2Bc");
+					try {
+						cnew = URLEncoder.encode(cnew,"UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					cnew = cnew.replace("aX1_2Bc","%20");
 					String url = (Singleton.url+":8000/api/noticias/"+idnot+"/addcat/"+iduser+"/"+cnew).replace(" ","%20");
 					categoria.setText("");
 					categoria.clearFocus();
@@ -307,7 +327,7 @@ public class Seman extends Activity{
 			  }
 			  
 			  public void corr() throws IOException, JSONException {
-				    InputStream is = new URL(urlcorregir).openStream();
+			      InputStream is = new URL(urlcorregir).openStream();
 				    try {
 				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 				      String jsonText = readAll(rd);

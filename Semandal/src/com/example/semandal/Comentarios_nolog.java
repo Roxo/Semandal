@@ -205,7 +205,7 @@ public class Comentarios_nolog extends Activity {
 				for(int i = 0; i<lcoment.length();i++){
 						JSONObject coment = (JSONObject) lcoment.get(i);
 						String autor = coment.getString("usuario");
-						String comentario = coment.getString("comentario").replace("-"," ");
+						String comentario = coment.getString("comentario").replace("-","\n");
 						String fecha = coment.getString("fecha");
 						k = new Comentario(autor,comentario,fecha);
 						mandar.add(k);

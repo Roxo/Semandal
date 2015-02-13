@@ -281,7 +281,7 @@ def getlastcomentarios(id_usuario):
 		if titular is "":
 			titular = "Noticia sin Titular"
 		puntuacion = puntuacion + i.puntuacion
-		noti = noti+'{"comentario":"'+i.dscomentario.replace(" ","-")+'","idnoticia":'+str(noticia.id)+',"dstitular":"'+titular+'"},'
+		noti = noti+'{"comentario":"'+i.dscomentario.encode('utf-8')+'","idnoticia":'+str(noticia.id)+',"dstitular":"'+titular+'"},'
 	obj = obj[0:len(obj)-1]
 	noti = noti[0:len(noti)-1]
 	array.append(str(puntuacion))
@@ -297,7 +297,7 @@ def getcomentarios(request,n_id):
 		obj=""
 		for i in rez:
 			Hace = str(gettiempo(str(i.fecha).split("+")[0]))
-			obj = obj+'{"id_comentario":'+str(i.id)+',"id_user":'+str(i.id_user.id)+',"usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.replace(" ","-")+'","puntuacion":'+str(int(i.puntuacion))+',"fecha":"'+Hace+'"},'
+			obj = obj+'{"id_comentario":'+str(i.id)+',"id_user":'+str(i.id_user.id)+',"usuario":"'+i.id_user.dsusuario+'","comentario":"'+i.dscomentario.encode('utf-8')+'","puntuacion":'+str(int(i.puntuacion))+',"fecha":"'+Hace+'"},'
 		obj = obj[0:(len(obj)-1)]
 		obj = '{"ncomentarios":"'+str(len(rez))+'","comentarios":['+obj+']}'
 	else:
@@ -554,7 +554,7 @@ def getcoments(n):
 	com = Comentarios.objects.filter(id_not = n)[:2]
 	for c in com:
 		Hace = str(gettiempo(str(c.fecha).split("+")[0]))
-		obj='{"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario.encode('utf-8')+'","cuerpo":"'+c.dscomentario.replace(" ","-").encode('utf-8')+'","puntuacion":'+str(c.puntuacion)+',"fecha":"'+str(Hace)+'"},'
+		obj='{"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario.encode('utf-8')+'","cuerpo":"'+c.dscomentario.encode('utf-8')+'","puntuacion":'+str(c.puntuacion)+',"fecha":"'+str(Hace)+'"},'
 		r = r+obj
 	r = r[0:len(r)-1]
 	return r
@@ -564,7 +564,7 @@ def lastcomment(request):
 		co = Comentarios.objects.all().order_by("fecha")[:5]
 		r=''
 		for c in co:
-			obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario.replace(" ","-")+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'","fecha":"'+str(c.fecha).split("+")[0]+'","puntuacion":'+str(c.puntuacion)+'},'
+			obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario.encode('utf-8')+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'","fecha":"'+str(c.fecha).split("+")[0]+'","puntuacion":'+str(c.puntuacion)+'},'
 			r = r+obj
 		r=r[0:len(r)-1]
 		r = '{"comentarios":['+r+']}'
@@ -757,7 +757,7 @@ def getdeuda(request,p_id):
 def insertcomment(request,n_id,dsc,u_id):
 	user = Usuario.objects.filter(id=u_id)[0]
 	noticia = Noticias.objects.filter(id=n_id)[0]
-	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc.replace("-","\n"),fecha=datetime.now())
+	p = Comentarios(id_user=user,id_not=noticia,dscomentario=dsc,fecha=datetime.now())
 	p.save()
 	return HttpResponse("")
 
