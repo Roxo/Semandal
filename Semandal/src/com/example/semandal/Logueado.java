@@ -339,16 +339,16 @@ public class Logueado extends Activity {
 		        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
 		        SQLiteDatabase bd = admin.getWritableDatabase();
 		        try{
-		        	admin.onCreate(bd);
+		        	admin.onUpgrade(bd,1,2);
 		        }catch(Exception e){}
 				bd.execSQL("DELETE FROM siguiendo");
-		        bd.execSQL("INSERT INTO siguiendo VALUES ("+(-1)+", '"+"Todos"+"')");
-		        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Sigo"+"')");
+		        bd.execSQL("INSERT INTO siguiendo VALUES ("+(-1)+", '"+"Todos"+"',' ')");
+		        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Sigo"+"',' ')");
 				try {
 					JSONArray psig = datosuser.getJSONArray("siguiendo");
 					for (int i = 0;i<psig.length(); i++){
 						JSONObject f = psig.getJSONObject(i);
-						bd.execSQL("INSERT INTO siguiendo VALUES ("+f.getInt("id_pueblo")+", '"+f.getString("dspueblo")+"')");
+						bd.execSQL("INSERT INTO siguiendo VALUES ("+f.getInt("id_pueblo")+", '"+f.getString("dspueblo")+"', '"+f.getString("busquedaimagenes")+"')");
 					}
 				bd.close();
 				} catch (JSONException e) {

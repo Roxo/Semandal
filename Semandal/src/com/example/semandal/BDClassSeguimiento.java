@@ -15,13 +15,13 @@ public class BDClassSeguimiento extends SQLiteOpenHelper{
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table siguiendo(id integer primary key, dspueblo text)");		
+        db.execSQL("create table siguiendo(id integer primary key, dspueblo text, busqueda text)");		
 }
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	        db.execSQL("drop table if exists siguiendo");
-	        db.execSQL("create table siguiendo(id integer primary key, dspueblo text)");		
+	        db.execSQL("create table siguiendo(id integer primary key, dspueblo text, busqueda text)");		
 	}
 
 }

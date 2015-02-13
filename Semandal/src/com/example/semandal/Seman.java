@@ -49,7 +49,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 
-public class Seman extends Activity {
+public class Seman extends Activity{
 	private int idnot,indice,iduser;
 	Asincseman backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
@@ -59,8 +59,10 @@ public class Seman extends Activity {
 	private LinkedList<Integer> auxiliar=new LinkedList<Integer>(),categorias;
 	ListView lista ;
 	List<Categoria> mandar;
+	int cposicion = -1;
 	boolean votado = false,from=false;
 	private AutoCompleteTextView categoria;
+	Spinner cats;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,6 +72,9 @@ public class Seman extends Activity {
 		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
 		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
 		ImageView b5 = (ImageView)this.findViewById(R.id.corregir);
+		ImageView b6 = (ImageView)this.findViewById(R.id.buscspinner);
+		ImageView b7 = (ImageView)this.findViewById(R.id.ref);
+		cats = (Spinner)this.findViewById(R.id.cats);
 		idnot = getIntent().getIntExtra("id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
 		indice = getIntent().getIntExtra("indice",0);
@@ -77,6 +82,42 @@ public class Seman extends Activity {
 		categoria = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
 		Asincseman tarea = new Asincseman(this,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista,categoria,"");
 		tarea.execute();
+
+		
+		b7.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				showDialogref(a,"Confirmación","Desea actualizar la lista de categorias?");
+			}
+			
+		});		
+
+		b6.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				String cnew = "";
+				cposicion = cats.getSelectedItemPosition()-1;
+				// TODO Auto-generated method stub
+				if(cposicion != -1){
+					cnew = lista2.get(cposicion);
+				}
+				if(!cnew.equalsIgnoreCase("")){
+					String url = (Singleton.url+":8000/api/noticias/"+idnot+"/addcat/"+iduser+"/"+cnew).replace(" ","%20");
+					categoria.setText("");
+					categoria.clearFocus();
+					Asincseman tarea = new Asincseman(a,Singleton.url+":8000/api/noticias/"+idnot+"/categorias",lista,categoria,url);
+					tarea.execute();
+				}
+				else{
+					 String answer = "Debe seleccionar o crear una categoría";
+					 Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
+
+				}
+			}
+			
+		});		
 
 		b5.setOnClickListener(new View.OnClickListener() {
 
@@ -210,13 +251,14 @@ public class Seman extends Activity {
 	public class Asincseman extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		private String url, urlcorregir;
-		JSONObject html,corregir;
+		JSONObject html,corregir,ct;
 	    private Seman activity;
 	    private boolean completed;
 	    private Object _response;
 		private ListView lv;
 		private String[] listacategorias;
 		private AutoCompleteTextView cat;
+		private boolean refresh = false;
 
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
@@ -230,10 +272,21 @@ public class Seman extends Activity {
             this.lv = lv;
             this.cat = cat;
             this.urlcorregir = urlcorregir;
-
+            this.refresh = false;
 		}
 		
-		  private String readAll(Reader rd) throws IOException {
+		  public Asincseman(Seman a, String url2, ListView lista,
+				AutoCompleteTextView categoria, boolean b) {
+				this.contexto = activity;
+	            this.activity = a;
+	            this.url = url2;
+	            this.lv = lista;
+	            this.cat = categoria;
+	            this.urlcorregir = "";
+	            this.refresh = b;
+		}
+
+		private String readAll(Reader rd) throws IOException {
 			    StringBuilder sb = new StringBuilder();
 			    int cp;
 			    while ((cp = rd.read()) != -1) {
@@ -263,6 +316,18 @@ public class Seman extends Activity {
 				      is.close();
 				    }
 				  }
+			  
+			  public void leercategoria() throws IOException, JSONException {
+				    InputStream is = new URL(Singleton.url+":8000/api/noticias/categorias").openStream();
+				    try {
+				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+				      String jsonText = readAll(rd);
+				       ct = new JSONObject(jsonText);
+				    } finally {
+				      is.close();
+				    }
+			  }		  
+
 
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -275,6 +340,9 @@ public class Seman extends Activity {
 						votado = corregir.getBoolean("agregado");
 					}
 					leernoticia();
+					if(refresh)
+						leercategoria();
+					
 					JSONArray f = html.getJSONArray("categorias");
 					listacategorias=new String[f.length()];
 					if (f.length() != 0){
@@ -328,17 +396,24 @@ public class Seman extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto,
-					android.R.layout.simple_list_item_1, listacategorias);
-			lv.setAdapter(adapter);
+		try{
 			lv.setAdapter(new Plantilla_categoria(activity,mandar));
-
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista2);
 			cat.setAdapter(adaptador1);
+			LinkedList<String> sp = new LinkedList<String>();
+			sp.add("Categorias");
+			for(int i = 0;i<lista2.size();i++){
+				sp.add(lista2.get(i));
+			}
+			ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, sp);
+		    cats.setAdapter(adaptador2);
 			if(!urlcorregir.equalsIgnoreCase("")){
 				String answer =  votado ?   "Se ha aplicado la corrección" :  "Usted ya ha agregado/votado esta categoria para esta noticia";
 				Toast.makeText(getApplicationContext(), answer, Toast.LENGTH_LONG).show();
 				votado = false;
+			}
+			}catch(Exception e){
+				
 			}
             completed = true;
             _response = response;
@@ -406,8 +481,162 @@ public class Seman extends Activity {
 		    }
 		});
 		b.show();
-	}	
+	}
+
+
+	public void showDialogref(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Seman.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Asinadd tarea = new Asinadd(a);
+				tarea.execute();
+		    }
+		});
+		b.show();
+	}
 	
+	public class Asinadd extends AsyncTask<Void, Void, Object> {
+		Context contexto;
+	    private Seman activity;
+	    private boolean completed;
+	    private Object _response;
+	    JSONObject datosuser,ct;
+
+		public Asinadd(Seman activity){
+			this.activity = activity;
+			this.contexto = activity;
+		}
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				leerdatos();
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+
+		
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Actualizando información", 
+	                                                       false);
+
+	    } 
+	    
+		  private String readAll(Reader rd) throws IOException {
+			    StringBuilder sb = new StringBuilder();
+			    int cp;
+			    while ((cp = rd.read()) != -1) {
+			      sb.append((char) cp);
+			    }
+			    return sb.toString();
+			  }
+
+
+			  
+			  public void leerdatos() throws IOException, JSONException {
+				    InputStream is = new URL(Singleton.url+":8000/api/noticias/categorias").openStream();
+				    try {
+				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+				      String jsonText = readAll(rd);
+				       ct = new JSONObject(jsonText);
+				    } finally {
+				      is.close();
+				    }
+				  }		  
+			  
+
+
+	    public void onPostExecute(Object response){
+	    	try{
+		        BDClass admin = new BDClass(contexto,"administracion", null, 1);
+		        SQLiteDatabase bd = admin.getWritableDatabase();
+				bd.execSQL("DELETE FROM categorias");
+				int ncategorias = ct.getInt("ncategorias");
+					if(ncategorias!=0){
+						JSONArray c = ct.getJSONArray("categorias");
+						lista2 = new LinkedList<String>();
+						for(int i = 0;i<ncategorias;i++){
+							JSONObject f = (JSONObject)c.get(i);
+							String cat = f.getString("dscategoria");
+							lista2.add(cat);
+							int idcat = f.getInt("id_categoria");
+							if(idcat != 53)
+								bd.execSQL("INSERT INTO categorias VALUES ("+idcat+", '"+cat+"')");
+						}
+					}
+					bd.close();
+				
+
+			lista.setAdapter(new Plantilla_categoria(activity,mandar));
+			LinkedList<String> sp = new LinkedList<String>();
+			sp.add("Categorias");
+			for(int i = 0;i<lista2.size();i++){
+				sp.add(lista2.get(i));
+			}
+			ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, sp);
+		    cats.setAdapter(adaptador2);
+
+			Toast.makeText(getApplicationContext(), "Se han actualizado las categorias", Toast.LENGTH_LONG).show();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+            completed = true;
+            _response = response;
+            notifyActivityTaskCompleted();
+        //Close the splash screen
+        if (pleaseWaitDialog != null)
+        {
+            pleaseWaitDialog.dismiss();
+            pleaseWaitDialog = null;
+        }
+	    }
+	    public void setActivity(Seman activity) 
+	    { 
+	        this.activity = activity; 
+	        if ( completed ) { 
+	            notifyActivityTaskCompleted(); 
+	        } 
+	    } 
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	            activity.onTaskCompleted(_response);
+	        } 
+	    } 
+	}
+
+
+
+
+
 
 
 }

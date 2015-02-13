@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -16,6 +19,7 @@ import org.json.JSONObject;
 
 import com.example.semandal.Deuda.AsinDeuda;
 import com.example.semandal.Display_not_log.AsincronDNN;
+import com.example.semandal.aux.Pueblo;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
@@ -26,6 +30,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -48,7 +55,8 @@ public class LPueblos extends Activity {
 	private int iduser,indice;
 	private static AsinLpueblo backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	private List<String> lista1,lista2;
+	private List<String> lista1;
+	private List<Pueblo> pobs;
 	private List<Integer> lista1aux,lista2aux;
 	private List<Drawable> banderas;
 	ListView lv;
@@ -281,6 +289,37 @@ public class LPueblos extends Activity {
 
 				try {
 					leerdatos();
+					pobs = new LinkedList<Pueblo>();
+					lista2aux= new ArrayList<Integer>();
+					LinkedList<String> banderas = new LinkedList<String>();
+				       BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
+					   SQLiteDatabase db = admin.getReadableDatabase();
+					String sql = "SELECT * FROM siguiendo" ;
+					Cursor c = db.rawQuery(sql, null);
+					int a = c.getCount();
+					if (c.moveToFirst()){
+							c.moveToNext();
+						c.moveToNext();
+						do{
+							Pueblo aux = new Pueblo(c.getString(1),geticon(c.getString(2)));
+							lista2aux.add(c.getInt(0));
+							pobs.add(aux);
+						}while(c.moveToNext());
+					}
+				       BDClass pueblos = new BDClass(contexto,"administracion", null, 1);
+				       db = pueblos.getReadableDatabase();
+					sql = "SELECT * FROM pueblos" ;
+					c = db.rawQuery(sql, null);
+					a = c.getCount();
+					lista1= new ArrayList<String>();
+					lista1aux= new ArrayList<Integer>();
+					if (c.moveToFirst()){
+						do{
+							lista1.add(c.getString(1));
+							lista1aux.add(c.getInt(0));
+						}while(c.moveToNext());
+					}
+					db.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -295,42 +334,9 @@ public class LPueblos extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			try{
-				lista2= new ArrayList<String>();
-			lista2aux= new ArrayList<Integer>();	
-	        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
-		    SQLiteDatabase db = admin.getReadableDatabase();
-			String sql = "SELECT * FROM siguiendo" ;
-			Cursor c = db.rawQuery(sql, null);
-			int a = c.getCount();
-			if (c.moveToFirst()){
-				c.moveToNext();
-				c.moveToNext();
-				do{
-					lista2.add(c.getString(1));
-					lista2aux.add(c.getInt(0));
-				}while(c.moveToNext());
-			}
-	        BDClass pueblos = new BDClass(contexto,"administracion", null, 1);
-	        db = pueblos.getReadableDatabase();
-			sql = "SELECT * FROM pueblos" ;
-			c = db.rawQuery(sql, null);
-			a = c.getCount();
-			lista1= new ArrayList<String>();
-			lista1aux= new ArrayList<Integer>();
-			if (c.moveToFirst()){
-				do{
-					lista1.add(c.getString(1));
-					lista1aux.add(c.getInt(0));
-				}while(c.moveToNext());
-			}
-			db.close();
+			lv.setAdapter(new Plantilla_pueblos(activity,pobs));
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
 			pob.setAdapter(adaptador1);
-			ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(contexto,android.R.layout.simple_list_item_1,lista2);
-			lv.setAdapter(adaptador2);
-		}catch(Exception e){
-		}
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
@@ -344,7 +350,31 @@ public class LPueblos extends Activity {
 
 		}	
 		
-	    public void setActivity(LPueblos activity) 
+	public  Drawable geticon(String pueblo) {
+			Drawable drawable = null;
+		    url = Singleton.url+"/semandal/icons/"+pueblo+"/Escudo/Escudo.png";
+		    try
+		    	{
+		    	    InputStream inputStream = new URL(url).openStream();
+		    	    drawable = Drawable.createFromStream(inputStream, null);
+		    	    inputStream.close();
+		    	  }
+		    	  catch (Exception ex) {
+				    	url = Singleton.url+"/semandal/icons/"+pueblo+"/Bandera/Bandera.png";
+				    	  try
+				    	  {
+				    	    InputStream inputStream = new URL(url).openStream();
+				    	    drawable = Drawable.createFromStream(inputStream, null);
+				    	    inputStream.close();
+				    	  }
+				    	  catch (Exception e) { }
+
+				    	  return drawable;
+		    	  }
+	    	  return drawable;
+		 }
+
+		public void setActivity(LPueblos activity) 
 	    { 
 	        this.activity = activity; 
 	        if ( completed ) { 

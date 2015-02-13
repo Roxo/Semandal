@@ -44,6 +44,16 @@
         android:layout_marginRight="10dp"
         android:layout_toLeftOf="@+id/Noticias"
         android:src="@drawable/municipios" />
+    
+    <ImageView
+        android:id="@+id/ref"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/Amigos"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/deuda"
+        android:src="@drawable/refresh" />
     <ImageView
         android:id="@+id/Imagebtton"
         android:layout_width="wrap_content"
@@ -65,13 +75,13 @@
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/autoCompleteTextView1"
-        android:divider="#000000"
-        android:dividerHeight="1dp"
-        android:background="@drawable/gradientesuave"
+        android:layout_above="@+id/buscspinner"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/categoria" >
+        android:layout_below="@+id/categoria"
+        android:background="@drawable/gradientesuave"
+        android:divider="#000000"
+        android:dividerHeight="1dp" >
 
     </ListView>
 
@@ -92,9 +102,23 @@
         android:layout_toLeftOf="@+id/corregir"
         android:ems="10"
         android:hint="Categoría" >
-
-        <requestFocus />
     </AutoCompleteTextView>
 
+    <ImageView
+        android:id="@+id/buscspinner"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/corregir"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/enviar" />
+
+    <Spinner
+        android:id="@+id/cats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/autoCompleteTextView1"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/corregir" />
+    
 </RelativeLayout>
     

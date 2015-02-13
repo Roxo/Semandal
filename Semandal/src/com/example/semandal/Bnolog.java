@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 		ImageView b2 = (ImageView)this.findViewById(R.id.Info);
 		ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
 		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
+		ImageView b7 = (ImageView)this.findViewById(R.id.ref);
 		Button resultado = (Button)this.findViewById(R.id.blog);
 		Titular = (EditText)this.findViewById(R.id.Tit_nolog);
 		autotext  = (AutoCompleteTextView)this.findViewById(R.id.autoCompleteTextView1);
@@ -133,6 +135,14 @@ public class Bnolog extends Activity implements OnItemSelectedListener {
 			}
 
 		}); 
+		b7.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				showDialogref(a,"Confirmación","Desea actualizar la lista de categorias?");
+			}
+			
+		});		
 		b1.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -418,5 +428,154 @@ public void onResume(){
     public void onNothingSelected(AdapterView parent) {
         // Do nothing.
     }
+    
+    
+	public void showDialogref(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Bnolog.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+				Asinadd tarea = new Asinadd(a);
+				tarea.execute();
+		    }
+		});
+		b.show();
+	}
+	
+	public class Asinadd extends AsyncTask<Void, Void, Object> {
+		Context contexto;
+	    private Bnolog activity;
+	    private boolean completed;
+	    private Object _response;
+	    JSONObject datosuser,ct;
+
+		public Asinadd(Bnolog activity){
+			this.activity = activity;
+			this.contexto = activity;
+		}
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				leerdatos();
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+
+		
+	    @Override 
+	    protected void onPreExecute() {
+	            //Start the splash screen dialog
+	                pleaseWaitDialog= ProgressDialog.show(activity, 
+	                                                       "Espere un segundo", 
+	                                                       "Actualizando información", 
+	                                                       false);
+
+	    } 
+	    
+		  private String readAll(Reader rd) throws IOException {
+			    StringBuilder sb = new StringBuilder();
+			    int cp;
+			    while ((cp = rd.read()) != -1) {
+			      sb.append((char) cp);
+			    }
+			    return sb.toString();
+			  }
+
+
+			  
+			  public void leerdatos() throws IOException, JSONException {
+				    InputStream is = new URL(Singleton.url+":8000/api/noticias/categorias").openStream();
+				    try {
+				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+				      String jsonText = readAll(rd);
+				       ct = new JSONObject(jsonText);
+				    } finally {
+				      is.close();
+				    }
+				  }		  
+			  
+
+
+	    public void onPostExecute(Object response){
+	    	try{
+		        BDClass admin = new BDClass(contexto,"administracion", null, 1);
+		        SQLiteDatabase bd = admin.getWritableDatabase();
+				bd.execSQL("DELETE FROM categorias");
+				int ncategorias = ct.getInt("ncategorias");
+					if(ncategorias!=0){
+						JSONArray c = ct.getJSONArray("categorias");
+						lista2 = new LinkedList<String>();
+						auxiliar = new LinkedList<Integer>();
+						lista2.add("Categorias");
+						auxiliar.add(0);
+						for(int i = 0;i<ncategorias;i++){
+							JSONObject f = (JSONObject)c.get(i);
+							String cat = f.getString("dscategoria");
+							lista2.add(cat);
+							int idcat = f.getInt("id_categoria");
+							auxiliar.add(idcat);
+							if(idcat != 53)
+								bd.execSQL("INSERT INTO categorias VALUES ("+idcat+", '"+cat+"')");
+						}
+					}
+					bd.close();
+				
+
+			ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista2);
+		    spinner2.setAdapter(adaptador2);
+
+			Toast.makeText(getApplicationContext(), "Se han actualizado las categorias", Toast.LENGTH_LONG).show();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+            completed = true;
+            _response = response;
+            notifyActivityTaskCompleted();
+        //Close the splash screen
+        if (pleaseWaitDialog != null)
+        {
+            pleaseWaitDialog.dismiss();
+            pleaseWaitDialog = null;
+        }
+	    }
+	    public void setActivity(Bnolog activity) 
+	    { 
+	        this.activity = activity; 
+	        if ( completed ) { 
+	            notifyActivityTaskCompleted(); 
+	        } 
+	    } 
+	   //Notify activity of async task completion
+	    private void notifyActivityTaskCompleted() 
+	    { 
+	        if ( null != activity ) { 
+	            activity.onTaskCompleted(_response);
+	        } 
+	    } 
+	}
+
 
 }

@@ -385,6 +385,8 @@ def nuevacategoria(request,id_n,id_u,categoria):
 		if len(c) == 0:
 			newcat = Categorias_semandal(dscategoria=categoria)
 			newcat.save()
+			vers = Versions.objects.filter(tabla = "categorias")
+			vers.update(version=vers[0].version+1)
 		else:
 			newcat = c[0]
 		instancias = NC.objects.filter(noticia=n)

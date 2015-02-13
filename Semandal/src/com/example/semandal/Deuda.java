@@ -669,7 +669,7 @@ public class Deuda extends Activity{
 				JSONArray psig = datosuser.getJSONArray("siguiendo");
 				for (int i = 0;i<psig.length(); i++){
 					JSONObject f = psig.getJSONObject(i);
-					bd.execSQL("INSERT INTO siguiendo VALUES ("+f.getInt("id_pueblo")+", '"+f.getString("dspueblo")+"')");
+					bd.execSQL("INSERT INTO siguiendo VALUES ("+f.getInt("id_pueblo")+", '"+f.getString("dspueblo")+"', '"+f.getString("busquedaimagenes")+"')");
 				}
 			bd.close();
 			

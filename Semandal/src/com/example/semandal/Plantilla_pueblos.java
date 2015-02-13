@@ -30,13 +30,13 @@ public class Plantilla_pueblos extends BaseAdapter {
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return 0;
+		return lista.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
 		// TODO Auto-generated method stub
-		return null;
+		return position;
 	}
 
 	@Override
@@ -52,8 +52,11 @@ public class Plantilla_pueblos extends BaseAdapter {
 		TextView textView1 =(TextView)view.findViewById(R.id.pueblos);
 		textView1.setText(lista.get(position).getPueblo());
 		ImageView imagen = (ImageView)view.findViewById(R.id.escudo);
-		if(lista.get(position).getEsc()!=null)
+		if(lista.get(position).getEsc()!=null){
 				imagen.setImageDrawable(lista.get(position).getEsc());
+				imagen.getLayoutParams().height = 50;
+				imagen.getLayoutParams().width = 50;
+		}
 		return view;
 	}
 }
