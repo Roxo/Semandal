@@ -643,7 +643,7 @@ def busqueda1(resques,datos,pagina,id_user):
 				return HttpResponse('{"ret":false,"comentario":"datos por parametros erroneos"}')
 		inicio = (int(pagina)*ancho)
 		fin = (int(pagina)*ancho)+(ancho)-1
-		n = NC.objects.filter(**kwargs).values('noticia__url').distinct().order_by("noticia__fecha").reverse()[inicio:fin]
+		n = NC.objects.filter(**kwargs).distinct().order_by("noticia__fecha").reverse()[inicio:fin]
 		if len(n) is not 0:
 			r = filternoticiabusqueda(n,id_user)
 			r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
@@ -658,7 +658,8 @@ def busqueda1(resques,datos,pagina,id_user):
 			del kwargs["noticia__pueblo_id"]
 			inicio = (int(pagina)*ancho)
 			fin = (int(pagina)*ancho)+(ancho)-1
-			n = NC.objects.filter(reduce(operator.or_, mylist),**kwargs).values('noticia__url').distinct().order_by("noticia__fecha").reverse()[inicio:fin]
+			n = NC.objects.filter(reduce(operator.or_, mylist),**kwargs).distinct().order_by("noticia__fecha").reverse()[inicio:fin]
+			return HttpResponse(str(n))
 			if len(n) != 0:
 				r = filternoticiabusqueda(n,id_user)
 				r = '{"ret":true,"vecinos":true,"resultado":['+r+']}'
