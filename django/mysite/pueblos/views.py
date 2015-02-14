@@ -554,7 +554,7 @@ def getcoments(n):
 	com = Comentarios.objects.filter(id_not = n)[:2]
 	for c in com:
 		Hace = str(gettiempo(str(c.fecha).split("+")[0]))
-		obj='{"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario.encode('utf-8')+'","puntuacion":'+str(c.puntuacion)+',"fecha":"'+str(Hace)+'"},'
+		obj='{"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario+'","puntuacion":'+str(c.puntuacion)+',"fecha":"'+str(Hace)+'"},'
 		r = r+obj
 	r = r[0:len(r)-1]
 	return r
@@ -564,7 +564,7 @@ def lastcomment(request):
 		co = Comentarios.objects.all().order_by("fecha")[:5]
 		r=''
 		for c in co:
-			obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario.encode('utf-8')+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'","fecha":"'+str(c.fecha).split("+")[0]+'","puntuacion":'+str(c.puntuacion)+'},'
+			obj='{"existe":true,"comentarioid":"'+str(c.id)+'","idautor":"'+str(c.id_user.id)+'","autor":"'+c.id_user.dsusuario+'","cuerpo":"'+c.dscomentario+'","puntuacion":"'+str(c.puntuacion)+'","notid":"'+str(c.id_not.id)+'","fecha":"'+str(c.fecha).split("+")[0]+'","puntuacion":'+str(c.puntuacion)+'},'
 			r = r+obj
 		r=r[0:len(r)-1]
 		r = '{"comentarios":['+r+']}'
@@ -643,7 +643,7 @@ def busqueda1(resques,datos,pagina,id_user):
 				return HttpResponse('{"ret":false,"comentario":"datos por parametros erroneos"}')
 		inicio = (int(pagina)*ancho)
 		fin = (int(pagina)*ancho)+(ancho)-1
-		n = NC.objects.filter(**kwargs).order_by("noticia__fecha").reverse()[inicio:fin]
+		n = NC.objects.filter(**kwargs).values('noticia__url').distinct().order_by("noticia__fecha").reverse()[inicio:fin]
 		if len(n) is not 0:
 			r = filternoticiabusqueda(n,id_user)
 			r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
@@ -658,7 +658,7 @@ def busqueda1(resques,datos,pagina,id_user):
 			del kwargs["noticia__pueblo_id"]
 			inicio = (int(pagina)*ancho)
 			fin = (int(pagina)*ancho)+(ancho)-1
-			n = NC.objects.filter(reduce(operator.or_, mylist),**kwargs).order_by("noticia__fecha").reverse()[inicio:fin]
+			n = NC.objects.filter(reduce(operator.or_, mylist),**kwargs).values('noticia__url').distinct().order_by("noticia__fecha").reverse()[inicio:fin]
 			if len(n) != 0:
 				r = filternoticiabusqueda(n,id_user)
 				r = '{"ret":true,"vecinos":true,"resultado":['+r+']}'
