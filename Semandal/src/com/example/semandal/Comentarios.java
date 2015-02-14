@@ -80,8 +80,8 @@ public class Comentarios extends Activity {
 				String coment= comentario.getText().toString();
 				coment = coment.replace("\n","-");
 				try {
-					coment = URLEncoder.encode(coment,"UTF-8");
 					coment = coment.replace(" ","aX1_2Bc");
+					coment = URLEncoder.encode(coment,"UTF-8");
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -283,6 +283,7 @@ public class Comentarios extends Activity {
 		public void onPostExecute(Object response){
 		try{
 			List<Comentario> mandar = new ArrayList<Comentario>();
+			listacomment = new LinkedList<Integer>();
 			Comentario k;
 			try {
 				int ncomentarios = Integer.parseInt(Comentarios.getString("ncomentarios"));

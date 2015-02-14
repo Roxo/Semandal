@@ -153,6 +153,8 @@
             <ListView
                 android:id="@+id/listView1"
                 android:layout_width="match_parent"
+         		android:divider="#008000"
+        		android:dividerHeight="1dp" 
                 android:layout_height="277dp" >
 
             </ListView>

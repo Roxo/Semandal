@@ -367,9 +367,8 @@ public class Lnoticias extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			if(vecinos){
+			if(vecinos)
 				resultados.setText("Noticias Vecinas");
-			}
 			else if(indice == -1 && !fbusqueda)
 				resultados.setText("Todas las noticias");
 			else if(indice == 0 && !fbusqueda)

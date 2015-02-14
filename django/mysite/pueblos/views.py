@@ -618,7 +618,7 @@ def busqueda(resques,datos,int1,int2,id_user):
 		else:
 			return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]')
 	else:
-		return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]')
+		return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]}')
 
 
 def busqueda1(resques,datos,pagina,id_user):
@@ -667,7 +667,7 @@ def busqueda1(resques,datos,pagina,id_user):
 				r = '{"ret":false,"vecinos":true,"resultado":[]}'
 				return  HttpResponse(r)
 		else:
-			return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]')
+			return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]}')
 	else:
 		return HttpResponse('{"ret":false,"vecinos":false,"resultado":[]')
 
