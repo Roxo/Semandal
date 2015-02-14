@@ -55,6 +55,8 @@ public class Plantilla_Comment extends BaseAdapter{
 			textView4.setText(lista.get(position).getFecha());
 		}
 		else{
+			TextView textview5 = (TextView)view.findViewById(R.id.textView1);
+			textview5.setVisibility(View.GONE);
 			textView1.setVisibility(View.GONE);
 			textView4.setVisibility(View.GONE);
 		}
