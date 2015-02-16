@@ -227,7 +227,7 @@ def busq(request, n_pueblo):
 #########################################################################
 
 def noticias(request,p_id):
-	noticias = Noticias.objects.filter(pueblo__id = p_id)
+	noticias = Noticias.objects.filter(pueblo__id = p_id).values_list('id', flat=True).distinct()
 	var = filternoticia(noticias)
 	agregarabd("api/pueblos/"+p_id+"/noticias/")
 	var = '{"noticias":['+var+']}'
@@ -643,7 +643,7 @@ def busqueda1(resques,datos,pagina,id_user):
 				return HttpResponse('{"ret":false,"comentario":"datos por parametros erroneos"}')
 		inicio = (int(pagina)*ancho)
 		fin = (int(pagina)*ancho)+(ancho)-1
-		n = NC.objects.filter(**kwargs).distinct().order_by("noticia__fecha").reverse()[inicio:fin]
+		n = NC.objects.filter(**kwargs).values_list('noticia__id', flat=True).distinct().order_by("noticia__fecha").reverse()[inicio:fin]
 		if len(n) is not 0:
 			r = filternoticiabusqueda(n,id_user)
 			r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
@@ -658,8 +658,7 @@ def busqueda1(resques,datos,pagina,id_user):
 			del kwargs["noticia__pueblo_id"]
 			inicio = (int(pagina)*ancho)
 			fin = (int(pagina)*ancho)+(ancho)-1
-			n = NC.objects.filter(reduce(operator.or_, mylist),**kwargs).distinct().order_by("noticia__fecha").reverse()[inicio:fin]
-			return HttpResponse(str(n))
+			n = NC.objects.filter(reduce(operator.or_, mylist),**kwargs).values_list('noticia__id', flat=True).distinct().order_by("noticia__fecha").reverse()[inicio:fin]
 			if len(n) != 0:
 				r = filternoticiabusqueda(n,id_user)
 				r = '{"ret":true,"vecinos":true,"resultado":['+r+']}'
@@ -676,31 +675,32 @@ def busqueda1(resques,datos,pagina,id_user):
 def filternoticiabusqueda(n,u):
 	obj = ''
 	r = ''
-	lista = []
+#	lista = []
 	for noticia in n:
-		if noticia.noticia.id not in lista:
-			ncomentarios = Comentarios.objects.filter(id_not = noticia.noticia)
-			titular ="noticia sin titular"
-			cuerpo = "noticia sin cuerpo"
-			fecha = "noticia sin fecha"
-			vista = "false"
-			if str(u) != "0":
-				us = Usuario.objects.filter(id = u)[0]
-				watch = NVistas.objects.filter(noticia = noticia.noticia, usuario = us)
-				if len(watch) == 1:
-					vista = "true"
-			if noticia.noticia.dstitular is not None:
-				titular = noticia.noticia.dstitular.replace('"','\"')
-			if noticia.noticia.dscuerpo is not None:
-				cuerpo = noticia.noticia.dscuerpo.replace('"','\"')
-			if noticia.noticia.fecha is not None and noticia.noticia.fecha is not "":
-				fecha = str(noticia.noticia.fecha)
-				fecha = fecha.split("-")
-				fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
-			n_categorias = getcategorias(noticia.noticia);
-			obj = '{"id_noticia":'+str(noticia.noticia.id)+',"titular":"'+titular+'","fecha":"'+fecha+'","url":"'+noticia.noticia.url+'","liked":'+str(noticia.noticia.liked)+',"dspueblo":"'+noticia.noticia.pueblo.dspueblo+'","ncomentarios":'+str(len(ncomentarios))+',"categoria":['+n_categorias+'],"vista":'+vista+'},'
-			r = r + obj
-			lista.append(noticia.noticia.id)
+#		if noticia.noticia.id not in lista:
+		new = Noticias.objects.filter(id = noticia)[0]
+		ncomentarios = Comentarios.objects.filter(id_not = new)
+		titular ="noticia sin titular"
+		cuerpo = "noticia sin cuerpo"
+		fecha = "noticia sin fecha"
+		vista = "false"
+		if str(u) != "0":
+			us = Usuario.objects.filter(id = u)[0]
+			watch = NVistas.objects.filter(noticia = new, usuario = us)
+			if len(watch) == 1:
+				vista = "true"
+		if new.dstitular is not None:
+			titular = new.dstitular.replace('"','\"')
+		if new.dscuerpo is not None:
+			cuerpo = new.dscuerpo.replace('"','\"')
+		if new.fecha is not None and new.fecha is not "":
+			fecha = str(new.fecha)
+			fecha = fecha.split("-")
+			fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
+		n_categorias = getcategorias(new);
+		obj = '{"id_noticia":'+str(new.id)+',"titular":"'+titular+'","fecha":"'+fecha+'","url":"'+new.url+'","liked":'+str(new.liked)+',"dspueblo":"'+new.pueblo.dspueblo+'","ncomentarios":'+str(len(ncomentarios))+',"categoria":['+n_categorias+'],"vista":'+vista+'},'
+		r = r + obj
+#			lista.append(noticia.noticia.id)
 	r = r[0:len(r)-1]
 	return r
 
@@ -708,31 +708,31 @@ def filternoticiabusqueda(n,u):
 def filternoticia(n,u):
 	obj = ''
 	r = ''
-	lista = []
+#	lista = []
 	for noticia in n:
-		if noticia.id not in lista:
-			ncomentarios = Comentarios.objects.filter(id_not = noticia)
-			titular ="noticia sin titular"
-			cuerpo = "noticia sin cuerpo"
-			fecha = "noticia sin fecha"
-			if noticia.dstitular is not None:
-				titular = noticia.dstitular.replace('"','\"')
-			if noticia.dscuerpo is not None:
-				cuerpo = noticia.dscuerpo.replace('"','\"')
-			if noticia.fecha is not None and noticia.fecha is not "":
-				fecha = str(noticia.fecha)
-				fecha = fecha.split("-")
-				fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
-			vista = "false"
-			if str(u) != "0":
-				us = Usuario.objects.filter(id = u)[0]
-				watch = NVistas.objects.filter(noticia = noticia, usuario = us)
-				if len(watch) == 1:
-					vista = "true"
-			n_categorias = getcategorias(noticia);
-			obj = '{"id_noticia":'+str(noticia.id)+',"titular":"'+titular+'","fecha":"'+fecha+'","url":"'+noticia.url+'","liked":'+str(noticia.liked)+',"dspueblo":"'+noticia.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":['+n_categorias+'],"vista":'+vista+'},'
-			r = r + obj
-			lista.append(noticia.id)
+		new = Noticias.objects.filter(id = noticia)[0]
+		ncomentarios = Comentarios.objects.filter(id_not = new)
+		titular ="noticia sin titular"
+		cuerpo = "noticia sin cuerpo"
+		fecha = "noticia sin fecha"
+		if new.dstitular is not None:
+			titular = new.dstitular.replace('"','\"')
+		if new.dscuerpo is not None:
+			cuerpo = new.dscuerpo.replace('"','\"')
+		if new.fecha is not None and new.fecha is not "":
+			fecha = str(new.fecha)
+			fecha = fecha.split("-")
+			fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
+		vista = "false"
+		if str(u) != "0":
+			us = Usuario.objects.filter(id = u)[0]
+			watch = NVistas.objects.filter(noticia = new, usuario = us)
+			if len(watch) == 1:
+				vista = "true"
+		n_categorias = getcategorias(new);
+		obj = '{"id_noticia":'+str(new.id)+',"titular":"'+titular+'","fecha":"'+fecha+'","url":"'+new.url+'","liked":'+str(new.liked)+',"dspueblo":"'+new.pueblo.dspueblo+'","ncomentarios":"'+str(len(ncomentarios))+'","categoria":['+n_categorias+'],"vista":'+vista+'},'
+		r = r + obj
+#			lista.append(noticia.id)
 	r = r[0:len(r)-1]
 	return r
 
@@ -772,7 +772,7 @@ def ulog(request,id_user):
 		dstitular = ""
 		sig = SigP.objects.filter(id_user = user)
 		try:
-			noticia = Noticias.objects.filter(pueblo = pob).order_by("fecha").reverse()[0:5]
+			noticia = Noticias.objects.filter(pueblo = pob).values_list('id', flat=True).distinct().order_by("fecha").reverse()[0:5]
 			obj = filternoticia(noticia,user.id)
 		except:
 			dstitular = "No existen noticias en su municipio"
@@ -968,7 +968,7 @@ def todosnot(request,id_u,init,fin):
 		tupla = ('pueblo_id__id',str(i.id_p.id))
 		consultas.append(tupla)
 	mylist = [Q(x) for x in consultas]
-	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[init:fin]
+	n = Noticias.objects.filter(reduce(operator.or_, mylist)).values_list('id', flat=True).distinct().order_by("fecha").reverse()[init:fin]
 	r = filternoticia(n,id_u)
 	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)
@@ -982,7 +982,7 @@ def todosnot1(request,id_u,pagina):
 	mylist = [Q(x) for x in consultas]
 	inicio = (int(pagina)*ancho)
 	fin = (int(pagina)*ancho)+(ancho)-1
-	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[inicio:fin]
+	n = Noticias.objects.filter(reduce(operator.or_, mylist)).values_list('id', flat=True).distinct().order_by("fecha").reverse()[inicio:fin]
 	r = filternoticia(n,id_u)
 	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)
@@ -1030,7 +1030,7 @@ def mdfy(request,id_u,pueblo):
 	return HttpResponse('{"ret":true,"message":"Cambio de municipio principal realizado correctamente"}')
 
 def todasnoticias(request,init,fin,iduser):
-	n = Noticias.objects.all().order_by("fecha").reverse()[init:fin]
+	n = Noticias.objects.all().values_list('id', flat=True).distinct().order_by("fecha").reverse()[init:fin]
 	r = filternoticia(n,iduser)
 	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)
@@ -1038,7 +1038,7 @@ def todasnoticias(request,init,fin,iduser):
 def todasnoticias1(request,pagina,iduser):
 	inicio = (int(pagina)*ancho)
 	fin = (int(pagina)*ancho)+(ancho)-1
-	n = Noticias.objects.all().order_by("fecha").reverse()[inicio:fin]
+	n = Noticias.objects.all().values_list('id', flat=True).distinct().order_by("fecha").reverse()[inicio:fin]
 	r = filternoticia(n,iduser)
 	r = '{"ret":true,"vecinos":false,"resultado":['+r+']}'
 	return HttpResponse(r)
@@ -1072,7 +1072,7 @@ def not_vecinos(request,id_p,id_u,init,fin):
 		tupla = ('pueblo_id__id',str(i.id2_id))
 		consultas.append(tupla)
 	mylist = [Q(x) for x in consultas]
-	n = Noticias.objects.filter(reduce(operator.or_, mylist)).order_by("fecha").reverse()[init:fin]
+	n = Noticias.objects.filter(reduce(operator.or_, mylist)).values_list('id').distinct().order_by("fecha").reverse()[init:fin]
 	r = filternoticia(n,id_u)
 	r = '{"ret":true,"resultado":['+r+']}'
 	return HttpResponse(r)
