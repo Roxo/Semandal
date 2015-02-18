@@ -411,19 +411,20 @@ def votaciones(request,id_n,id_u,id_c):
 		if len(filtraCategorizacion) != 1:
 			v = Votaciones(id_n=n,id_user=u,categoria=c,votacion=True)
 			v.save()
+			return HttpResponse('{"agregado":true}')
 		else:
 			BorrarNC = NC.objects.filter(noticia = n)
-		if len(BorrarNC) == 1:
-			BorrarNC = NC.objects.filter(noticia = n, categoria = c)
-			BorrarNC.delete()
-			c=Categorias_semandal.objects.filter(id=53)[0]
-			t = NC(noticia=n,categoria=c,confirmada=Status.objects.filter(id=1)[0])
-			t.save()
-		else:
-			BorrarNC = NC.objects.filter(noticia = n, categoria = c)
-			BorrarNC.delete()
-		filtraCategorizacion.delete()
-		return HttpResponse('{"agregado":true}')
+			if len(BorrarNC) == 1:
+				BorrarNC = NC.objects.filter(noticia = n, categoria = c)
+				BorrarNC.delete()
+				c=Categorias_semandal.objects.filter(id=53)[0]
+				t = NC(noticia=n,categoria=c,confirmada=Status.objects.filter(id=1)[0])
+				t.save()
+				filtraCategorizacion.delete()
+			else:
+				BorrarNC = NC.objects.filter(noticia = n, categoria = c)
+				BorrarNC.delete()
+			return HttpResponse('{"agregado":true}')
 	except:
 		return HttpResponse('{"agregado":false}')	
 ####################################################MODIFICAR GET CATEGORIAS ###########################################
