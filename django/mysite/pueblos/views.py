@@ -534,7 +534,7 @@ def lastnot(request):
 			fecha = str(n.fecha)
 			fecha = fecha.split("-")
 			fecha=fecha[2]+"-"+fecha[1]+"-"+fecha[0]
-  		obj='{"id_noticia":'+str(n.id)+',"titular":"'+titular.encode('utf-8')+'","fecha":"'+fecha+'","dspueblo":"'+n.pueblo.dspueblo.encode('utf-8')+'","id_pueblo":'+str(n.pueblo.id).encode('utf-8')+',"comentarios":['+comentarios+']},'
+  		obj='{"id_noticia":'+str(n.id)+',"titular":"'+titular+'","fecha":"'+fecha+'","dspueblo":"'+n.pueblo.dspueblo+'","id_pueblo":'+str(n.pueblo.id).encode('utf-8')+',"comentarios":['+comentarios+']},'
 		r=r+obj
 	r = r[0:len(r)-1]
 	r ='{"existe":true,"noticias":['+r+']}'

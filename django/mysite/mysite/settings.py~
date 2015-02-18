@@ -64,7 +64,7 @@ DATABASES = {
         'NAME': 'djangotest',
 		'USER':'chinlaco',
 		'PASSWORD':'chetochinlaco',
-		'HOST':'84.125.186.179',
+		'HOST':'95.39.221.207',
     }
 }
 
@@ -72,7 +72,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 LANGUAGE_CODE = 'es'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'UTC+1'
 
 USE_I18N = True
 
