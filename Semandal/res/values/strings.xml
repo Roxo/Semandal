@@ -2,12 +2,11 @@
 <resources>
 
     <string name="app_name">Semandal</string>
-    <string name="comment">Comentarios!</string>
+    <string name="comment">Ver comentarios!</string>
     <string name="Nombre">Nombre</string>
     <string name="ap1">Primer Apellido</string>
     <string name="ap2">Segundo Apellido</string>
     <string name="relacionada">Ver noticia relacionada</string>
-    <string name="error_date_format">Formato de fecha erroneo</string>
     <string name="Enviar">Enviar!</string>
     <string name="User">Usuario</string>
     <string name="confpass">Confirmar Password</string>
@@ -61,8 +60,5 @@
     <string name="title_activity_lpueblos">LPueblos</string>
     <string name="title_activity_plantilla_dispnotnula">Plantilla_dispnotnula</string>
     <string name="title_activity_plantilla_inicio">Plantilla_inicio</string>
-    <string name="title_activity_dcategorias">DCategorias</string>
-    <string name="title_activity_plantilla_check_cat">Plantilla_checkCat</string>
-    <string name="title_activity_plantilla_pueblos">Plantilla_pueblos</string>
 
 </resources>

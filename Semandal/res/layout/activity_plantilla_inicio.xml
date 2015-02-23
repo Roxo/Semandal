@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradiente"
     tools:context="${relativePackage}.${activityClass}" >
 
     <TextView
@@ -11,6 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:text="alalala"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/fecha"
+        android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -27,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/autor1"
+        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -35,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/autor2"
+        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -43,6 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/titular"
         android:layout_alignParentLeft="true"
+        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -61,6 +65,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/c1"
         android:layout_marginTop="20dp"
+        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -70,6 +75,7 @@
         android:layout_alignBaseline="@+id/fc2"
         android:layout_alignBottom="@+id/fc2"
         android:layout_alignParentLeft="true"
+        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -79,14 +85,17 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView4"
         android:layout_marginTop="19dp"
+        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/autor1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/fc1"
+        android:layout_alignBottom="@+id/fc1"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView4"
+        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

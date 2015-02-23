@@ -33,21 +33,17 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
-	int iduser, vpactual=0, vcactual=0,vcmine=0,vpmine=0;
-	boolean actualizar;
-	AlmacenUsuario j;
+	int iduser;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		j = new AlmacenUsuario(this);
-		iduser = Integer.parseInt(j.GetUsuario().split("-")[1]);
-		vcmine = j.GetVcat();
-		vpmine = j.GetVpbs();		
+		AlmacenUsuario j = new AlmacenUsuario(this);
+		iduser = j.GetUsuario();
 		setContentView(R.layout.activity_main);
-		GetVersion tarea = new GetVersion(this,Singleton.url+":8000/api/versiones",
-				vpmine,vcmine,this);
-		tarea.execute();
+		Asinc tarea =new Asinc(this,Singleton.url+":8000/api/pueblos",
+				Singleton.url+":8000/api/noticias/categorias/",this);
+		tarea.execute();		
 	}
 	
 	
@@ -62,31 +58,21 @@ public class MainActivity extends Activity {
 
 		void onTaskCompleted(Object _response) 
 		{ 
-			if(actualizar){
-				Asinc tarea =new Asinc(this,Singleton.url+":8000/api/pueblos",
-						Singleton.url+":8000/api/noticias/categorias/",vpmine,vcmine,this);
-				tarea.execute();		
-			}else {
-				j.GuardarVersiones("pueblo",vpactual);
-				j.GuardarVersiones("categorias",vcactual);
-				if(iduser == 0){
-					Intent i = new Intent(MainActivity.this, Nolog.class);
-					startActivity(i);
-				}
-				else{
-					Intent i =  new Intent(MainActivity.this,Logueado.class);
-					i.putExtra("user_id",iduser);
-					startActivity(i);
-				}	
-			}		
-
+			if(iduser == 0){
+				Intent i = new Intent(MainActivity.this, Nolog.class);
+				startActivity(i);
+			}
+			else{
+				Intent i =  new Intent(MainActivity.this,Logueado.class);
+				i.putExtra("user_id",iduser);
+				startActivity(i);
+			}
 		}
 
 		public class Asinc extends AsyncTask<Void, Void, Object> {
 			Context contexto;
 			String urlpueblos,urlcategorias;
 			JSONObject pueblos, categorias;
-			int vcmine,vpmine;
 			private boolean completed;
 		    private Object _response;
 		    private MainActivity activity;
@@ -95,13 +81,11 @@ public class MainActivity extends Activity {
 			 * 
 			 * */
 			
-			public Asinc(Context contexto,String urlpueblos, String urlcategorias,int vpmine, int vcmine, MainActivity activity){
+			public Asinc(Context contexto,String urlpueblos, String urlcategorias,MainActivity activity){
 				this.contexto = contexto;
 				this.urlpueblos=urlpueblos;
 				this.urlcategorias=urlcategorias;
 	            this.activity = activity;
-	            this.vpmine = vpmine;
-	            this.vcmine = vcmine;
 			}
 			
 			  private String readAll(Reader rd) throws IOException {
@@ -139,9 +123,7 @@ public class MainActivity extends Activity {
 			protected Void doInBackground(Void... params) {
 
 					try {
-						if(vpmine != vpactual)
 						leerpueblos();
-						if(vcmine!=vcactual)
 						leercategoria();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -161,29 +143,25 @@ public class MainActivity extends Activity {
 				try {
 			        BDClass admin = new BDClass(contexto,"administracion", null, 1);
 			        SQLiteDatabase bd = admin.getWritableDatabase();
-					if(vpmine!=vpactual){
-						bd.execSQL("DELETE FROM pueblos");
-						int npueblos = pueblos.getInt("npueblos");
-						if(npueblos!=0){
-							JSONArray p = pueblos.getJSONArray("pueblos");
-							for(int i = 0;i<npueblos;i++){
-								JSONObject f = (JSONObject)p.get(i);
-								bd.execSQL("INSERT INTO pueblos VALUES ("+f.getInt("idpueblo")+", '"+f.getString("nombre")+"')");
-							}
+					bd.execSQL("DELETE FROM pueblos");
+					bd.execSQL("DELETE FROM categorias");
+					int npueblos = pueblos.getInt("npueblos");
+					int ncategorias = categorias.getInt("ncategorias");
+					if(npueblos!=0){
+						JSONArray p = pueblos.getJSONArray("pueblos");
+						for(int i = 0;i<npueblos;i++){
+							JSONObject f = (JSONObject)p.get(i);
+							bd.execSQL("INSERT INTO pueblos VALUES ("+f.getInt("idpueblo")+", '"+f.getString("nombre")+"')");
 						}
 					}
-					if(vcmine!=vcactual){
-					bd.execSQL("DELETE FROM categorias");
-					int ncategorias = categorias.getInt("ncategorias");
-						if(ncategorias!=0){
-							JSONArray c = categorias.getJSONArray("categorias");
-							for(int i = 0;i<ncategorias;i++){
-								JSONObject f = (JSONObject)c.get(i);
-								String cat = f.getString("dscategoria");
-								int idcat = f.getInt("id_categoria");
-								if(idcat != 53)
-									bd.execSQL("INSERT INTO categorias VALUES ("+idcat+", '"+cat+"')");
-							}
+					if(ncategorias!=0){
+						JSONArray c = categorias.getJSONArray("categorias");
+						for(int i = 0;i<ncategorias;i++){
+							JSONObject f = (JSONObject)c.get(i);
+							String cat = f.getString("dscategoria");
+							int idcat = f.getInt("id_categoria");
+							if(idcat != 53)
+								bd.execSQL("INSERT INTO categorias VALUES ("+idcat+", '"+cat+"')");
 						}
 					}
 					bd.close();
@@ -213,7 +191,6 @@ public class MainActivity extends Activity {
 	    private void notifyActivityTaskCompleted() 
 	    { 
 	        if ( null != activity ) { 
-	        	actualizar = false;
 	            activity.onTaskCompleted(_response); 
 	        } 
 	    } 
@@ -222,109 +199,5 @@ public class MainActivity extends Activity {
 	   //Sets the current activity to the async task
 
 		}
-		public class GetVersion extends AsyncTask<Void, Void, Object> {
-			Context contexto;
-			String urlversiones;
-			JSONObject versiones;
-			private boolean completed;
-		    private Object _response;
-		    private MainActivity activity;
-		    int vpmine, vcmine;
-		    
-		GetVersion(Context contexto,String urlversiones,int vpmine,int vcmine,MainActivity activity){
-			this.contexto = contexto;
-			this.urlversiones=urlversiones;
-            this.activity = activity;
-            this.vpmine = vpmine;
-            this.vcmine = vcmine;
-		}
-		
-		  private String readAll(Reader rd) throws IOException {
-			    StringBuilder sb = new StringBuilder();
-			    int cp;
-			    while ((cp = rd.read()) != -1) {
-			      sb.append((char) cp);
-			    }
-			    return sb.toString();
-			  }
 
-			  public void leerversiones() throws IOException, JSONException {
-			    InputStream is = new URL(urlversiones).openStream();
-			    try {
-			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			      String jsonText = readAll(rd);
-			       versiones = new JSONObject(jsonText);
-			    } finally {
-			      is.close();
-			    }
-			  }
-			  
-
-		@Override
-		protected Void doInBackground(Void... params) {
-
-				try {
-					leerversiones();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			return null;
-		}
-
-
-
-		@Override
-		public void onPostExecute(Object response){
-			try {
-				if(versiones.getBoolean("ret")){
-					JSONArray ver = versiones.getJSONArray("versiones");
-					for(int i = 0; i<ver.length();i++){
-						JSONObject tab = ver.getJSONObject(i);
-						if(tab.getString("TName").equalsIgnoreCase("pueblo"))
-							vpactual=tab.getInt("version");
-						else
-							vcactual=tab.getInt("version");
-					}
-				}
-			} catch (Exception e) {
-				 String answer = "Se necesita conexión a internet";
-				 Toast.makeText(contexto.getApplicationContext(), answer, Toast.LENGTH_LONG).show();
-			}
-            completed = true;
-            _response = response;
-            notifyActivityTaskCompleted();
-		}	
-	    public void setActivity(MainActivity activity) 
-	    { 
-	        this.activity = activity; 
-	        if ( completed ) { 
-	            notifyActivityTaskCompleted(); 
-	        } 
-	    } 
-    //Pre execution actions
-    @Override 
-    protected void onPreExecute() {
-            //Start the splash screen dialog
-    } 
-
-    
-   //Notify activity of async task completion
-    private void notifyActivityTaskCompleted() 
-    { 
-        if ( null != activity ) { 
-        	if(vpactual!=vpmine || vcactual != vcmine)
-        		actualizar = true;
-            activity.onTaskCompleted(_response); 
-        } 
-    } 
-
-//for maintain attached the async task to the activity in phone states changes
-   //Sets the current activity to the async task
-
-	}
 }

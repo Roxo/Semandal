@@ -42,7 +42,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemClickListener;
@@ -50,65 +49,47 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Lnoticias extends Activity {
-	private static String PAGINA = "PRIMERO";
-	private static String FROM = "FROM";
-	private static String AEMPEZAR = "AEMPEZAR";
-
 	LinkedList<Integer> auxlist = new LinkedList<Integer>();
 	ArrayList<String> lista1= new ArrayList<String>();
 	LinkedList<Integer> aux1list = new LinkedList<Integer>();
 	String datos,pueblonuevo;
 	ListView lista;
 	int iduser,pid,indice;
-	boolean preguntar_vecinos = false;
-	boolean fbusqueda=false,noeffect=false,completado = false,roto = false,first = true,from = false,vecinos = false,fromvecinos=false;
+	boolean fbusqueda=false,noeffect=false,completado = false,roto = false,first = true;
 	private static AsincLN backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
 	TextView resultados;
-	int pagina,aempezar=0;
+	int start, last;
 	Lnoticias a = this;
 	List<Noticia> mandar;
-	Bundle bundle;
-
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		bundle = savedInstanceState;
-	    // Save the user's current game state
-	    bundle.putInt(PAGINA, pagina);
-	    bundle.putBoolean(FROM, roto);
-	    bundle.putInt(AEMPEZAR, aempezar);
-
-	    // Always call the superclass so it can save the view hierarchy state
-	    super.onSaveInstanceState(savedInstanceState);
-	}
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lnoticias);
-		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
-		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
-		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
-		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
-		ImageView b5 = (ImageView)this.findViewById(R.id.busc);
+		Button b1 = (Button)this.findViewById(R.id.Amigos);
+		Button b2 = (Button)this.findViewById(R.id.Noticias);
+		Button b3 = (Button)this.findViewById(R.id.deuda);
+		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		Button b5 = (Button)this.findViewById(R.id.busc);
 		pid = getIntent().getIntExtra("p_id",0);
 		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
 		pueblonuevo = getIntent().getStringExtra("pueblito");
 		if(pueblonuevo==null)
 			pueblonuevo = "";
-		pagina = 0;
+		start = 0;
+		last = 9;
 		mandar = new ArrayList<Noticia>();
-		ImageView fl = (ImageView)this.findViewById(R.id.fl);
-		ImageView fr = (ImageView)this.findViewById(R.id.fr);
+		TextView fl = (TextView)this.findViewById(R.id.fl);
+		TextView fr = (TextView)this.findViewById(R.id.fr);
 		resultados = (TextView)this.findViewById(R.id.resultados);
 		indice = getIntent().getIntExtra("indice",0);
 		fbusqueda = getIntent().getBooleanExtra("busqueda",false);
 		lista = (ListView)this.findViewById(R.id.listView1);
-
 		AsincLN tarea = new AsincLN(resultados,
-				(Singleton.url+":8000/api/busqueda/"+datos+"/"+pagina+"/"+iduser).replace(" ","%20"),lista, this
+				(Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last).replace(" ","%20"),lista, this
 				);
 		tarea.execute();
 
@@ -117,8 +98,8 @@ public class Lnoticias extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(indice == lista1.size()-2)
-					indice = -1;
+				if(indice == lista1.size()-1)
+					indice = 0;
 				else
 					indice += 1;
 				Intent i = new Intent(Lnoticias.this, Lnoticias.class);
@@ -134,7 +115,7 @@ public class Lnoticias extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if(indice == -1)
-					indice = lista1.size()-2;
+					indice = lista1.size()-1;
 				else
 					indice -= 1;
 				Intent i = new Intent(Lnoticias.this, Lnoticias.class);
@@ -154,7 +135,9 @@ public class Lnoticias extends Activity {
 				/*Intent i = new Intent(Lnoticias.this, Amigos.class);
 				i.putExtra("user_id", iduser);
 				startActivity(i);*/
-				showDialogSalir(a,"Confirmación","Desea desloguearse?");
+				Intent i = new Intent(Lnoticias.this, Nolog.class);
+				startActivity(i);
+
 			}
 			
 		});		
@@ -211,17 +194,20 @@ public class Lnoticias extends Activity {
 		
 		lista.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> arg0, View arg1,int pos, long arg3) {
-		    	try{
+		        try{
 			        int k =  (Integer) lista.getAdapter().getItem(pos);
-		        	aempezar = k;
-		        	auxlist.get(k);			
-		        	Intent i= new Intent(Lnoticias.this,Display_not_log.class);
-		        	int s =  (Integer) lista.getAdapter().getItem(pos);
-		        	i.putExtra("id",auxlist.get(s));
-		        	i.putExtra("user_id", iduser);
-		        	startActivity(i);	   
+		        	auxlist.get(k);
 		        }catch(Exception E){		        	
+		        	String string = "No existen noticias con estas características" +
+	        			"realice una búsqueda con otras especificaciones.";
+	        	Toast.makeText(getApplicationContext(), string, Time.SECOND).show();
 		        }
+		    	Intent i= new Intent(Lnoticias.this,Display_not_log.class);
+		        int k =  (Integer) lista.getAdapter().getItem(pos);
+		        i.putExtra("id",auxlist.get(k));
+				i.putExtra("user_id", iduser);
+				startActivity(i);	   
+				
 		    }
 		    
 		});
@@ -235,10 +221,10 @@ public class Lnoticias extends Activity {
 			 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 	           if(completado){
 	        	   if ((firstVisibleItem + visibleItemCount) >= totalItemCount) {
-	        		   pagina += 1;
-	        			   aempezar = firstVisibleItem+1;
+	        			   start += 10;
+	        			   last +=10;
 	        			   AsincLN tarea = new AsincLN(resultados,
-	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+pagina+"/"+iduser).replace(" ","%20"),lista, a
+	        					   (Singleton.url+":8000/api/busqueda/"+datos+"/"+start+"/"+last).replace(" ","%20"),lista, a
 	        					   );
 	        			   tarea.execute();	
 	        			   completado = false;
@@ -262,25 +248,7 @@ public class Lnoticias extends Activity {
 		 });
 	}
 	
-	public void showDialogSalir(Activity activity, String title, CharSequence message) {
-		AlertDialog.Builder b = new AlertDialog.Builder(Lnoticias.this);
-		final AlertDialog builder = b.create();
-		b.setTitle(title);
-		b.setMessage(message);
-		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-		    	builder.cancel();
-		    }
-		});
-		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-				Intent i = new Intent(Lnoticias.this, Nolog.class);
-				startActivity(i);
-		    }
-		});
-		b.show();
-	}	
-
+	
 	public class AsincLN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
@@ -347,11 +315,12 @@ public class Lnoticias extends Activity {
 			}
 			db.close();
 			if(indice == -1 && !fbusqueda)
-				url = Singleton.url+":8000/api/noticias/"+pagina+"/"+iduser;
+				url = Singleton.url+":8000/api/noticias/"+start+"/"+last;
 			else if(indice == 0 && !fbusqueda)
-				url = Singleton.url+":8000/api/"+iduser+"/noticias/"+pagina;
+				url = Singleton.url+":8000/api/"+iduser+"/noticias/"+start+"/"+last;
 			else if(!fbusqueda)
-				url = Singleton.url+":8000/api/busqueda/"+"(id_p:"+aux1list.get(indice+1)+")/"+pagina+"/"+iduser;
+				url = Singleton.url+":8000/api/busqueda/"+"(id_p:"+aux1list.get(indice)+")/"+start+"/"+last;
+			fbusqueda = false;
 				leercomentario();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -367,26 +336,21 @@ public class Lnoticias extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			if(vecinos)
-				resultados.setText("Noticias Vecinas");
-			else if(indice == -1 && !fbusqueda)
+			if(indice == -1 && !fbusqueda)
 				resultados.setText("Todas las noticias");
 			else if(indice == 0 && !fbusqueda)
 				resultados.setText("Noticias de Mis Pueblos");
 			else if(!fbusqueda)
-				resultados.setText(lista1.get(indice+1));
+				resultados.setText(lista1.get(indice));
 			else if(!pueblonuevo.equalsIgnoreCase(""))
 				resultados.setText(pueblonuevo);
 			else
-				resultados.setText("Noticias");
+				resultados.setText("resultados");
+
+
 			Noticia k;
 			try {
-				if(!fromvecinos){
-					fromvecinos = true;
-					vecinos = Noticias.getBoolean("vecinos");
-				}
-				else
-					vecinos = false;
+				
 				if(Noticias.getBoolean("ret")){
 					JSONArray lcoment = Noticias.getJSONArray("resultado");
 					for(int i = 0; i<lcoment.length();i++){
@@ -399,27 +363,22 @@ public class Lnoticias extends Activity {
 							//String categoria = coment.getString("categoria");
 							String categoria = "";
 							String dspueblo = coment.getString("dspueblo");
-							boolean vista = coment.getBoolean("vista");
 							auxlist.add(autor);
-							k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo,vista);
+							k = new Noticia(autor,puntuacion,comentario,nlikes,comentarios,categoria,dspueblo);
 							mandar.add(k);
 					}
 					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
-					lista.setSelection(aempezar);
 				}
 				else{
 					noeffect = true;
-					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","",false);
+					k = new Noticia(0,"","Esta consulta no tiene más noticias",0,0,"","");
 					mandar.add(k);
-					lista.setAdapter(new Plantilla_dispnot(activity,mandar));
-					lista.setSelection(aempezar);
+					lista.setAdapter(new Plantilla_dispnotnula(activity,mandar));
 					roto = true;
-			/*		if((start == 0 && mandar.size()==1 && !fromvecinos) && url.contains("id_p") ){
-						preguntar_vecinos = true;
-					}			*/			
 				}
-			} catch (Exception e) {
-				roto = true;
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 				
@@ -478,43 +437,16 @@ public class Lnoticias extends Activity {
 	}
 
 	public void onResume(){
-		super. onResume();
-		if(bundle != null){
-			pagina = bundle.getInt(PAGINA);
-			aempezar = bundle.getInt(AEMPEZAR);
-			roto = bundle.getBoolean(FROM);
-			bundle = null;
-			mandar.get(aempezar).setVista(true);
-			lista.setAdapter(new Plantilla_dispnot(this,mandar));
-			lista.setSelection(aempezar);
-
-		}else{
-
-			if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
-				if(pleaseWaitDialog != null)
-					pleaseWaitDialog.show();
-			}
+		super.onResume();
+		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
 		}
 	}
 	
 	private void onTaskCompleted(Object _response) 
 	{ 
-		if(vecinos)
-			showDialogVecinos(a,"No existen noticias con ese pueblo","A continuación se le mostrará el resultado de pueblos colindantes, es posible que tampoco tengamos noticias de dichos pueblos");
 	}
-
-	public void showDialogVecinos(Activity activity, String title, CharSequence message) {
-		AlertDialog.Builder b = new AlertDialog.Builder(Lnoticias.this);
-		final AlertDialog builder = b.create();
-		b.setTitle(title);
-		b.setMessage(message);
-		b.setNegativeButton("Aceptar", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-		    	builder.cancel();
-		    }
-		});
-		b.show();
-	}	
 
 	
 }

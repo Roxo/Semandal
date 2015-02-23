@@ -812,10 +812,15 @@ def register(request,user,fn,sn,us,pas,mail,idpueblo):
 	p = Pueblo.objects.filter(busqueda = idpueblo)
 	if len(p) != 0:
 		u = Usuario(dsusuario=user.replace("_"," "),dsnombre=us.replace("_"," "),dsapellido1=fn.replace("_"," "),dsapellido2=sn.replace("_"," "),token=pas.replace("_"," "),correo=mail,pueblo=p[0])
-		u.save();
-		sigp = SigP(id_user=u,id_p=p[0])
-		sigp.save();
-	return HttpResponse("")
+		try:
+			u.save();
+			sigp = SigP(id_user=u,id_p=p[0])
+			sigp.save();
+			return HttpResponse('{"res":true,"message":"usuario registrado"}')
+		except:
+			return HttpResponse('{"res":false,"message":"El usuario o el correo ya existe"}')
+	else:
+		return HttpResponse('{"res":false,"message":"El pueblo no existe"}')
 
 def userview(request,datos):
 	kwargs={}

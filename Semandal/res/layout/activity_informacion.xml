@@ -5,50 +5,45 @@
     tools:context="${relativePackage}.${activityClass}" >
 
 
+ <Button
+        android:id="@+id/loggin"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignBaseline="@+id/info"
+        android:layout_alignBottom="@+id/info"
+        android:enabled="true"
+        android:onClick="loguear"
+        android:layout_alignParentRight="true"
+        android:text="@string/Log" />
+
+    <Button
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:enabled="true"
+        android:onClick="infor"
+        android:layout_toLeftOf="@+id/loggin"
+        android:text="@string/Info" />
+
+    <Button
+        android:id="@+id/busqueda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/info"
+        android:layout_alignBottom="@+id/info"
+        android:enabled="true"
+        android:onClick="buscar"
+        android:layout_toLeftOf="@+id/info"
+        android:text="@string/Busqueda" />
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="35dp"
+        android:layout_below="@+id/busqueda"
         android:src="@drawable/bandera_and" />
-
-    <ImageView
-        android:id="@+id/Entrar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Imagebtton"
-        android:layout_marginRight="5dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/entrar1" />
-
-    <ImageView
-        android:id="@+id/Info"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Entrar"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/Entrar"
-        android:src="@drawable/info" />
-
-    <ImageView
-        android:id="@+id/Buscar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Entrar"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/Info"
-        android:src="@drawable/busqueda" />
-    <ImageView
-        android:id="@+id/Imagebtton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher" />
 
 	    <ScrollView
         android:id="@+id/scroll"
@@ -61,52 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="388dp"
             android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Proyecto Fin de carrera en la Universidad de Huelva" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
- 		        android:layout_marginTop="35dp"
-                android:layout_height="wrap_content"
-                android:text="Autores:" />
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-  		        android:layout_marginTop="5dp"
-			    android:layout_gravity="center"
-                android:text="Albendín Moya, Daniel"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-  		        android:layout_marginTop="5dp"
-			    android:layout_gravity="center"
-                android:text="Cantó Vicente, Ángel"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-   		        android:layout_marginTop="25dp"
-                android:layout_height="wrap_content"
-                android:text="Si tiene alguna sugerencia puede envíar un correo a:" />
-
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="wrap_content"
- 			    android:layout_gravity="center"
-                android:layout_height="wrap_content"
-                android:text="chinlacos@gmail.com"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+    
     
     	 </LinearLayout>
     </ScrollView>

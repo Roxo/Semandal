@@ -37,7 +37,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 
@@ -56,10 +55,9 @@ public class Registro extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_registro);
-				ImageView b1 = (ImageView)this.findViewById(R.id.Entrar);
-				ImageView b2 = (ImageView)this.findViewById(R.id.Info);
-				ImageView b3 = (ImageView)this.findViewById(R.id.Buscar);
-				ImageView b5 = (ImageView)this.findViewById(R.id.Imagebtton);
+				Button b1 = (Button)this.findViewById(R.id.loggin);
+				Button b2 = (Button)this.findViewById(R.id.info);
+				Button b3 = (Button)this.findViewById(R.id.busqueda);
 				Button b4 = (Button)this.findViewById(R.id.button1);
 				usuario = (EditText)this.findViewById(R.id.Usuario);
 				pass = (EditText)this.findViewById(R.id.pass);
@@ -115,16 +113,7 @@ public class Registro extends Activity{
 					}
 					
 				});
-				b5.setOnClickListener(new View.OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						Intent i = new Intent(Registro.this, Nolog.class);
-						startActivity(i);
-					}
-					
-				});				
+				
 	}
 	
 public void onPause(){
@@ -334,12 +323,12 @@ public void onResume(){
 						lista1aux.add(c.getInt(0));
 					}while(c.moveToNext());
 				}				
-			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
-			pob.setAdapter(adaptador1);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		   ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
+	       pob.setAdapter(adaptador1);
 
             completed = true;
             _response = response;

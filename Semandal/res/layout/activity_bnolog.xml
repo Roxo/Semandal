@@ -4,102 +4,77 @@
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
 
-    <ImageView
-        android:id="@+id/imageView1"
+
+    <Button
+        android:id="@+id/loggin"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="35dp"
-        android:src="@drawable/bandera_and" />
-
-    <ImageView
-        android:id="@+id/Entrar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Imagebtton"
-        android:layout_marginRight="5dp"
+        android:layout_height="match_parent"
+        android:layout_alignBaseline="@+id/info"
+        android:layout_alignBottom="@+id/info"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/entrar1" />
+        android:enabled="true"
+        android:onClick="loguear"
+        android:text="@string/Log" />
 
-    <ImageView
-        android:id="@+id/Info"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Entrar"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/Entrar"
-        android:src="@drawable/info" />
-
-    <ImageView
-        android:id="@+id/Buscar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Entrar"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/Info"
-        android:src="@drawable/busqueda" />
-    
-    <ImageView
-        android:id="@+id/ref"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Buscar"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/Buscar"
-        android:src="@drawable/refresh" />
-    <ImageView
-        android:id="@+id/Imagebtton"
+    <Button
+        android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher" />
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/loggin"
+        android:enabled="true"
+        android:onClick="infor"
+        android:text="@string/Info" />
+
+    <Button
+        android:id="@+id/busqueda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/info"
+        android:layout_alignBottom="@+id/info"
+        android:layout_toLeftOf="@+id/info"
+        android:enabled="true"
+        android:onClick="buscar"
+        android:text="@string/Busqueda" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/busqueda"
+        android:src="@drawable/bandera_and" />
 
      <ScrollView
-         android:id="@+id/scroll"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:layout_above="@+id/blog"
-         android:layout_below="@+id/imageView1" >
+        android:id="@+id/scroll"
+        android:layout_below="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/button1"
+        android:layout_height="match_parent" >
 
         <LinearLayout
             android:id="@+id/LinearScroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="388dp"
             android:orientation="vertical" >
-            
-    <EditText
-        android:id="@+id/fdesde"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Fecha desde: DD-MM-AAAA"
-        android:maxLines="1"
-        android:singleLine="true" />
-        
-     <EditText
-        android:id="@+id/fhasta"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Fecha hasta: DD-MM-AAAA"
-        android:maxLines="1"
-        android:singleLine="true" />
-            
+    
+
+	<DatePicker
+    android:id="@+id/datePicker1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+    
     <EditText
         android:id="@+id/Tit_nolog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cat"
+        android:layout_below="@+id/imageView1"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/Titular"
         android:maxLines="1"
-        android:singleLine="true" ></EditText>
+        android:singleLine="true" />
 
     <AutoCompleteTextView
         android:id="@+id/autoCompleteTextView1"
@@ -114,17 +89,18 @@
         android:id="@+id/cat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Selectcat" />
-
-  	 </LinearLayout>
+        android:text="@string/Selectpb" />
+  
+    	 </LinearLayout>
     </ScrollView>
-
+    
     <Button
-        android:id="@+id/blog"
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
         android:text="@string/Buscar" />
 
 </RelativeLayout>

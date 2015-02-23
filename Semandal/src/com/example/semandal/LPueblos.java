@@ -5,12 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -18,22 +15,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.semandal.Deuda.AsinDeuda;
-import com.example.semandal.Display_not_log.AsincronDNN;
-import com.example.semandal.aux.Pueblo;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.AsyncTask.Status;
@@ -45,7 +34,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,31 +43,20 @@ public class LPueblos extends Activity {
 	private int iduser,indice;
 	private static AsinLpueblo backgroundTask;
 	private static ProgressDialog pleaseWaitDialog;
-	private List<String> lista1;
-	private List<Pueblo> pobs;
+	private List<String> lista1,lista2;
 	private List<Integer> lista1aux,lista2aux;
-	private List<Drawable> banderas;
 	ListView lv;
 	AutoCompleteTextView pob;
-	LPueblos a = this;
-	Bundle bundle;
-	
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		bundle = savedInstanceState;
-	    // Save the user's current game state
-	    // Always call the superclass so it can save the view hierarchy state
-	    super.onSaveInstanceState(savedInstanceState);
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lpueblos);
-		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
-		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
-		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
-		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
-		ImageView busqueda = (ImageView)this.findViewById(R.id.button1);
+		Button b1 = (Button)this.findViewById(R.id.Amigos);
+		Button b2 = (Button)this.findViewById(R.id.Noticias);
+		Button b3 = (Button)this.findViewById(R.id.deuda);
+		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		Button busqueda = (Button)this.findViewById(R.id.button1);
 		iduser = getIntent().getIntExtra("user_id",0);
 		lv = (ListView)this.findViewById(R.id.listView1);
 		indice = getIntent().getIntExtra("indice",0);
@@ -99,11 +76,11 @@ public class LPueblos extends Activity {
 				if(!pueblo.equalsIgnoreCase("")){
 					p = buscapuebloid(pueblo);
 				}
-				int idpueblo = -1;
-				if(p != -1){
+				int idpueblo = 0;
+				if(p != 0){
 					idpueblo = lista1aux.get(p);
 				}
-				if(idpueblo!= -1){
+				if(idpueblo!= 0){
 					Intent i = new Intent(LPueblos.this, Deuda.class);
 					i.putExtra("user_id", iduser);
 					i.putExtra("indice",indice);
@@ -125,7 +102,7 @@ public class LPueblos extends Activity {
 					}
 					i++;
 				}
-				return -1;				
+				return 0;				
 			}
 
 		});		
@@ -139,7 +116,8 @@ public class LPueblos extends Activity {
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice", indice);
 				startActivity(i);*/
-				showDialogSalir(a,"Confirmación","Desea desloguearse?");
+				Intent i = new Intent(LPueblos.this, Nolog.class);
+				startActivity(i);
 
 			}
 			
@@ -197,25 +175,6 @@ public class LPueblos extends Activity {
 
 	}
 	
-	public void showDialogSalir(Activity activity, String title, CharSequence message) {
-		AlertDialog.Builder b = new AlertDialog.Builder(LPueblos.this);
-		final AlertDialog builder = b.create();
-		b.setTitle(title);
-		b.setMessage(message);
-		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-		    	builder.cancel();
-		    }
-		});
-		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-				Intent i = new Intent(LPueblos.this, Nolog.class);
-				startActivity(i);
-		    }
-		});
-		b.show();
-	}	
-
 	public void onPause(){
 		super.onPause();
 		if (pleaseWaitDialog != null)
@@ -224,17 +183,10 @@ public class LPueblos extends Activity {
 
 	public void onResume(){
 		super.onResume();
-		if(bundle != null){
-			bundle = null;
-			AsinLpueblo tarea = new AsinLpueblo(this,Singleton.url+":8000/api/usuario/seguimiento/"+iduser,lv,pob,this);
-			tarea.execute();
-		}
-		else{
 		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
 			if(pleaseWaitDialog != null)
 				pleaseWaitDialog.show();
 		}
-	}
 	}
 	
 	private void onTaskCompleted(Object _response) 
@@ -289,37 +241,6 @@ public class LPueblos extends Activity {
 
 				try {
 					leerdatos();
-					pobs = new LinkedList<Pueblo>();
-					lista2aux= new ArrayList<Integer>();
-					LinkedList<String> banderas = new LinkedList<String>();
-				       BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
-					   SQLiteDatabase db = admin.getReadableDatabase();
-					String sql = "SELECT * FROM siguiendo" ;
-					Cursor c = db.rawQuery(sql, null);
-					int a = c.getCount();
-					if (c.moveToFirst()){
-							c.moveToNext();
-						c.moveToNext();
-						do{
-							Pueblo aux = new Pueblo(c.getString(1),geticon(c.getString(2)));
-							lista2aux.add(c.getInt(0));
-							pobs.add(aux);
-						}while(c.moveToNext());
-					}
-				       BDClass pueblos = new BDClass(contexto,"administracion", null, 1);
-				       db = pueblos.getReadableDatabase();
-					sql = "SELECT * FROM pueblos" ;
-					c = db.rawQuery(sql, null);
-					a = c.getCount();
-					lista1= new ArrayList<String>();
-					lista1aux= new ArrayList<Integer>();
-					if (c.moveToFirst()){
-						do{
-							lista1.add(c.getString(1));
-							lista1aux.add(c.getInt(0));
-						}while(c.moveToNext());
-					}
-					db.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -334,9 +255,40 @@ public class LPueblos extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			lv.setAdapter(new Plantilla_pueblos(activity,pobs));
+			lista2= new ArrayList<String>();
+			lista2aux= new ArrayList<Integer>();	
+	        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
+		    SQLiteDatabase db = admin.getReadableDatabase();
+			String sql = "SELECT * FROM siguiendo" ;
+			Cursor c = db.rawQuery(sql, null);
+			int a = c.getCount();
+			if (c.moveToFirst()){
+				c.moveToNext();
+				c.moveToNext();
+				do{
+					lista2.add(c.getString(1));
+					lista2aux.add(c.getInt(0));
+				}while(c.moveToNext());
+			}
+	        BDClass pueblos = new BDClass(contexto,"administracion", null, 1);
+	        db = pueblos.getReadableDatabase();
+			sql = "SELECT * FROM pueblos" ;
+			c = db.rawQuery(sql, null);
+			a = c.getCount();
+			lista1= new ArrayList<String>();
+			lista1aux= new ArrayList<Integer>();
+			if (c.moveToFirst()){
+				do{
+					lista1.add(c.getString(1));
+					lista1aux.add(c.getInt(0));
+				}while(c.moveToNext());
+			}
+			db.close();
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
 			pob.setAdapter(adaptador1);
+			ArrayAdapter<String> adaptador2 = new ArrayAdapter<String>(contexto,android.R.layout.simple_list_item_1,lista2);
+			lv.setAdapter(adaptador2);
+
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
@@ -350,31 +302,7 @@ public class LPueblos extends Activity {
 
 		}	
 		
-	public  Drawable geticon(String pueblo) {
-			Drawable drawable = null;
-		    url = Singleton.url+"/semandal/icons/"+pueblo+"/Escudo/Escudo.png";
-		    try
-		    	{
-		    	    InputStream inputStream = new URL(url).openStream();
-		    	    drawable = Drawable.createFromStream(inputStream, null);
-		    	    inputStream.close();
-		    	  }
-		    	  catch (Exception ex) {
-				    	url = Singleton.url+"/semandal/icons/"+pueblo+"/Bandera/Bandera.png";
-				    	  try
-				    	  {
-				    	    InputStream inputStream = new URL(url).openStream();
-				    	    drawable = Drawable.createFromStream(inputStream, null);
-				    	    inputStream.close();
-				    	  }
-				    	  catch (Exception e) { }
-
-				    	  return drawable;
-		    	  }
-	    	  return drawable;
-		 }
-
-		public void setActivity(LPueblos activity) 
+	    public void setActivity(LPueblos activity) 
 	    { 
 	        this.activity = activity; 
 	        if ( completed ) { 

@@ -58,52 +58,17 @@ public class Plantilla_inicio extends BaseAdapter {
 			TextView textView3 =(TextView)view.findViewById(R.id.pueblo);
 			textView3.setText(lista.get(position).getPueblo());
 			TextView textView4 =(TextView)view.findViewById(R.id.fc1);
-	
-			if(lista.get(position).getFc1().equalsIgnoreCase("")){
-				textView4.setVisibility(View.GONE);
-			}else{
-				textView4.setText(lista.get(position).getFc1());
-			}
-			
+			textView4.setText(lista.get(position).getFc1());
 			TextView textView5 =(TextView)view.findViewById(R.id.autor1);
-			
-			if(lista.get(position).getUser1().equalsIgnoreCase("")){
-				textView5.setVisibility(View.GONE);
-			}else{
-				textView5.setText(lista.get(position).getUser1());
-			}
-			
+			textView5.setText(lista.get(position).getUser1());
 			TextView textView6 =(TextView)view.findViewById(R.id.c1);
-			
-			if(lista.get(position).getC1().equalsIgnoreCase("")){
-				textView6.setVisibility(View.GONE);
-			}else{
-				textView6.setText(lista.get(position).getC1());			
-			}			
-			
+			textView6.setText(lista.get(position).getC1());			
 			TextView textView7 =(TextView)view.findViewById(R.id.fc2);
-			if(lista.get(position).getFc2().equalsIgnoreCase("")){
-				textView7.setVisibility(View.GONE);
-			}else{
-				textView7.setText(lista.get(position).getFc2());
-			}			
-					
-			
+			textView7.setText(lista.get(position).getFc2());
 			TextView textView8 =(TextView)view.findViewById(R.id.autor2);
-			if(lista.get(position).getUser2().equalsIgnoreCase("")){
-				textView8.setVisibility(View.GONE);
-			}else{
-				textView8.setText(lista.get(position).getUser2());
-			}	
-			
-			
+			textView8.setText(lista.get(position).getUser2());
 			TextView textView9 =(TextView)view.findViewById(R.id.c2);
-			
-			if(lista.get(position).getC2().equalsIgnoreCase("")){
-				textView8.setVisibility(View.GONE);
-			}else{
-				textView9.setText(lista.get(position).getC2());
-			}	
+			textView9.setText(lista.get(position).getC2());
 			return view;
 			}		
 }

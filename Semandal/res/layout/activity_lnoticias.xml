@@ -3,105 +3,102 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
-
-    
-    
-        <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="35dp"
-        android:src="@drawable/bandera_and" />
- 
-        
-      <ImageView
-        android:id="@+id/busc"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignBottom="@+id/Amigos"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/deuda"
-        android:src="@drawable/busqueda" />
-        
-   <ImageView
-        android:id="@+id/Amigos"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Imagebtton"
-        android:layout_marginRight="5dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/salir" />
-
-    <ImageView
-        android:id="@+id/Noticias"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Amigos"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/Amigos"
-        android:src="@drawable/noticias" />
-
-    <ImageView
-        android:id="@+id/deuda"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Amigos"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/Noticias"
-        android:src="@drawable/municipios" />
-    <ImageView
+	
+    <ImageButton
         android:id="@+id/Imagebtton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/deuda"
         android:src="@drawable/ic_launcher" />
+    
+    <Button
+        android:id="@+id/Amigos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="15dp"
+        android:enabled="true"
+        android:onClick="loguear"
+        android:text="@string/Amigos" />
+    
+        <Button
+        android:id="@+id/Noticias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/Amigos"
+        android:layout_alignBottom="@+id/Amigos"
+        android:layout_toLeftOf="@+id/Amigos"
+        android:enabled="true"
+        android:onClick="buscar"
+        android:text="@string/Noticias" />
 
-    	
+    <Button
+        android:id="@+id/deuda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/Noticias"
+        android:layout_alignBottom="@+id/Noticias"
+        android:layout_toLeftOf="@+id/Noticias"
+        android:enabled="true"
+        android:onClick="infor"
+        android:text="@string/Deuda" />
+    
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/Amigos"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/bandera_and" />
+
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/busc"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/fl"
-        android:divider="#000000"
-        android:dividerHeight="1dp" >
+        android:layout_below="@+id/resultados" >
 
     </ListView>
 
+    <Button
+        android:id="@+id/busc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/Buscador" />
 
     <TextView
         android:id="@+id/resultados"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-         android:layout_marginTop="-10dp"
-        android:textSize="20sp"
         android:layout_below="@+id/imageView1"
-        android:textColor="#008000"
-    	android:textStyle="bold|italic"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="Resultados" />
 
-    <ImageView
+    <TextView
         android:id="@+id/fl"
- 	    android:layout_height= "30dp"
-	    android:layout_width= "30dp"
-        android:layout_marginTop="-10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/resultados"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/imageView1"
-        android:src="@drawable/fl" />
+        android:layout_marginLeft="14dp"
+        android:text="&lt;-"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <ImageView
+    <TextView
         android:id="@+id/fr"
-	    android:layout_height= "30dp"
-	    android:layout_width= "30dp"
-        android:layout_marginTop="-10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/resultados"
+        android:layout_alignBottom="@+id/resultados"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/imageView1"
-        android:src="@drawable/fr" />
-
+        android:layout_marginRight="14dp"
+        android:text="->"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

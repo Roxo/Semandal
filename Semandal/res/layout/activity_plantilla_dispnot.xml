@@ -12,62 +12,33 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:text="Fecha"
-        android:textColor="#FFF"
-    	android:textAppearance="?android:attr/textAppearanceMedium" />
-
-
-    <TextView
-        android:id="@+id/ncomentarios"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/TextView02"
-        android:layout_toRightOf="@+id/TextView02"
-    	android:textColor="#FFF"
-    	android:textStyle="bold"
-        android:text="NC"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/TextView01"
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/ncomentarios"
-        android:layout_alignBottom="@+id/ncomentarios"
-        android:textColor="#FFF"
-        android:layout_toLeftOf="@+id/nlikes"
-        android:text="Votos: "
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/nlikes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/TextView01"
-        android:layout_alignParentRight="true"
-        android:textColor="#FFF"
-    	android:textStyle="bold"
-        android:text="NL"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/fecha"
+        android:text="Pueblo: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/pueblo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:textColor="#FFF"
+        android:layout_below="@+id/fecha"
+        android:layout_toRightOf="@+id/textView1"
         android:text="pueblo"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/titular"
+        android:id="@+id/categoria"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/pueblo"
-        android:textColor="#FFF"
-    	android:textStyle="bold|italic"
-        android:text="Titular"
+        android:layout_below="@+id/TextView01"
+        android:layout_toLeftOf="@+id/TextView02"
+        android:text="Categorias"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -75,9 +46,54 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/titular"
-        android:textColor="#FFF"
+        android:layout_below="@+id/TextView03"
         android:text="Comentarios: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/ncomentarios"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/TextView02"
+        android:text="Comentarios"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/titular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="16dp"
+        android:text="Titular"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/nlikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextView01"
+        android:layout_below="@+id/TextView01"
+        android:text="likes"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/TextView03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/titular"
+        android:text="Categoria: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/TextView03"
+        android:text="nLikes: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

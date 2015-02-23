@@ -3,7 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
-        
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/busqueda"
+        android:src="@drawable/bandera_and" />
+    
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"
@@ -121,50 +129,34 @@
           android:text="@string/registrarse" />
 
 
+      <Button
+          android:id="@+id/busqueda"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentTop="true"
+          android:layout_toLeftOf="@+id/info"
+          android:enabled="true"
+          android:onClick="buscar"
+          android:text="@string/Busqueda" />
 
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="35dp"
-        android:src="@drawable/bandera_and" />
+      <Button
+          android:id="@+id/loggin"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_above="@+id/imageView1"
+          android:layout_alignParentRight="true"
+          android:enabled="true"
+          android:onClick="loguear"
+          android:text="@string/Log" />
 
-    <ImageView
-        android:id="@+id/Entrar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Imagebtton"
-        android:layout_marginRight="5dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/entrar1" />
-
-    <ImageView
-        android:id="@+id/Info"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Entrar"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/Entrar"
-        android:src="@drawable/info" />
-
-    <ImageView
-        android:id="@+id/Buscar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/Entrar"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/Info"
-        android:src="@drawable/busqueda" />
-    <ImageView
-        android:id="@+id/Imagebtton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher" />
-
+      <Button
+          android:id="@+id/info"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_above="@+id/imageView1"
+          android:layout_toLeftOf="@+id/loggin"
+          android:enabled="true"
+          android:onClick="infor"
+          android:text="@string/Info" />
       
 </RelativeLayout>

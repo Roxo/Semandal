@@ -20,10 +20,8 @@ import com.example.semandal.Nolog.AsincronNolog;
 import com.example.semandal.aux.Singleton;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -38,7 +36,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +48,7 @@ public class Perfil extends Activity {
 	boolean from = false;
 	TextView municipio;
 	TextView usuario;
-	Perfil a = this;
+	Perfil t = this;
 	AutoCompleteTextView auto;
 
 	@Override
@@ -59,10 +56,10 @@ public class Perfil extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_perfil);
 		
-		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
-		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
-		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
-		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
+		Button b1 = (Button)this.findViewById(R.id.Amigos);
+		Button b2 = (Button)this.findViewById(R.id.Noticias);
+		Button b3 = (Button)this.findViewById(R.id.deuda);
+		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		Button exit = (Button)this.findViewById(R.id.modificar);
 		municipio = (TextView)this.findViewById(R.id.munc);
 		usuario = (TextView)this.findViewById(R.id.nperfil);
@@ -81,7 +78,7 @@ public class Perfil extends Activity {
 			public void onClick(View v) {
 				String pueblo = auto.getText().toString().replace(" ","%20");
 				if(!auto.getText().toString().equalsIgnoreCase("")){
-					Cambiar tarea = new Cambiar(Singleton.url+":8000/api/usuario/mprincipal/"+iduser+"/"+pueblo,a);
+					Cambiar tarea = new Cambiar(Singleton.url+":8000/api/usuario/mprincipal/"+iduser+"/"+pueblo,t);
 					tarea.execute();
 				}
 			}
@@ -97,7 +94,8 @@ public class Perfil extends Activity {
 				i.putExtra("indice",indice);
 				i.putExtra("user_id", iduser);
 				startActivity(i);*/
-				showDialogSalir(a,"Confirmación","Desea desloguearse?");
+				Intent i = new Intent(Perfil.this, Nolog.class);
+				startActivity(i);
 
 			}
 			
@@ -165,25 +163,6 @@ public class Perfil extends Activity {
 			}
 		}
 
-		public void showDialogSalir(Activity activity, String title, CharSequence message) {
-			AlertDialog.Builder b = new AlertDialog.Builder(Perfil.this);
-			final AlertDialog builder = b.create();
-			b.setTitle(title);
-			b.setMessage(message);
-			b.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			    public void onClick(DialogInterface dialog, int id) {
-			    	builder.cancel();
-			    }
-			});
-			b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-			    public void onClick(DialogInterface dialog, int id) {
-					Intent i = new Intent(Perfil.this, Nolog.class);
-					startActivity(i);
-			    }
-			});
-			b.show();
-		}	
-
 	public class Asincperfil extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
@@ -249,9 +228,7 @@ public class Perfil extends Activity {
 
 		@Override
 		public void onPostExecute(Object response){
-			try{
 				String name = "",mun = "";
-			
 		        BDClass admin = new BDClass(contexto,"administracion", null, 1);
 			    SQLiteDatabase db = admin.getReadableDatabase();
 				String sql = "SELECT * FROM pueblos" ;
@@ -279,9 +256,7 @@ public class Perfil extends Activity {
 			
 			ArrayAdapter<String> adaptador1 = new ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, lista1);
 			auto.setAdapter(adaptador1);
-			}catch(Exception e){
-				
-			}
+
 	           completed = true;
 	            _response = response;
 	            notifyActivityTaskCompleted();

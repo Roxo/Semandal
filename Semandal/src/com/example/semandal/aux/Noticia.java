@@ -9,10 +9,10 @@ public class Noticia {
 	private int nlikes;
 	private String categoria;
 	private String dspueblo;
-	private boolean vista;
+	
 	
 	public Noticia(int id, String fecha, String titular,int nlikes, 
-			int comentarios, String categoria, String dspueblo,boolean vista){
+			int comentarios, String categoria, String dspueblo){
 		this.id = id;
 		this.fecha = fecha;
 		this.titular = titular;
@@ -20,7 +20,6 @@ public class Noticia {
 		this.ncomentarios = comentarios;
 		this.categoria = categoria;
 		this.dspueblo = dspueblo;
-		this.vista=vista;
 	}
 	public String getFecha() {
 		return fecha;
@@ -63,12 +62,6 @@ public class Noticia {
 	}
 	public void setPueblo(String pueblo) {
 		this.dspueblo = pueblo;
-	}
-	public boolean isVista() {
-		return vista;
-	}
-	public void setVista(boolean vista) {
-		this.vista = vista;
 	}
 	
 }

@@ -14,9 +14,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.semandal.Comentarios.AsincCL;
+import com.example.semandal.Deuda.Asinadd;
+import com.example.semandal.Seman.wrong_cat;
 import com.example.semandal.aux.Singleton;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -27,26 +29,21 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+
 public class Display_not_log extends Activity {
 	int notid,pid;
 	String datos,url1;
@@ -54,22 +51,12 @@ public class Display_not_log extends Activity {
 	private static AsincronDNN backgroundTask;
 	private static Set backgroundTask1;
 	private static ProgressDialog pleaseWaitDialog;
-	private boolean set=false,enabled = false,sigo = false;
+	private boolean set=false;
 	private Display_not_log a = this;
-	ImageView b7;
+	Button b7;
 	ListView lista ;
 	boolean sigue= false,aseguir = false;
 	LinkedList<Integer> idcats;
-	Bundle bundle;
-	ImageView mas;
-	ScrollView sc;
-
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		bundle = savedInstanceState;
-	    // Save the user's current game state
-	    // Always call the superclass so it can save the view hierarchy state
-	    super.onSaveInstanceState(savedInstanceState);
-	}
 
 
 	@Override
@@ -77,15 +64,14 @@ public class Display_not_log extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display_not_log);
 		//yourTextView.setMovementMethod(new ScrollingMovementMethod())
-		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
-		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
-		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
-		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
-		ImageView b5 = (ImageView)this.findViewById(R.id.comentario);
-		ImageView b6 = (ImageView)this.findViewById(R.id.button1);
-		final TextView votos = (TextView)this.findViewById(R.id.votos);
-		b7 = (ImageView)this.findViewById(R.id.button2);
-		ImageView categoriza = (ImageView)this.findViewById(R.id.b1);
+		Button b1 = (Button)this.findViewById(R.id.Amigos);
+		Button b2 = (Button)this.findViewById(R.id.Noticias);
+		Button b3 = (Button)this.findViewById(R.id.deuda);
+		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
+		Button b5 = (Button)this.findViewById(R.id.comment);
+		Button b6 = (Button)this.findViewById(R.id.button1);
+		b7 = (Button)this.findViewById(R.id.button2);
+		Button categoriza = (Button)this.findViewById(R.id.b1);
 		lista = (ListView) this.findViewById(R.id.listView1);
 		/////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////
@@ -93,28 +79,29 @@ public class Display_not_log extends Activity {
 		indice = getIntent().getIntExtra("indice",0);
 		iduser = getIntent().getIntExtra("user_id",0);
 		datos = getIntent().getStringExtra("datos");
-		mas = (ImageView) findViewById(R.id.mas);
-		sc = (ScrollView)this.findViewById(R.id.scroll);
-		final TextView pueblo = (TextView) findViewById(R.id.textView3);
+		TextView mas = (TextView) findViewById(R.id.mas);
 		AsincronDNN tarea = null;
+		TextView pueblo = (TextView) findViewById(R.id.textView3);
 		tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 				(TextView) findViewById(R.id.Noticia),
-				(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
+				(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
 				Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-				,(ListView) findViewById(R.id.listView1),(TextView)findViewById(R.id.comment),
-				pueblo,mas,votos,"");
+				,(ListView) findViewById(R.id.listView1),(Button)findViewById(R.id.comment),
+				pueblo,mas);
 		tarea.execute();
 		
 		mas.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if(!enabled)
-					showDialogSigue(a,"Confirmación","¿Está seguro que quiere seguir este pueblo?");
-				if(enabled)
-					showDialogNoSigue(a,"Confirmación","¿Está seguro que quiere dejar de seguir este pueblo?");
+				if(sigue){
+					showDialogSigue(a, "No puede agregar este pueblo", "Usted ya sigue este pueblo");
+				}
+				else{
+					showDialogNSigue(a,"Confirmación","¿Está seguro que quiere seguir este pueblo?");
+				}
 			}
+			
 		});				
 
 		
@@ -151,25 +138,9 @@ public class Display_not_log extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				AsincronDNN tarea = null;
-				if(!sigo){
-					tarea = new AsincronDNN(a,(TextView) findViewById(R.id.titular),
-							(TextView) findViewById(R.id.Noticia),
-							(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
-							Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,a
-							,(ListView) findViewById(R.id.listView1),(TextView)findViewById(R.id.comment),
-							pueblo,mas,votos,Singleton.url+":8000/api/addliked/"+iduser+"/"+notid);
-					tarea.execute();
-				}
-				else{
-					tarea = new AsincronDNN(a,(TextView) findViewById(R.id.titular),
-							(TextView) findViewById(R.id.Noticia),
-							(TextView) findViewById(R.id.fecha),b7,Singleton.url+":8000/api/usuario/addnoticia/"+iduser+"/"+notid,
-							Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,a
-							,(ListView) findViewById(R.id.listView1),(TextView)findViewById(R.id.comment),
-							pueblo,mas,votos,Singleton.url+":8000/api/removeliked/"+iduser+"/"+notid);
-					tarea.execute();
-				}
+				Set tarea = null;
+				tarea = new Set(Singleton.url+":8000/api/addliked/"+iduser+"/"+notid,a);
+				tarea.execute();
 			}
 			
 		});				
@@ -209,7 +180,8 @@ public class Display_not_log extends Activity {
 				i.putExtra("user_id", iduser);
 				i.putExtra("indice", indice);
 				startActivity(i);*/
-				showDialogSalir(a,"Confirmación","Desea desloguearse?");
+				Intent i = new Intent(Display_not_log.this, Nolog.class);
+				startActivity(i);
 
 			}
 			
@@ -265,40 +237,8 @@ public class Display_not_log extends Activity {
 				startActivity(i);
 		    }
 		});
-		
-		lista.setOnTouchListener(new OnTouchListener() {
-		    // Setting on Touch Listener for handling the touch inside ScrollView
-		    @Override
-		    public boolean onTouch(View v, MotionEvent event) {
-		    // Disallow the touch request for parent scroll on touch of child view
-		    v.getParent().requestDisallowInterceptTouchEvent(true);
-		    return false;
-		    }
-
-		});
-
 	
 	}
-	
-	public void showDialogSalir(Activity activity, String title, CharSequence message) {
-		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
-		final AlertDialog builder = b.create();
-		b.setTitle(title);
-		b.setMessage(message);
-		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-		    	builder.cancel();
-		    }
-		});
-		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-				Intent i = new Intent(Display_not_log.this, Nolog.class);
-				startActivity(i);
-		    }
-		});
-		b.show();
-	}	
-
 	
 	public void onPause(){
 		super.onPause();
@@ -308,31 +248,30 @@ public class Display_not_log extends Activity {
 
 	public void onResume(){
 		super.onResume();
-		if(bundle != null){
-			bundle = null;
-			AsincronDNN tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
-					(TextView) findViewById(R.id.Noticia),
-					(TextView) findViewById(R.id.fecha),b7,
-					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(TextView) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView)findViewById(R.id.votos),"");
-			tarea.execute();
-
+		if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
 		}
-		else{
-			if((backgroundTask!=null)&&(backgroundTask.getStatus()==Status.RUNNING)){
-				if(pleaseWaitDialog != null)
-					pleaseWaitDialog.show();
-			}
-			if((backgroundTask1!=null)&&(backgroundTask1.getStatus()==Status.RUNNING)){
-				if(pleaseWaitDialog != null)
-					pleaseWaitDialog.show();
-			
-		}
+		if((backgroundTask1!=null)&&(backgroundTask1.getStatus()==Status.RUNNING)){
+			if(pleaseWaitDialog != null)
+				pleaseWaitDialog.show();
 		}
 
 	}
 
 
+	public void showDialogSigue(Activity activity, String title, CharSequence message) {
+		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
+		final AlertDialog builder = b.create();
+		b.setTitle(title);
+		b.setMessage(message);
+		b.setNegativeButton("Aceptar", new DialogInterface.OnClickListener() {
+		    public void onClick(DialogInterface dialog, int id) {
+		    	builder.cancel();
+		    }
+		});
+		b.show();
+	}	
 
 	public void showDialogNSigue(Activity activity, String title, CharSequence message) {
 		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
@@ -357,46 +296,42 @@ public class Display_not_log extends Activity {
 	}	
 
 	private void onTaskCompleted(Object _response){
-		sc.smoothScrollTo(0,0);
-	if(set){
-			set=false;
+		if(set){
+			startActivity(getIntent());
 			AsincronDNN tarea = null;
 			tarea = new AsincronDNN(this,(TextView) findViewById(R.id.titular),
 					(TextView) findViewById(R.id.Noticia),
-					(TextView) findViewById(R.id.fecha),b7,
+					(TextView) findViewById(R.id.fecha),(TextView) findViewById(R.id.textView1),b7,
 					Singleton.url+":8000/api/noticias/"+notid,Singleton.url+":8000/api/nliked/"+iduser+"/"+notid,this
-					,(ListView) findViewById(R.id.listView1),(TextView) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(ImageView) findViewById(R.id.mas),(TextView) findViewById(R.id.votos),"");
+					,(ListView) findViewById(R.id.listView1),(Button) findViewById(R.id.comment),(TextView) findViewById(R.id.textView3),(TextView) findViewById(R.id.mas));
 			tarea.execute();
 
+			set=false;
 		}
 
 	}
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public class AsincronDNN extends AsyncTask<Void, Void, Object> {
 		Context contexto;
-		String url,urlsig,urlvista="",urlmegusta="";
-		TextView titview,cuerpview,dateview,cat,comentarios;
-		ImageView mas;
-		ImageView b7;
-		JSONObject html,sig,megusta;
+		String url,urlsig;
+		TextView titview,cuerpview,dateview,puntuacion,cat,mas;
+		Button b7,comentarios;
+		JSONObject html,sig;
 	    private Display_not_log activity;
 	    private boolean completed;
 	    private Object _response;
 	    ListView lv;
 	    TextView pueblo;
 	    JSONObject seguir;
-	    TextView votos;
 		/*
 		 * ERROR DE IO AL EJECUTAR ESTE CÓDIGO
 		 * 
 		 * */
 		
 		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-			TextView dateview, ImageView b7,String urlvista,
+			TextView dateview,TextView puntuacion, Button b7,
 			String url,String urlsig,Display_not_log activity,ListView lv,
-			TextView comentarios,TextView pueblo,ImageView mas,TextView votos,
-			String urlmegusta){
+			Button comentarios,TextView pueblo,TextView mas){
 			this.contexto = contexto;
 			this.mas = mas;
 			this.titview = titview;
@@ -404,36 +339,15 @@ public class Display_not_log extends Activity {
 			this.dateview = dateview;
 			this.url = url;
 			this.activity = activity;
+			this.puntuacion = puntuacion;
 			this.b7 = b7;
 			this.urlsig = urlsig;
 			this.lv = lv;
 			this.comentarios = comentarios;
 			this.pueblo = pueblo;
-			this.urlvista = urlvista;
-			this.votos = votos;
-			this.urlmegusta = urlmegusta;
+			
 		}
 		
-		public AsincronDNN(Context contexto,TextView titview,TextView cuerpview,
-				TextView dateview, ImageView b7,
-				String url,String urlsig,Display_not_log activity,ListView lv,
-				TextView comentarios,TextView pueblo,ImageView mas,TextView votos,
-				String urlmegusta){
-				this.contexto = contexto;
-				this.mas = mas;
-				this.titview = titview;
-				this.cuerpview = cuerpview;
-				this.dateview = dateview;
-				this.url = url;
-				this.activity = activity;
-				this.b7 = b7;
-				this.urlsig = urlsig;
-				this.lv = lv;
-				this.comentarios = comentarios;
-				this.pueblo = pueblo;
-				this.votos = votos;
-				this.urlmegusta = urlmegusta;
-		}
 		  private String readAll(Reader rd) throws IOException {
 			    StringBuilder sb = new StringBuilder();
 			    int cp;
@@ -453,17 +367,6 @@ public class Display_not_log extends Activity {
 			      is.close();
 			    }
 			  }
-
-			  public void megusta() throws IOException, JSONException {
-				    InputStream is = new URL(urlmegusta).openStream();
-				    try {
-				      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-				      String jsonText = readAll(rd);
-				       megusta = new JSONObject(jsonText);
-				    } finally {
-				      is.close();
-				    }
-				  }
 			  
 			  public void sigo() throws IOException, JSONException {
 				    InputStream is = new URL(urlsig).openStream();
@@ -475,24 +378,15 @@ public class Display_not_log extends Activity {
 				      is.close();
 				    }
 				  }
-			  
-			  public void addnoticia() throws IOException, JSONException {
-				    InputStream is = new URL(urlvista).openStream();
-                    is.close();
-				    
-				  }
+
 		@Override
 		protected Void doInBackground(Void... params) {
 
 				try {
-					if(!urlmegusta.equalsIgnoreCase(""))
-						megusta();
 					if(!url.equalsIgnoreCase(""))
 						leernoticia();
 					if(!urlsig.equalsIgnoreCase(""))
 						sigo();
-					if(!urlvista.equalsIgnoreCase(""))
-						addnoticia();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -522,8 +416,7 @@ public class Display_not_log extends Activity {
 				p = html.getString("dspueblo");
 				aseguir=true;
 				ncomentarios = html.getInt("ncomentarios");
-				comentarios.setText(""+ncomentarios);
-				votos.setText(""+html.getInt("liked"));
+				comentarios.setText("Ver Comentarios ("+ncomentarios+")");
 				JSONArray cat = html.getJSONArray("categoria");
 				String[] listacategorias = new String[cat.length()];
 			    for(int i=0;i<cat.length();i++){
@@ -535,31 +428,13 @@ public class Display_not_log extends Activity {
 						android.R.layout.simple_list_item_1, listacategorias);
 				lv.setAdapter(adapter);
 
-				if(sig.getBoolean("sigue")){
-					sigo = true;
-				}
-				else{
-					sigo = false;
-				}
-				if(!urlmegusta.equalsIgnoreCase("")){
-					String cad = megusta.getString("message");
-					Toast.makeText(getApplicationContext(), cad, Toast.LENGTH_LONG).show();
-				}
+				if(sig.getBoolean("sigue"))
+					b7.setEnabled(false);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			try{
-    		if(sigo){
-				b7.setImageResource(R.drawable.scheck);
-				b7.getLayoutParams().height = 40;
-				b7.getLayoutParams().width = 40;
-    		}
-    		else{
-				b7.setImageResource(R.drawable.ncheck);
-				b7.getLayoutParams().height = 40;
-				b7.getLayoutParams().width = 40;
-    		}
+			puntuacion.setText(likes);
 		    titview.setText(titular);
 		    cuerpview.setText(cuerpo);
 		    dateview.setText(fecha);
@@ -572,22 +447,12 @@ public class Display_not_log extends Activity {
 			String sql = "SELECT * FROM siguiendo WHERE id="+pid;
 			Cursor c = db1.rawQuery(sql, null);
 			if(c.getCount()==0){
-				enabled = false;
 				mas.setEnabled(true);
-				mas.setImageResource(R.drawable.soff);
-				mas.getLayoutParams().height = 40;
-				mas.getLayoutParams().width = 40;
 			}
 			else{
-				enabled = true;
-				mas.setEnabled(true);
-				mas.setImageResource(R.drawable.son);
-				mas.getLayoutParams().height = 40;
-				mas.getLayoutParams().width = 40;
-			}
-				
-			}catch(Exception e){
-				
+				sigue = true;
+ 				mas.setText("");
+				mas.setEnabled(false);
 			}
 	           completed = true;
 	            _response = response;
@@ -625,7 +490,6 @@ public class Display_not_log extends Activity {
 	    { 
 	        if ( null != activity ) { 
 	            activity.onTaskCompleted(_response); 
-
 	        } 
 	    } 
 
@@ -668,7 +532,7 @@ public class Display_not_log extends Activity {
 	            //Start the splash screen dialog
 	                pleaseWaitDialog= ProgressDialog.show(activity, 
 	                                                       "Espere un segundo", 
-	                                                       "Guardando su voto", 
+	                                                       "Guardando su 'me gusta'", 
 	                                                       false);
 
 	    } 
@@ -697,7 +561,6 @@ public class Display_not_log extends Activity {
 	        if ( null != activity ) { 
 	            set = true;
 	            activity.onTaskCompleted(_response); 
-	            
 	        } 
 	    } 
 	}
@@ -710,7 +573,7 @@ public class Display_not_log extends Activity {
 	    private Display_not_log activity;
 	    private boolean completed;
 	    private Object _response;
-	    JSONObject datosuser,html;
+	    JSONObject datosuser;
 	    private String urlsigue = Singleton.url+":8000/api/logginuser/"+iduser;
 
 		public Asinadd(String url,Display_not_log activity){
@@ -736,24 +599,17 @@ public class Display_not_log extends Activity {
 			return null;
 		}
 
-		  public void actualizar() throws IOException, JSONException {
-			    InputStream is = new URL(url).openStream();
-			    try {
-			      BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			      String jsonText = readAll(rd);
-			       html = new JSONObject(jsonText);
-			    } finally {
-			      is.close();
-			    }
-			  }		  
-
+		private void actualizar() throws MalformedURLException, IOException {
+		    InputStream is = new URL(url).openStream();
+		    is.close();
+		}
 		
 	    @Override 
 	    protected void onPreExecute() {
 	            //Start the splash screen dialog
 	                pleaseWaitDialog= ProgressDialog.show(activity, 
 	                                                       "Espere un segundo", 
-	                                                       "Actualizando información", 
+	                                                       "Agregando pueblo", 
 	                                                       false);
 
 	    } 
@@ -784,36 +640,19 @@ public class Display_not_log extends Activity {
 	    public void onPostExecute(Object response){
 	        BDClassSeguimiento admin = new BDClassSeguimiento(contexto,"following", null, 1);
 	        SQLiteDatabase bd = admin.getWritableDatabase();
+	        try{
+	        	admin.onCreate(bd);
+	        }catch(Exception e){}
 			bd.execSQL("DELETE FROM siguiendo");
-	        bd.execSQL("INSERT INTO siguiendo VALUES ("+(-1)+", '"+"Todos"+"',' ')");
-	        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Sigo"+"',' ')");
+	        bd.execSQL("INSERT INTO siguiendo VALUES ("+(-1)+", '"+"Todos"+"')");
+	        bd.execSQL("INSERT INTO siguiendo VALUES ("+0+", '"+"Sigo"+"')");
 			try {
 				JSONArray psig = datosuser.getJSONArray("siguiendo");
 				for (int i = 0;i<psig.length(); i++){
 					JSONObject f = psig.getJSONObject(i);
-					bd.execSQL("INSERT INTO siguiendo VALUES ("+f.getInt("id_pueblo")+", '"+f.getString("dspueblo")+"', '"+f.getString("busquedaimagenes")+"')");
+					bd.execSQL("INSERT INTO siguiendo VALUES ("+f.getInt("id_pueblo")+", '"+f.getString("dspueblo")+"')");
 				}
 			bd.close();
-			
-			String cadena = html.getString("message");
-			
-			
-			if(html.getBoolean("ret")){
-				enabled = !enabled;
-	    		if(enabled){
-					mas.setImageResource(R.drawable.son);
-					mas.getLayoutParams().height = 40;
-					mas.getLayoutParams().width = 40;
-	    		}
-	    		else{
-					mas.setImageResource(R.drawable.soff);
-					mas.getLayoutParams().height = 40;
-					mas.getLayoutParams().width = 40;
-	    		}
-
-			}
-
-			Toast.makeText(getApplicationContext(), cadena, Toast.LENGTH_LONG).show();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -821,8 +660,6 @@ public class Display_not_log extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
             completed = true;
             _response = response;
             notifyActivityTaskCompleted();
@@ -844,53 +681,8 @@ public class Display_not_log extends Activity {
 	    private void notifyActivityTaskCompleted() 
 	    { 
 	        if ( null != activity ) { 
-	            activity.onTaskCompleted(_response);
+	            activity.onTaskCompleted(_response); 
 	        } 
 	    } 
 	}
-	
-	public void showDialogSigue(Activity activity, String title, CharSequence message) {
-		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
-		final AlertDialog builder = b.create();
-		b.setTitle(title);
-		b.setMessage(message);
-		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-		    	builder.cancel();
-		    }
-		});
-		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-				Asinadd tarea = new Asinadd(
-						Singleton.url+":8000/api/addsigue/"+iduser+"/"+pid,a
-						);
-					tarea.execute();
-		    }
-		});
-		b.show();
-	}	
-
-	public void showDialogNoSigue(Activity activity, String title, CharSequence message) {
-		AlertDialog.Builder b = new AlertDialog.Builder(Display_not_log.this);
-		final AlertDialog builder = b.create();
-		b.setTitle(title);
-		b.setMessage(message);
-		b.setNegativeButton("No", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-		    	builder.cancel();
-		    }
-		});
-		b.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int id) {
-				Asinadd tarea = new Asinadd(
-						Singleton.url+":8000/api/usuario/borraseguimiento/"+pid+"/"+iduser,a
-						);
-					tarea.execute();
-		    }
-		});
-		b.show();
-	}	
-
-	
-
 }

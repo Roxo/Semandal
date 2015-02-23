@@ -34,7 +34,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemClickListener;
@@ -50,10 +49,10 @@ public class Amigos extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_amigos);
-		ImageView b1 = (ImageView)this.findViewById(R.id.Amigos);
-		ImageView b2 = (ImageView)this.findViewById(R.id.Noticias);
-		ImageView b3 = (ImageView)this.findViewById(R.id.deuda);
-		ImageView b4 = (ImageView)this.findViewById(R.id.Imagebtton);
+		Button b1 = (Button)this.findViewById(R.id.Amigos);
+		Button b2 = (Button)this.findViewById(R.id.Noticias);
+		Button b3 = (Button)this.findViewById(R.id.deuda);
+		ImageButton b4 = (ImageButton)this.findViewById(R.id.Imagebtton);
 		Button b5 = (Button)this.findViewById(R.id.button1);
 
 		final ListView lista = (ListView)this.findViewById(R.id.listView1);
@@ -65,8 +64,6 @@ public class Amigos extends Activity {
 		}catch(Exception e){
 			
 		}
-		
-		
 		if(busqueda==null){
 			url = ":8000/api/usuario/"+iduser+"/amigos/";
 		}
@@ -175,8 +172,6 @@ public class Amigos extends Activity {
 
 	}
 
-	
-	
 	public class AsincA extends AsyncTask<Void, Void, Object> {
 		Context contexto;
 		String url;
