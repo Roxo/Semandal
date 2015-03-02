@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 	'pueblos',
+	'django_extensions',
 )
 
 DATE_INPUT_FORMATS = ('%d-%m-%Y','%Y-%m-%d')

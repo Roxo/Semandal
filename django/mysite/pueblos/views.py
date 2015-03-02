@@ -226,12 +226,17 @@ def busq(request, n_pueblo):
 	return HttpResponse(var)
 #########################################################################
 
-def noticias(request,p_id):
-	noticias = Noticias.objects.filter(pueblo__id = p_id).values_list('id', flat=True).distinct()
-	var = filternoticia(noticias)
-	agregarabd("api/pueblos/"+p_id+"/noticias/")
-	var = '{"noticias":['+var+']}'
-	return HttpResponse(var);
+def noticias(request,p_id,pagina):
+	try:
+		inicio = (int(pagina)*ancho)
+		fin = (int(pagina)*ancho)+(ancho)-1
+		noticias = Noticias.objects.filter(pueblo__id = p_id).values_list('id', flat=True).distinct()[inicio:fin]
+		var = filternoticia(noticias,0)
+		agregarabd("api/pueblos/"+p_id+"/noticias/"+str(pagina))
+		var = '{"ret":true,"noticias":['+var+']}'
+		return HttpResponse(var);
+	except:
+		return HttpResponse('{"ret":false,"noticias":[sfasf]}')
 
 
 def amigos(request,id_user):

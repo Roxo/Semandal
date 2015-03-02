@@ -1,0 +1,128 @@
+import re
+import urllib2
+from pueblos.models import Categoria
+from pueblos.models import Noticias
+from bs4 import BeautifulSoup
+from datetime import date
+import noticias_tipo4
+import modifica_string
+def get_noticia(url):
+	try:
+		respuesta = urllib2.urlopen(url)
+	except:
+		return None
+	soup = BeautifulSoup(respuesta)
+	noticias = soup.body.find_all('div', attrs={'class' : 'noticias'})	
+	if len(noticias) != 0:
+		return modifica_string.elimina_comentarios(noticias[0].text)
+	else:
+		return None
+def extraer(url, nivel, pueblo_id):
+	""" 
+		Extractor de noticias tipo 1
+		Hay dos posibilidades
+		Las noticias estan en listas desordenadas <ul>, esta lista tiene como atributo class "noticias"
+		Las noticias estan en un div de class content-noticias group"""
+	print url
+	lista_completa = []
+	mas_noticias = []
+	p = url.split('/')
+	categoria = p[-2]
+	print categoria
+	cat = Categoria.objects.filter(etiqueta__exact = categoria)
+	if cat is None:
+		cat = Categoria.objects.filter(etiqueta__exact = "sin_categoria")
+	if not cat.exists():
+		cat = Categoria.objects.filter(etiqueta__exact = "sin_categoria")
+	with open("./Programas/10.Update_Noticias/categoria_blacklist.txt") as f:
+		lines = f.readlines()
+	for line in lines:
+		if cat[0].etiqueta.lower() in line.lower():
+			return []
+	href= ""
+	l = len(p)
+	for y in range(3,l-1):
+		href += '/' + p[y]
+	href = href + '/'	
+	try:
+		respuesta = urllib2.urlopen(url)
+	except:
+		return []
+	soup = BeautifulSoup(respuesta)
+	if soup.body is None:
+		return []
+	ahref = soup.body.find_all('a')
+	paginador = soup.body.find_all('p', attrs={'class' : 'paginador'})
+	if len(paginador) != 0: 
+		if paginador[0].getText() is 'Mostrando 0 noticias':
+			return []
+	x = soup.body.find_all('ul', attrs={'class' : 'noticias'})
+	if len(x) != 0:
+		lis = x[0].find_all('li')
+		for element in lis:
+			fecha = None
+			titular = None
+			enlace = None
+			cuerpo = None
+			dia = element.find('strong', attrs={'class' : 'date'})
+			if dia is not None:
+				fecha = dia.getText()
+			else:
+				nfecha = element.getText()
+				fecha = re.findall("\[(.*?)\]", nfecha)
+				fecha = fecha[0]
+			titu = element.find('a')
+			if titu is not None:
+				titular = titu.text
+				titular = modifica_string.elimina_blancos(titular)
+				titular = modifica_string.elimina_char_especial(titular)
+				titular = titular.replace("\n", "-")
+				partes = url.split('/')
+				U = partes[0]+'//'+partes[2]
+				enlace = U + titu.get('href')
+			c = element.find('span')
+			if c is not None:
+				cuerpo = c.text
+				if cuerpo is not None:
+					if cuerpo != "" and len(cuerpo) > 30:
+						cuerpo = modifica_string.elimina_blancos(cuerpo)
+						cuerpo = modifica_string.elimina_char_especial(cuerpo)
+						cuerpo = cuerpo.replace("\n", "-")
+					else:
+						cuerpo = None
+			texto_noticia = get_noticia(enlace)
+			if texto_noticia is not None:
+				if texto_noticia != "" and len(texto_noticia) > 30:
+					texto_noticia = modifica_string.elimina_blancos(texto_noticia)
+					texto_noticia = modifica_string.elimina_char_especial(texto_noticia)
+					texto_noticia = texto_noticia.replace("\n", "-")
+				else:
+					texto_noticia = None
+			fecha = fecha.split("/")
+			yr = int(fecha[2])
+			if yr < 20:
+				yr = 2000 + yr
+			if yr < 99:
+				yr = 1900 + yr
+			dia = date(day = int(fecha[0]), month = int(fecha[1]), year = yr)
+			for e in cat:
+				try:
+					existe = Noticias.objects.get(url = enlace)
+				except Noticias.DoesNotExist:
+					lista_completa.append({'dstitular':titular,'dscuerpo':texto_noticia,'resumen':cuerpo,'url':enlace,'etiqueta':e,'fecha':dia,'pueblo_id':pueblo_id})
+				else:
+					return lista_completa
+				#p = Noticias(dstitular = titular, dscuerpo = texto_noticia, resumen = cuerpo, url = enlace, etiqueta = e, fecha = dia, pueblo_id = pueblo_id)
+				#p.save()
+		if len(lis) != 0:
+			digitos = len(str(nivel))
+			nivel = nivel + 10
+			if nivel == 10:
+				url2 = url + "index.jsp?no=" + str(nivel)
+			else:
+				url2 = url[:-digitos]
+				url2 = url2 + str(nivel)
+			mas_noticias = extraer(url2,nivel, pueblo_id)
+	else:
+		mas_noticias = noticias_tipo4.extraer(url, nivel, pueblo_id)
+	return lista_completa + mas_noticias

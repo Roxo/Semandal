@@ -9,8 +9,8 @@ urlpatterns = patterns('',
     url(r'^api/provincias/(?P<prov_id>\d+)/$', views.idprovinciaapi, name='idprovinciaapi'),   #Funciona|HECHO|MUESTRA TODOS LOS PUEBLOS DE UNA PROVINCIA CON EL ID CORRESPONDIENTE
     url(r'^api/provincias/(?P<n_prov>[\w\-\_]*)/$', views.nombre_provapi, name='nombre_provapi'), #Funciona|HECHO|MUESTRA TODOS LOS PUEBLOS DE UNA PROVINCIA CON EL DSPROVINCIA CORRESPONDIENTE
 ###################################################################################################
-#    url(r'^api/busqueda/(?P<n_pueblo>[\w\-\_]*)/$',views.busq,name='busq'),
-    url(r'^api/pueblos/(?P<p_id>\d+]*)/noticias/$', views.noticias, name='noticias'), 
+    url(r'^api/pueblos/busqueda/(?P<n_pueblo>[\w\-\_]*)/$',views.busq,name='busq'),
+    url(r'^api/pueblos/(?P<p_id>\d+]*)/noticias/(?P<pagina>\d+]*)/$', views.noticias, name='noticias'), 
     url(r'^api/usuario/(?P<id_user>\d+)/amigos/$',views.amigos,name='amigos'), #Funciona|
     url(r'^api/usuario/(?P<id_user>\d+)/$',views.getperfil,name='getperfil'), #Funciona
     url(r'^api/noticias/(?P<n_id>\d+]*)/comentarios$', views.getcomentarios, name='getcomentarios'), #Funciona

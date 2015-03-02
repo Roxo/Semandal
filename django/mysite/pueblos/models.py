@@ -149,10 +149,11 @@ class log_update(models.Model):
 	fecha_update = models.DateTimeField()
 
 class log_update_web(models.Model):
-	fecha = models.ForeignKey(log_update)
+	update = models.ForeignKey(log_update, related_name='Update_log')
 	municipio = models.ForeignKey(Pueblo)
+	resultado = models.BooleanField(default = False)
 	class Meta:
-		unique_together = ('fecha', 'municipio')		
+		unique_together = ('update', 'municipio')		
 
 class vecinos(models.Model):
 	id1 = models.ForeignKey(Pueblo,related_name='pi')
