@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+    <style type="text/css">
+
+      html { height: 100% }
+
+      body { height: 100%; margin: 0; padding: 0 }
+
+      #map-canvas { height: 100% }
+
+    </style>
+
+	<style type="text/css">
+
+   .labels {
+
+     color: red;
+
+     background-color: white;
+
+     font-family: "Lucida Grande", "Arial", sans-serif;
+
+     font-size: 10px;
+
+     font-weight: bold;
+
+     text-align: center;
+
+     width: 40px;     
+
+     border: 2px solid black;
+
+     white-space: nowrap;
+
+   }
+
+	</style>
+
+
+
+    <script type="text/javascript"
+
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCE2yzQc_Fzs_z4qMdUvaa_gEH4njiIitI&sensor=true">
+
+    </script>
+
+    <script type="text/javascript">
+
+      function initialize() {
+
+	  var pueblos = [
+
+['Alcalá de los Gazules/ Cádiz',36.4617479,-5.7245344],
+
+['Alcalá del Valle/ Cádiz',36.9031980,-5.1720210],
+
+['Algar/ Cádiz',36.6567016,-5.6556545],
+
+['Benalup-Casas Viejas/ Cádiz',36.3431854,-5.8166423],
+
+['Benaocaz/ Cádiz',36.7013650,-5.4220326],
+
+['Bornos/ Cádiz',36.8159238,-5.7433562],
+
+['Bosque, El/ Cádiz',36.7580042,-5.5061788],
+
+['Conil de la Frontera/ Cádiz',36.2776845,-6.0877790],
+
+['Gastor, El/ Cádiz',36.8560290,-5.3226677],
+
+['Grazalema/ Cádiz',36.7586748,-5.3684385],
+
+['Olvera/ Cádiz',36.9352388,-5.2599555],
+
+['Paterna de Rivera/ Cádiz',36.5262270,-5.8636310],
+
+['Prado del Rey/ Cádiz',36.7883799,-5.5529120],
+
+['Puerto Serrano/ Cádiz',36.9224550,-5.5420299],
+
+['Setenil de las Bodegas/ Cádiz',36.8628265,-5.1761201],
+
+['Torre Alháquime/ Cádiz',36.9157363,-5.2348594],
+
+['Villaluenga del Rosario/ Cádiz',36.6964207,-5.3857755],
+
+['Villamartín/ Cádiz',36.8610112,-5.6417243],
+
+['Gabias, Las/ Granada',37.1346055,-3.6693027],
+
+['Ayamonte/ Huelva',37.2205470,-7.4056740],
+
+['Punta Umbría/ Huelva',37.1852585,-6.9704976],
+
+['Trigueros/ Huelva',37.3824770,-6.8295700],
+
+['Andújar/ Jaén',38.0404700,-4.0549120],
+
+['Aguadulce/ Sevilla',37.2524670,-4.9927430],
+
+['Albaida del Aljarafe/ Sevilla',37.4263580,-6.1645510],
+
+['Alcalá del Río/ Sevilla',37.5166670,-5.9833330],
+
+['Alcolea del Río/ Sevilla',37.6155520,-5.6661590],
+
+['Algaba, La/ Sevilla',37.4587461,-6.0136317],
+
+['Algámitas/ Sevilla',37.0164365,-5.1490712],
+
+['Almensilla/ Sevilla',37.3098113,-6.1136061],
+
+['Arahal/ Sevilla',37.2609901,-5.5486033],
+
+['Aznalcázar/ Sevilla',37.3055380,-6.2467480],
+
+['Aznalcóllar/ Sevilla',37.5191373,-6.2681327],
+
+['Badolatosa/ Sevilla',37.3074123,-4.6728090],
+
+['Benacazón/ Sevilla',37.3527667,-6.1964585],
+
+['Bormujos/ Sevilla',37.3722503,-6.0701344],
+
+['Burguillos/ Sevilla',37.5857795,-5.9680575],
+
+['Camas/ Sevilla',37.4061630,-6.0334760],
+
+['Cantillana/ Sevilla',37.6111710,-5.8210060],
+
+['Cañada Rosal/ Sevilla',37.5997502,-5.2097047],
+
+['Carrión de los Céspedes/ Sevilla',37.3696888,-6.3292537],
+
+['Castilblanco de los Arroyos/ Sevilla',37.6783710,-5.9847050],
+
+['Castilleja de Guzmán/ Sevilla',37.4095490,-6.0569993],
+
+['Castillo de las Guardas, El/ Sevilla',37.6912380,-6.3142610],
+
+['Cazalla de la Sierra/ Sevilla',37.9304285,-5.7589490],
+
+['Constantina/ Sevilla',37.8717259,-5.6201681],
+
+['Coria del Río/ Sevilla',37.2873610,-6.0530229],
+
+['Coripe/ Sevilla',36.9731340,-5.4380330],
+
+['Corrales, Los/ Sevilla',37.1000000,-4.9833330],
+
+['Cuervo de Sevilla, El/ Sevilla',36.8527976,-6.0385235],
+
+['Estepa/ Sevilla',37.2894590,-4.8777980],
+
+['Garrobo, El/ Sevilla',37.6287880,-6.1713550],
+
+['Gelves/ Sevilla',37.3409234,-6.0262352],
+
+['Gerena/ Sevilla',37.5278400,-6.1523830],
+
+['Gilena/ Sevilla',37.2496980,-4.9133550],
+
+['Guillena/ Sevilla',37.5429955,-6.0568552],
+
+['Herrera/ Sevilla',37.3628209,-4.8464630],
+
+['Isla Mayor/ Sevilla',37.1331542,-6.1646300],
+
+['Lantejuela, La/ Sevilla',37.3527050,-5.2200140],
+
+['Lebrija/ Sevilla',36.9229750,-6.0734709],
+
+['Lora de Estepa/ Sevilla',37.2702650,-4.8258185],
+
+['Lora del Río/ Sevilla',37.6575890,-5.5298730],
+
+['Madroño, El/ Sevilla',37.6450769,-6.5111422],
+
+['Mairena del Alcor/ Sevilla',37.3728930,-5.7462490],
+
+['Martín de la Jara/ Sevilla',37.1084640,-4.9614800],
+
+['Molares, Los/ Sevilla',37.1562295,-5.7191564],
+
+['Navas de la Concepción, Las/ Sevilla',37.9331820,-5.4638590],
+
+['Olivares/ Sevilla',37.4187830,-6.1514780],
+
+['Osuna/ Sevilla',37.2373642,-5.1033081],
+
+['Palomares del Río/ Sevilla',37.3191342,-6.0684709],
+
+['Paradas/ Sevilla',37.2921380,-5.4944390],
+
+['Pedrera/ Sevilla',37.2249556,-4.8957161],
+
+['Pedroso, El/ Sevilla',37.8404520,-5.7640250],
+
+['Peñaflor/ Sevilla',37.7102676,-5.3453537],
+
+['Pilas/ Sevilla',37.3037470,-6.2967430],
+
+['Pruna/ Sevilla',36.9721059,-5.2215239],
+
+['Puebla de los Infantes, La/ Sevilla',37.7803930,-5.3895778],
+
+['Real de la Jara, El/ Sevilla',37.9487253,-6.1540241],
+
+['Roda de Andalucía, La/ Sevilla',37.2013385,-4.7786378],
+
+['Ronquillo, El/ Sevilla',37.7261118,-6.1772268],
+
+['Rubio, El/ Sevilla',37.3522100,-4.9879510],
+
+['San Juan de Aznalfarache/ Sevilla',37.3600930,-6.0347179],
+
+['San Nicolás del Puerto/ Sevilla',37.9967339,-5.6527020],
+
+['Sanlúcar la Mayor/ Sevilla',37.3860400,-6.1954410],
+
+['Santiponce/ Sevilla',37.4352111,-6.0427732],
+
+['Saucejo, El/ Sevilla',37.0712509,-5.0947540],
+
+['Tocina/ Sevilla',37.6110339,-5.7328050],
+
+['Umbrete/ Sevilla',37.3681220,-6.1599490],
+
+['Utrera/ Sevilla',37.1848134,-5.7795147],
+
+['Villamanrique de la Condesa/ Sevilla',37.2406090,-6.3040550],
+
+['Villanueva de San Juan/ Sevilla',37.0501021,-5.1751422],
+
+['Villanueva del Ariscal/ Sevilla',37.3952677,-6.1419402],
+
+['Villanueva del Río y Minas/ Sevilla',37.6554687,-5.7122139],
+
+['Villaverde del Río/ Sevilla',37.5891528,-5.8742975],
+
+['Viso del Alcor, El/ Sevilla',37.3886862,-5.7217811],
+
+		];
+
+
+
+        var mapOptions = {
+
+          center: new google.maps.LatLng(40.4378271,-3.6795367),
+
+          zoom: 6
+
+        };
+
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+
+            mapOptions);
+
+
+
+	  var marker, i;
+
+		for (i = 0; i < pueblos.length; i++) {  
+
+		marker = new google.maps.Marker({
+
+			position: new google.maps.LatLng(pueblos[i][1], pueblos[i][2]),
+
+			map: map,
+
+			title: pueblos[i][0],
+
+		});
+
+		}
+
+		}
+
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+
+  </head>
+
+  <body>
+
+    <div id="map-canvas"/>
+
+  </body>
+
+</html>
