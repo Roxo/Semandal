@@ -16,7 +16,7 @@ from pueblos.models import Provincia
 listaprov = [4,11,14,18,21,23,29,41]
 
 n = 0
-for j in listaprov:, y la página que encontramos no e
+for j in listaprov:
 	p = Pueblo.objects.filter(provincia_id = j)
 	for i in p:
 		r=""

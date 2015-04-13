@@ -215,7 +215,7 @@ def busq(request, n_pueblo):
 	consulta = consulta[0:len(consulta)-1]
 	consulta = consulta[0].upper() + consulta[1:len(consulta)]
 	pbls = Pueblo.objects.filter(busqueda__contains=consulta);
-	if len(pbls) == 0:
+	if len(pbls) != 0:
 		for i in pbls:
 			i.latitud=str(i.latitud).replace(",",".")
 			i.longitud=str(i.longitud).replace(",",".")
@@ -463,7 +463,7 @@ def uri_pueblos(pbls):
 		opcms = '"false"';
 		if p.opencms == 1:
 			opcms = '"true"'
-		obj = '"nombre" : "'+p.dspueblo+'","uri":"http://opendatalab.uhu.es:8000/api/pueblos/'+str(p.busqueda).replace(" ","-")+'"'
+		obj = '"nombre" : "'+p.dspueblo+'","uri":"95.39.221.207:8000/api/pueblos/'+str(p.busqueda).replace(" ","-")+'"'
 		obj = '{'+obj+'},'
 		r = r+obj
 		obj=''

@@ -16,7 +16,7 @@ from pueblos.models import Provincia
 listaprov = [4,11,14,18,21,23,29,41]
 
 n = 0
-for j in listaprov:
+for j in listaprov:, y la página que encontramos no e
 	p = Pueblo.objects.filter(provincia_id = j)
 	for i in p:
 		r=""
@@ -32,7 +32,7 @@ for j in listaprov:
 		print consulta
 		resultado = urllib2.urlopen(consulta);
 		resultado = resultado.read()
-		if "Bandera" in resultado or "Escudo" in resultado:
+		if "Bandera" in resultado or "Escudo" in resultado or "Flag" in resultado:
 				pueblo.update(wiki=consulta)
 		else:
 			print "No Tiene:"
