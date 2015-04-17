@@ -1,0 +1,57 @@
+\begin{thebibliography}{10}
+
+\bibitem{A4}
+William~W. Cohen.
+\newblock Fast effective rule induction.
+\newblock {\em Machine Learning: Proceedings of the Twelfth International
+  Conference}, 1995.
+
+\bibitem{A2}
+Charles~L. Forgy.
+\newblock Rete: A fast algorithm for the many pattern/many object pattern match
+  problem.
+\newblock {\em Artificial Inteligence}, 1982.
+
+\bibitem{A1}
+Eibe Frank and Ian~H. Witten.
+\newblock Generating accurate rule sets without global optimization.
+\newblock {\em Machine Learning: Proceedings of the Fifteenth International
+  Conference}, 1998.
+
+\bibitem{B2}
+Cèsar Ferri~Ramírez José Hernández~Orallo, M.José Ramírez~Quintana.
+\newblock {\em Introducción a la Minería de Datos}, chapter~9.
+\newblock Editorial Pearson, Madrid, 2004.
+
+\bibitem{M1}
+S.~B. Kotsiantis.
+\newblock Supervised machine learning: A review of classification techniques.
+  informatica 31:249-268, 2007.
+
+\bibitem{B3}
+Oded~Maimon Lior~Rokach.
+\newblock {\em Data mining with decision trees}, chapter~3.
+\newblock World Scientific Publishing Co. Pte. Ltd, Singapore, 2008.
+
+\bibitem{B1}
+J.~Ross Quinlan.
+\newblock {\em C4.5: Programs for machine learning}.
+\newblock Morgan Kaufman Publishers, San Mateo, California, 1993.
+
+\bibitem{B4}
+Peter~Norvig Stuart~Russell.
+\newblock {\em Artificial Intelligence: A Modern Approach}, chapter~18.
+\newblock Pearson Education, Inc, Upper Saddle River, New Jersey, 2009.
+
+\bibitem{A5}
+Rudolf Wille.
+\newblock Concept lattices and conceptual knowledge systems.
+\newblock {\em Computers Math. Applic.}, 23, 1992.
+
+\bibitem{A3}
+Rudolf Wille.
+\newblock Formal concept analysis as mathematical theory of concepts and
+  concept hierarchies.
+\newblock {\em Formal Concept Analysis: Foundations and Applications}, 2005.
+
+\end{thebibliography}

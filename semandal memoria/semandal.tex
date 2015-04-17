@@ -1,0 +1,110 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ 
+%%  TIPO DE DOCUMENTO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,11pt,final]{book}
+
+
+%%  Include con la definicion de estilos por el usuario
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input ./z_config/a_paquetes
+\input ./z_config/a_definiciones
+\input ./z_config/a_configuracion
+
+
+%\includeonly{cap2_respacial/respacial}
+%\includeonly{api/api} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  DOCUMENTO DE PROYECTO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document} 
+
+%%  Titulo e Indices
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\pagenumbering{roman}
+%\renewcommand{\baselinestretch}{1}
+\include{00_Titulo/titulo}
+%\renewcommand{\baselinestretch}{1.2}
+
+
+%%  Contenido del trabajo
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\pagenumbering{arabic}
+\pagestyle{fancy} 
+\tableofcontents
+
+
+\include{01_Resumen/resumen}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+
+\part{Extracción de información}
+\include{obdat/obdat}
+\include{Extraccion_junta/junta}	
+\include{trabajo_previo/previo}	%% Trabajos previos
+\include{Extraccion/extraccion}
+\include{Categorias/creacion_conjunto/categorias}
+
+
+\part{De información a conocimiento}
+
+\include{Categorias/palabras_clave/seleccion_palabras}
+\include{fca/fca}
+\include{j48/j48}
+\include{ripper/ripper}
+\include{clasificacion/clasificador}
+
+\part{Publicación}
+\include{django/django}
+%\include{django/comandos}
+\include{api/api}
+\include{android/android}
+
+\part{Arquitectura de la solución}
+\include{cron/cron}
+\include{basededatos/bd}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\part{Depuración del conocimiento}
+
+%\include{cap_prelim/prelim_rcc}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\part{Conclusiones}
+\include{conclusiones/conclusiones} 			
+\part{Trabajos futuros}
+\include{trabajo_futuro/futuro}
+%%  Apendices
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\addcontentsline{toc}{part}{Apéndices}
+\part{Apéndices}
+\appendix
+
+\include{z_apendices/apendice_db}
+\include{z_apendices/apendice_librerias}
+
+
+
+%%  Bibliografia
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\part{Bibliografía}
+\addcontentsline{toc}{chapter}{Bibliografía}
+\bibliographystyle{plain}
+\bibliography{z_Bibliografia/mybib}
+
+%\chapter{Tareas pendientes}
+%\listoftodos
+\end{document}

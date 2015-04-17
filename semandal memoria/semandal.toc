@@ -1,0 +1,187 @@
+\select@language {spanish}
+\contentsline {chapter}{Introducci\IeC {\'o}n}{5}{chapter*.3}
+\contentsline {part}{I\hspace {1em}Extracci\IeC {\'o}n de informaci\IeC {\'o}n}{9}{part.1}
+\contentsline {chapter}{\numberline {1}Obtenci\IeC {\'o}n de municipios y sus datos}{11}{chapter.1}
+\contentsline {section}{\numberline {1.1}Obtenci\IeC {\'o}n de pueblos y datos a partir de xls}{12}{section.1.1}
+\contentsline {section}{\numberline {1.2}Extracci\IeC {\'o}n de url de los ayuntamientos}{12}{section.1.2}
+\contentsline {section}{\numberline {1.3}Obtenci\IeC {\'o}n de coordenadas}{14}{section.1.3}
+\contentsline {section}{\numberline {1.4}B\IeC {\'u}squeda de municipios cercanos}{15}{section.1.4}
+\contentsline {section}{\numberline {1.5}P\IeC {\'a}ginas con OpenCMS}{15}{section.1.5}
+\contentsline {section}{\numberline {1.6}P\IeC {\'a}gina de wikipedia}{16}{section.1.6}
+\contentsline {section}{\numberline {1.7}Extracci\IeC {\'o}n de datos del Instituto de estad\IeC {\'\i }stica y cartograf\IeC {\'\i }a de Andaluc\IeC {\'\i }a}{17}{section.1.7}
+\contentsline {section}{\numberline {1.8}Visualizar la estructura de la web de un municipio}{18}{section.1.8}
+\contentsline {subsection}{\numberline {1.8.1}Resultados}{19}{subsection.1.8.1}
+\contentsline {section}{\numberline {1.9}Extracci\IeC {\'o}n de noticias desde la web de un municipio}{25}{section.1.9}
+\contentsline {subsection}{\numberline {1.9.1}Obtenci\IeC {\'o}n de ruta hacia la informaci\IeC {\'o}n}{25}{subsection.1.9.1}
+\contentsline {subsection}{\numberline {1.9.2}Extracci\IeC {\'o}n de noticias}{26}{subsection.1.9.2}
+\contentsline {subsection}{\numberline {1.9.3}Almacenamiento de la informaci\IeC {\'o}n}{28}{subsection.1.9.3}
+\contentsline {subsection}{\numberline {1.9.4}Sistema tolerante a fallos}{28}{subsection.1.9.4}
+\contentsline {subsection}{\numberline {1.9.5}Resultados de la extracci\IeC {\'o}n}{29}{subsection.1.9.5}
+\contentsline {chapter}{\numberline {2}B\IeC {\'u}squeda de categor\IeC {\'\i }as}{33}{chapter.2}
+\contentsline {subsection}{\numberline {2.0.6}B\IeC {\'u}squeda de sin\IeC {\'o}nimos}{33}{subsection.2.0.6}
+\contentsline {subsubsection}{Distancia de Levenshtein}{33}{section*.28}
+\contentsline {subsection}{\numberline {2.0.7}Listado de categor\IeC {\'\i }as}{34}{subsection.2.0.7}
+\contentsline {subsection}{\numberline {2.0.8}Refinado de las categor\IeC {\'\i }as seleccionadas}{35}{subsection.2.0.8}
+\contentsline {part}{II\hspace {1em}De informaci\IeC {\'o}n a conocimiento}{37}{part.2}
+\contentsline {chapter}{\numberline {3}M\IeC {\'e}todos de clasificaci\IeC {\'o}n}{39}{chapter.3}
+\contentsline {section}{\numberline {3.1}Selecci\IeC {\'o}n de palabras clave de una categor\IeC {\'\i }a}{39}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}M\IeC {\'e}todo propuesto}{39}{subsection.3.1.1}
+\contentsline {subsubsection}{Experimentaci\IeC {\'o}n y resultados}{41}{section*.30}
+\contentsline {subsection}{\numberline {3.1.2}Aproximaci\IeC {\'o}n TF-IDF}{43}{subsection.3.1.2}
+\contentsline {section}{\numberline {3.2}An\IeC {\'a}lisis formal de conceptos}{44}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Introducci\IeC {\'o}n}{44}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Conceptos y contextos formales}{44}{subsection.3.2.2}
+\contentsline {subsection}{\numberline {3.2.3}Ret\IeC {\'\i }cula}{45}{subsection.3.2.3}
+\contentsline {subsection}{\numberline {3.2.4}Reglas de asociaci\IeC {\'o}n}{45}{subsection.3.2.4}
+\contentsline {subsection}{\numberline {3.2.5}Concept Explorer}{46}{subsection.3.2.5}
+\contentsline {subsubsection}{Creaci\IeC {\'o}n del contexto formal}{46}{section*.34}
+\contentsline {subsubsection}{Creaci\IeC {\'o}n del ret\IeC {\'\i }culo}{47}{section*.36}
+\contentsline {subsection}{\numberline {3.2.6}Experimentaci\IeC {\'o}n}{48}{subsection.3.2.6}
+\contentsline {section}{\numberline {3.3}\IeC {\'A}rboles de decisi\IeC {\'o}n}{50}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Algoritmo C4.5}{50}{subsection.3.3.1}
+\contentsline {subsubsection}{Determinar la calidad del \IeC {\'a}rbol}{51}{section*.38}
+\contentsline {subsection}{\numberline {3.3.2}Creaci\IeC {\'o}n del conjunto de datos}{51}{subsection.3.3.2}
+\contentsline {subsubsection}{Conjunto de datos con frecuencia de apariciones}{52}{section*.39}
+\contentsline {subsubsection}{Conjunto de datos booleano}{53}{section*.40}
+\contentsline {subsection}{\numberline {3.3.3}Experimentaci\IeC {\'o}n}{53}{subsection.3.3.3}
+\contentsline {subsubsection}{Pruebas realizadas}{53}{section*.41}
+\contentsline {subsection}{\numberline {3.3.4}Resultados obtenidos}{54}{subsection.3.3.4}
+\contentsline {subsubsection}{Frecuencia de t\IeC {\'e}rminos}{54}{section*.42}
+\contentsline {subsubsection}{Conjunto de datos Booleanos}{55}{section*.43}
+\contentsline {subsection}{\numberline {3.3.5}Extracci\IeC {\'o}n de reglas}{57}{subsection.3.3.5}
+\contentsline {section}{\numberline {3.4}Sistemas de inducci\IeC {\'o}n de reglas}{58}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Algoritmo RIPPER}{58}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}Creaci\IeC {\'o}n del conjunto de datos}{58}{subsection.3.4.2}
+\contentsline {subsection}{\numberline {3.4.3}Experimentaci\IeC {\'o}n}{58}{subsection.3.4.3}
+\contentsline {subsubsection}{Pruebas realizadas}{58}{section*.44}
+\contentsline {subsubsection}{Resultados obtenidos}{59}{section*.45}
+\contentsline {subsection}{\numberline {3.4.4}Extracci\IeC {\'o}n de reglas}{60}{subsection.3.4.4}
+\contentsline {chapter}{\numberline {4}Motor de clasificaci\IeC {\'o}n}{61}{chapter.4}
+\contentsline {section}{\numberline {4.1}Sistema experto}{61}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Algoritmo RETE}{61}{subsection.4.1.1}
+\contentsline {section}{\numberline {4.2}Entradas del sistema experto}{62}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Conjunto de hechos}{62}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Conjunto de reglas}{62}{subsection.4.2.2}
+\contentsline {section}{\numberline {4.3}M\IeC {\'e}todo propuesto}{62}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Clasificaci\IeC {\'o}n de noticias}{62}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Aplicaci\IeC {\'o}n de la jerarqu\IeC {\'\i }a}{63}{subsection.4.3.2}
+\contentsline {subsection}{\numberline {4.3.3}Resultados obtenidos}{63}{subsection.4.3.3}
+\contentsline {part}{III\hspace {1em}Publicaci\IeC {\'o}n}{67}{part.3}
+\contentsline {chapter}{\numberline {5}Django}{69}{chapter.5}
+\contentsline {section}{\numberline {5.1}Instalaci\IeC {\'o}n}{70}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}Ubuntu, MAC, Distribuci\IeC {\'o}n Unix}{70}{subsection.5.1.1}
+\contentsline {section}{\numberline {5.2}Creaci\IeC {\'o}n del proyecto}{71}{section.5.2}
+\contentsline {section}{\numberline {5.3}Creaci\IeC {\'o}n de la base de datos - /polls/models.py}{72}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}Manejo de la base de datos con django}{73}{subsection.5.3.1}
+\contentsline {subsection}{\numberline {5.3.2}Creaci\IeC {\'o}n de registro en una tabla}{73}{subsection.5.3.2}
+\contentsline {subsection}{\numberline {5.3.3}Consulta de un registro en una tabla}{73}{subsection.5.3.3}
+\contentsline {subsection}{\numberline {5.3.4}Actualizar registro en django.}{75}{subsection.5.3.4}
+\contentsline {subsection}{\numberline {5.3.5}Mysql con django}{75}{subsection.5.3.5}
+\contentsline {section}{\numberline {5.4}Ejecuci\IeC {\'o}n de c\IeC {\'o}digo - /polls/views.py}{76}{section.5.4}
+\contentsline {section}{\numberline {5.5}Definici\IeC {\'o}n de par\IeC {\'a}metros en el proyecto - /mysite/settings.py}{77}{section.5.5}
+\contentsline {section}{\numberline {5.6}Creaci\IeC {\'o}n de comandos personalizados}{78}{section.5.6}
+\contentsline {section}{\numberline {5.7}Uso de Django-extensions}{79}{section.5.7}
+\contentsline {section}{\numberline {5.8}Anotaciones}{79}{section.5.8}
+\contentsline {chapter}{\numberline {6}API}{81}{chapter.6}
+\contentsline {section}{\numberline {6.1}JSON}{82}{section.6.1}
+\contentsline {section}{\numberline {6.2}Llamadas}{83}{section.6.2}
+\contentsline {chapter}{\numberline {7}Android}{85}{chapter.7}
+\contentsline {subsection}{\numberline {7.0.1}Aspectos a tener en cuenta}{86}{subsection.7.0.1}
+\contentsline {section}{\numberline {7.1}Funcionalidades de la aplicaci\IeC {\'o}n}{87}{section.7.1}
+\contentsline {section}{\numberline {7.2}Funcionalidades auxiliares}{89}{section.7.2}
+\contentsline {section}{\numberline {7.3}Elementos de navegaci\IeC {\'o}n}{91}{section.7.3}
+\contentsline {section}{\numberline {7.4}Casos de uso}{93}{section.7.4}
+\contentsline {subsection}{\numberline {7.4.1}Categorizar noticia}{93}{subsection.7.4.1}
+\contentsline {subsection}{\numberline {7.4.2}Busqueda Noticias}{96}{subsection.7.4.2}
+\contentsline {subsection}{\numberline {7.4.3}Realizar comentario}{98}{subsection.7.4.3}
+\contentsline {part}{IV\hspace {1em}Arquitectura de la soluci\IeC {\'o}n}{101}{part.4}
+\contentsline {chapter}{\numberline {8}Servidor}{103}{chapter.8}
+\contentsline {section}{\numberline {8.1}Tareas programas en el servidor}{103}{section.8.1}
+\contentsline {subsection}{\numberline {8.1.1}Actualizaci\IeC {\'o}n autom\IeC {\'a}tica de los datos}{103}{subsection.8.1.1}
+\contentsline {subsection}{\numberline {8.1.2}Realizaci\IeC {\'o}n de copias de seguridad de la base de datos}{104}{subsection.8.1.2}
+\contentsline {subsection}{\numberline {8.1.3}Eliminaci\IeC {\'o}n de comentarios considerados negativos}{104}{subsection.8.1.3}
+\contentsline {subsection}{\numberline {8.1.4}Correcci\IeC {\'o}n de categor\IeC {\'\i }as err\IeC {\'o}neamente asignadas}{104}{subsection.8.1.4}
+\contentsline {section}{\numberline {8.2}Base de datos}{105}{section.8.2}
+\contentsline {subsection}{\numberline {8.2.1}Noticias y municipios}{105}{subsection.8.2.1}
+\contentsline {section}{\numberline {8.3}Clasificaci\IeC {\'o}n y categor\IeC {\'\i }as}{105}{section.8.3}
+\contentsline {section}{\numberline {8.4}Usuarios}{106}{section.8.4}
+\contentsline {subsection}{\numberline {8.4.1}Control}{106}{subsection.8.4.1}
+\contentsline {part}{V\hspace {1em}Conclusiones}{111}{part.5}
+\contentsline {chapter}{\numberline {9}Conclusiones}{113}{chapter.9}
+\contentsline {section}{\numberline {9.1}Obtenci\IeC {\'o}n de datos}{113}{section.9.1}
+\contentsline {section}{\numberline {9.2}Clasificaci\IeC {\'o}n}{113}{section.9.2}
+\contentsline {section}{\numberline {9.3}Android}{114}{section.9.3}
+\contentsline {section}{\numberline {9.4}API}{114}{section.9.4}
+\contentsline {section}{\numberline {9.5}Django}{114}{section.9.5}
+\contentsline {part}{VI\hspace {1em}Trabajos futuros}{117}{part.6}
+\contentsline {section}{\numberline {9.6}Trabajos futuros}{119}{section.9.6}
+\contentsline {subsection}{\numberline {9.6.1}Extracci\IeC {\'o}n}{119}{subsection.9.6.1}
+\contentsline {subsubsection}{Extracci\IeC {\'o}n de contenidos desde otros gestores de contenidos}{119}{section*.60}
+\contentsline {subsubsection}{Extracci\IeC {\'o}n completa de los datos disponibles en el Instituto de estad\IeC {\'\i }stica y cartograf\IeC {\'\i }a de Andaluc\IeC {\'\i }a}{119}{section*.61}
+\contentsline {subsubsection}{Extracci\IeC {\'o}n de otros datos de la web de un municipio}{119}{section*.62}
+\contentsline {subsubsection}{Extracci\IeC {\'o}n de elementos adjuntos a las noticias}{119}{section*.63}
+\contentsline {subsubsection}{B\IeC {\'u}squeda y creaci\IeC {\'o}n de extractores para nuevas webs que usen OpenCMS}{119}{section*.64}
+\contentsline {subsection}{\numberline {9.6.2}Clasificaci\IeC {\'o}n}{120}{subsection.9.6.2}
+\contentsline {subsubsection}{Utilizaci\IeC {\'o}n de nuevos algoritmos de clasificaci\IeC {\'o}n}{120}{section*.65}
+\contentsline {subsubsection}{Actualizaci\IeC {\'o}n de los modelos de clasificaci\IeC {\'o}n}{120}{section*.66}
+\contentsline {subsection}{\numberline {9.6.3}Publicaci\IeC {\'o}n}{120}{subsection.9.6.3}
+\contentsline {subsubsection}{Migrar a estructura json por defecto django}{120}{section*.67}
+\contentsline {subsubsection}{Encriptaci\IeC {\'o}n de contrase\IeC {\~n}as}{120}{section*.68}
+\contentsline {subsubsection}{Implementaci\IeC {\'o}n de OUATH2}{120}{section*.69}
+\contentsline {subsubsection}{Agregar funcionalidad social}{121}{section*.70}
+\contentsline {subsubsection}{Implementar Facebook SDK}{121}{section*.71}
+\contentsline {subsubsection}{Agregar geolocalizaci\IeC {\'o}n embebida en la aplicaci\IeC {\'o}n android}{121}{section*.72}
+\contentsline {subsubsection}{Compartir}{121}{section*.73}
+\contentsline {subsection}{\numberline {9.6.4}Infraestructura}{121}{subsection.9.6.4}
+\contentsline {subsubsection}{Migrar a un sistema amazon web service}{121}{section*.74}
+\contentsline {part}{VII\hspace {1em}Ap\IeC {\'e}ndices}{123}{part.7}
+\contentsline {chapter}{\numberline {A}Base de datos}{125}{appendix.Alph1}
+\contentsline {section}{\numberline {A.1}Noticias y pueblos}{125}{section.Alph1.1}
+\contentsline {subsection}{\numberline {A.1.1}Noticias}{125}{subsection.Alph1.1.1}
+\contentsline {subsection}{\numberline {A.1.2}Pueblo}{125}{subsection.Alph1.1.2}
+\contentsline {subsection}{\numberline {A.1.3}Pueblo\_InfoExtra}{125}{subsection.Alph1.1.3}
+\contentsline {subsection}{\numberline {A.1.4}vecinos}{126}{subsection.Alph1.1.4}
+\contentsline {subsection}{\numberline {A.1.5}Provincia}{126}{subsection.Alph1.1.5}
+\contentsline {subsection}{\numberline {A.1.6}log\_update}{126}{subsection.Alph1.1.6}
+\contentsline {subsection}{\numberline {A.1.7}log\_update\_web}{126}{subsection.Alph1.1.7}
+\contentsline {section}{\numberline {A.2}Clasificaci\IeC {\'o}n y categor\IeC {\'\i }as}{126}{section.Alph1.2}
+\contentsline {subsection}{\numberline {A.2.1}Categor\IeC {\'\i }as}{126}{subsection.Alph1.2.1}
+\contentsline {subsection}{\numberline {A.2.2}Categor\IeC {\'\i }as Semandal}{126}{subsection.Alph1.2.2}
+\contentsline {subsection}{\numberline {A.2.3}Reglas Ontolog\IeC {\'\i }a}{127}{subsection.Alph1.2.3}
+\contentsline {subsection}{\numberline {A.2.4}Classify}{127}{subsection.Alph1.2.4}
+\contentsline {subsection}{\numberline {A.2.5}NC}{127}{subsection.Alph1.2.5}
+\contentsline {section}{\numberline {A.3}Usuarios}{127}{section.Alph1.3}
+\contentsline {subsection}{\numberline {A.3.1}Usuario}{127}{subsection.Alph1.3.1}
+\contentsline {subsection}{\numberline {A.3.2}SigP}{127}{subsection.Alph1.3.2}
+\contentsline {subsection}{\numberline {A.3.3}Votaciones}{127}{subsection.Alph1.3.3}
+\contentsline {subsection}{\numberline {A.3.4}T\_Liked}{128}{subsection.Alph1.3.4}
+\contentsline {subsection}{\numberline {A.3.5}Comentarios}{128}{subsection.Alph1.3.5}
+\contentsline {subsection}{\numberline {A.3.6}Denuncias\_C}{128}{subsection.Alph1.3.6}
+\contentsline {subsection}{\numberline {A.3.7}NVistas}{128}{subsection.Alph1.3.7}
+\contentsline {section}{\numberline {A.4}Control}{128}{section.Alph1.4}
+\contentsline {subsection}{\numberline {A.4.1}Llamadas}{128}{subsection.Alph1.4.1}
+\contentsline {subsection}{\numberline {A.4.2}Versions}{128}{subsection.Alph1.4.2}
+\contentsline {chapter}{\numberline {B}Librer\IeC {\'\i }as y software utilizado}{129}{appendix.Alph2}
+\contentsline {section}{\numberline {B.1}Librer\IeC {\'\i }as}{129}{section.Alph2.1}
+\contentsline {subsection}{\numberline {B.1.1}Python}{129}{subsection.Alph2.1.1}
+\contentsline {subsubsection}{re}{129}{section*.75}
+\contentsline {subsubsection}{BeautifulSoup}{129}{section*.76}
+\contentsline {subsubsection}{urllib2}{129}{section*.77}
+\contentsline {subsubsection}{xlrd}{130}{section*.78}
+\contentsline {subsubsection}{MySQLdb}{130}{section*.79}
+\contentsline {subsubsection}{subprocess}{130}{section*.80}
+\contentsline {subsubsection}{datetime}{130}{section*.81}
+\contentsline {subsubsection}{sys}{130}{section*.82}
+\contentsline {subsubsection}{os}{130}{section*.83}
+\contentsline {subsection}{\numberline {B.1.2}Java}{131}{subsection.Alph2.1.2}
+\contentsline {subsubsection}{JESS}{131}{section*.84}
+\contentsline {section}{\numberline {B.2}Software}{131}{section.Alph2.2}
+\contentsline {subsection}{\numberline {B.2.1}Django}{131}{subsection.Alph2.2.1}
+\contentsline {subsubsection}{Django-extensions}{131}{section*.85}
+\contentsline {subsection}{\numberline {B.2.2}Eclipse}{131}{subsection.Alph2.2.2}
+\contentsline {subsection}{\numberline {B.2.3}Eclipse (Android SDK)}{131}{subsection.Alph2.2.3}
+\contentsline {subsection}{\numberline {B.2.4}Concept Explorer}{132}{subsection.Alph2.2.4}
+\contentsline {subsection}{\numberline {B.2.5}WEKA}{132}{subsection.Alph2.2.5}
+\contentsline {subsection}{\numberline {B.2.6}Graphviz}{132}{subsection.Alph2.2.6}
+\contentsline {part}{VIII\hspace {1em}Bibliograf\IeC {\'\i }a}{133}{part.8}
+\contentsline {chapter}{Bibliograf\IeC {\'\i }a}{135}{section*.86}

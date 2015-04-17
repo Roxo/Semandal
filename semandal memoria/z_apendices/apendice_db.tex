@@ -1,0 +1,55 @@
+\chapter{Base de datos}
+\label{anexo:bd}
+\section{Noticias y pueblos}
+(Ver figura \ref{fig:noticias}) Las tablas que almacenan información sobre municipios y noticias son las siguientes:
+\subsection{Noticias}
+Tabla que contiene información sobre las noticias. Guardamos titular, resumen, cuerpo de la noticia, municipio, URL a la noticia y  fecha.
+\subsection{Pueblo}
+Tabla que contiene información sobre municipios. Guardamos nombre del pueblo, provincia en la que se encuentra, habitantes, URL a la web del municipio, localización GPS, deuda, superficie y densidad de población.
+\subsection{Pueblo\_InfoExtra}
+Esta tabla almacena información extraída desde el instituto de estadística de la Junta de Andalucía. La información extraída incluye información relativa al conjunto de contratos creados en cada municipio en el año 2013.
+\subsection{vecinos}
+Esta tabla almacena parejas de pueblos vecinos. En la tabla para cada pueblo se almacenan los 5 pueblos más cercanos a este.
+\subsection{Provincia}
+Esta tabla incluye datos básicos de las 52 provincias españolas.
+\subsection{log\_update}
+Tabla donde almacenamos la fecha de ejecución de las actualizaciones de noticias.
+\subsection{log\_update\_web}
+En esta tabla se almacena para cada pueblo, la última vez que se buscaron noticias nuevas en su web y el resultado, satisfactorio o no, de dicha búsqueda.
+
+\section{Clasificación y categorías}
+(Ver figura \ref{fig:categorias})
+Las tablas que tienen relación con el sistema de clasificación y las categorías son las siguientes:
+\subsection{Categorías}
+Esta tabla contiene las etiquetas que podemos encontrar en las distintas páginas de municipios que exploramos y con que categorías de las establecidas en \ref{subsec:listacat} se corresponde.
+\subsection{Categorías Semandal}
+Tabla que contiene las categorías definidas en \ref{subsec:listacat} y las categorías sugeridas por los usuarios
+\subsection{Reglas Ontología}
+Tabla que contiene el grafo de la ontología creado en la figura \ref{fig:ontologia}, cada registro guarda una arista del grafo.
+\subsection{Classify}
+Tabla donde almacenamos las sugerencias de etiquetas que hace el usuario sobre una noticia y los resultados de la fase de clasificación.
+\subsection{NC}
+Tabla donde se almacena la categoría o categorías asignadas a una noticia.
+
+\section{Usuarios}
+(Ver figura \ref{fig:usuarios}) Las tablas que contienen información sobre los usuarios y las acciones que estos pueden realizar son las siguientes:
+\subsection{Usuario}
+Esta tabla almacena información sobre el usuario. Se guarda un pueblo principal, una dirección de correo electrónico, una contraseña. un nombre y un nombre de usuario. 
+\subsection{SigP}
+Esta tabla almacena pueblos que sigue el usuario, además de su pueblo principal almacenado en la tabla Usuario.
+\subsection{Votaciones}
+Esta tabla almacena información sobre las correcciones que hacen los usuarios sobre las categorías asignadas a las noticias. Si hay suficientes votos negativos la categoría se considera mal asignada y se elimina de la noticia.
+\subsection{T\_Liked}
+Esta tabla guarda información sobre las noticias que los usuarios marcan como favoritas.
+\subsection{Comentarios}
+Esta tabla almacena los comentarios que los usuarios hacen sobre las noticias.
+\subsection{Denuncias\_C}
+Esta tabla almacena información sobre los comentarios que los usuarios marcan como negativos, si hay suficientes votos negativos se elimina el comentario.
+\subsection{NVistas}
+Esta tabla almacena información sobre las noticias vistas por cada usuario.
+\section{Control}
+(Ver figura \ref{fig:control})
+\subsection{Llamadas}
+Esta tabla almacena información estadística sobre las llamadas a la API.
+\subsection{Versions}
+Esta tabla lleva un control sobre las modificaciones hechas a distintas tablas para que desde una aplicación se pueda determinar si es necesaria la actualización de algún dato.

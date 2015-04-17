@@ -1,0 +1,157 @@
+\chapter{Llamadas}
+
+Todas las llamadas tendrán la estructura definida anteriormente con protocolo http, dirección \todo{modificar} y puerto 8000 (Es el que django abre por defecto aunque podemos cambiarlo si fuera necesario).
+Como hemos dicho también, existen unas URIs Públicas y otras privadas, aquí pondremos todas las llamadas públicas en la url seguido de su valor de retorno. No se hará así para las privadas ya que no es necesario porque nos devuelve en JSON, un objeto con una variable booleana con valor False si se ha producido algún error y True si la operación se ha completado sin fallos.
+\section{Públicas}
+\begin{description}
+
+\item[/api/pueblos]
+\begin{description}
+\item[/api/pueblos/:id]
+Esta llamada muestra todos los atributos de un pueblo con el id que le indiquemos. Existe un número total de 8118 pueblos, por tanto el id debe estar entre 1 y 8118 en un intervalo cerrado.
+
+\item[/api/pueblos/:dspueblo]
+Esta llamada muestra todos los atributos de un pueblo con el nombre del pueblo formal que le indiquemos. Existe un número total de 8118 pueblos, por tanto el id debe estar entre 1 y 8118 en un intervalo cerrado.
+
+\item[/api/pueblos/]
+Esta llamada muestra todos pueblos que tenemos almacenados en nuestra base de datos.
+
+\item[/api/pueblos/busqueda/:NPueblo]
+Nos devuelve un listado de los pueblos con el dspueblo parecido al :NPueblo que le indiquemos.
+
+\item[/api/pueblos/:IDP/noticias/:P] 
+Nos devuelve la Página :P de noticias de un pueblo con id :IDP que le indiquemos si la tuviera. Si no nos mostrará las noticias de sus pueblos vecinos si estos las tuviesen. Si ningún pueblo, el indicado o sus vecinos, tiene noticias, devolverá un array vacío.
+
+\end{description}
+
+\item[/api/provincias]
+\begin{description}
+\item[/api/provincias/:id]
+Este método muestra todos los pueblos de una provincia con el id que le indiquemos. Existe un número total de 52 provincias, por tanto el id debe estar entre 1 y 52 en un intervalo cerrado.
+
+\item[/api/provincias/:dsprovincia]
+Este método muestra todos los pueblos de una provincia con el id que le indiquemos si éste existe.
+
+\end{description}
+
+
+\item[/api/noticias]
+\begin{description}
+\item[/api/noticias/:id]
+Este método nos muestra la noticia con el ID que le indiquemos. Los saltos de linea \"\\n\" se sustituyen por el caracter - al no ser compatible con json. tanto en el campo cuerpo como en el campo titular. Se recomienda volver a cambiarlo a la hora de capturar la consulta json.
+
+\item[/api/noticias/:id/comentarios]
+Este método nos muestra los comentarios de la noticia con el ID indicado.
+
+\item[/api/noticias/ultima]
+Este método nos muestra las últimas 5 noticias con su últimos 2 comentarios si los tiene. Si no devolverá un array vacío. Los saltos de linea \"\\n\" se sustituyen por el caracter - al no ser compatible con json. tanto en el campo cuerpo como en el campo titular. Se recomienda volver a cambiarlo a la hora de capturar la consulta json.
+
+
+\item[/api/busqueda/:DATOS:/:P:/:USER:]
+Devuelve la página :P de noticias según los :datos de búsqueda que le pasemos por parámetros. También nos dice si, dado un usuario :USER, la noticia ha sido ya vista.
+
+El formato de la fecha debe ser DD-MM-AAAA (los 0 a la izquierda son opcionales.)
+
+\item[/api/noticias/:PAGINA/:IDU] 
+
+Devuelve la página que le pidamos de las noticias de los pueblos que sigue el usuario con id :IDU
+\end{description}
+
+\item[/api/usuario]
+\begin{description}
+\item[/api/usuario/:ID]
+Devuelva la información de un usuario y sus últimos cinco comentario si los tiene.
+
+\item[/api/usuario/:ID/amigos]
+Este método muestra los amigos de un usuario con el ID especificado.
+
+\item[/api/usuario/seguimiento/:ID]
+Devuelve los pueblos (id y nombre) que sigue el usuario con el ID que le especifiquemos
+
+\item[/api/usuario/seguimiento/:ID\_p/:ID\_U}]
+Este sencillo método nos indicará si un usuario con :ID\_U sigue al pueblo con :ID\_P.
+
+\item[/api/:IDU/noticias/:P] 
+Este método nos muestra la página \"P\" de las noticias de todos los pueblos que sigue el usuario con id -> :IDU que le indiquemos. Los saltos de linea se sustituyen por el caracter - al no ser compatible con json. tanto en el campo cuerpo como en el campo titular. Se recomienda volver a cambiarlo a la hora de capturar la consulta json.
+
+
+\end{description}
+
+\item[/api/categorias]
+\begin{description}
+\item[/api/noticias/categorias/]
+Este método nos muestra todas las categorías con las que categorizamos en semandal a las noticias.
+
+
+\item[/api/noticias/:ID/categorias/]
+Este método nos muestra las categorías que se le asigna a una noticia con el ID especificado.
+
+
+\end{description}
+
+\end{description}
+
+\section{Privadas}
+\begin{description}
+\item[api/noticias/:IDN/addcat/:IDU/categoria]
+
+\item[api/llamadas]
+Nos muestra todas las llamadas a los métodos y con los parámetros que se han hecho a la API. (Públicos)
+
+\item[api/usuario/addnoticia/:IDU/:IDN]
+Agrega como vista la noticia con id :IDN para el usuario con id :IDU.
+
+\item[api/C\_instert/:IDN/:IDU/:COMMENT]
+Inserta el comentario :COMMENT en la noticia :IDN hecho por el usuario con id :IDU.
+
+\item[api/logginuser/:IDU]
+Nos devuelve unos datos específicos, del usuario con id :IDU para la primera página de la APP de android 
+
+
+\item[api/log/:USUARIO/:CONTRASEÑA]
+Nos devuelve true si el par usuario-contraseña existe, donde usuario puede ser o el nombre de usuario o el correo electrónico. Devuelve false en caso contrario
+
+\item[api/register/:NOMBRE/:F\_APELLIDO/:S\_APELLIDO/:USUARIO/:PASS/:MAIL/:IDP]
+Crea un nuevo usuario con los parámetros que le pasamos en la llamda.
+
+\item[api/usuario/borraseguimiento/:IDP/:IDU]
+Elimina que el usuario con id :IDU sigue el pueblo con id :IDP
+
+\item[api/usuario/mprincipal/:IDU/:DSPUEBLO]
+Modifica el pueblo principal de un usuario con id :IDU cambiando el que ya tenía por el que tiene de nombre :DSPUEBLO. Si el pueblo no existe no se agrega el seguimiento.
+
+\item[api/addsigue/:IDU/:IDP]
+Agrega que el usuario con id :IDU sigue el pueblo con id :IDP
+
+\item[api/nliked/:IDU/:IDN]
+nos devuelve true si al usuario con id :IDU le gusta la noticia con id :IDN y false en caso contrario
+
+\item[api/addliked/:IDU/:IDN]
+Agrega el like del usuario con id :IDU a la noticia con id :IDN.
+
+
+\item[api/removeliked/:IDU/:IDN]
+Elimina el like del usuario con id :IDU a la noticia con id :IDN.
+
+\item[api/votacion/:IDN/:IDU/:IDC]
+Realiza una votación que nos dice que la categoría :IDC es erronea para la noticia con id :IDN diciendo que la votación la ha realizado un usuario :IDC.
+
+\item[api/categoriza/:IDN/:IDCN/:IDU]
+Añade la categoría :IDCN a la noticia :IDN indicando que la categorización la ha agregado el usuario con id :IDU.
+
+\item[api/denunciar/:IDU/:IDC]
+Denuncia para el usuario :IDU el comentario con id :IDC.
+
+\item[api/versiones]
+Nos muestra las versiones de las tablas categorías y pueblos
+
+\end{description}
+%    url(r'^api/vecinos/(?P<id_p>\d+)/(?P<id_u>\d+)/(?P<init>\d+)/(?P<fin>\d+)/$',views.not_vecinos,name='not_vecinos')
+
+
+\section{Deprecated}
+\begin{description}
+\item[api/comentarios/ultimo]
+\item[api/usuario/busqueda]
+\item[api/vecinos/:IDP:/:IDU:/:INI/:FIN]
+\end{description}

@@ -1,0 +1,98 @@
+\chapter{Búsqueda de categorías}
+\label{chap:categorias}
+
+Cuando estudiamos la arquitectura de las distintas páginas, nos fijamos en que muchas de ellas estructuran las noticias según una serie de categorías. Estas categorías son un buen punto de partida para comenzar a etiquetar la información que estamos extrayendo y no cuenta con alguna etiqueta, pero como las páginas están estructuradas de forma distinta nos encontramos que dada una categoría (Ej: \textit{Deportes}), es referenciada con distitnas etiquetas (Ej: \textit{deportes, Deporte, depo, etc})  según el municipio que se visite, necesitamos un trabajo preliminar con el que  determinar que conjunto de etiquetas hacen referencia a una misma categoría.
+
+\subsection{Búsqueda de sinónimos}
+
+Como hemos visto anteriormente, en la mayoría de casos un conjunto de palabras muy similares entre sí hacen referencia a una misma categoría, o nos encontramos con que se juntan etiquetas que hacen referencia a distintas categorías pero que en una o varias páginas se entiende como una única categoría (Ej: \textit{saludyconsumo}). Las diferencias normalmente están en el uso de mayúsculas/minúsculas o singular/plural.
+
+El primer paso del proceso es obtener una lista con todas las etiquetas únicas, para ello buscamos en la estructura de todas las páginas las etiquetas que usa cada una y aplicamos la distancia de Levenshtein.
+
+\subsubsection{Distancia de Levenshtein}
+
+La distancia de Levenshtein es una forma de medir la distancia entre palabras, esta distancia está definida como el número de pasos que hay que dar para llegar de una palabra A a una palabra B. Los posibles pasos son sustituir, insertar o eliminar una letra.
+Si aplicamos el algoritmo con las palabras \textit{general} y \textit{generales} obtenemos una distancia de dos, ya que tenemos que insertar dos letras para llegar de una palabra a otra.
+
+Con este algoritmo recorremos la lista de categorías tomando una palabra y la comparamos con las siguientes, y si la distancia que indica el algoritmo es menor o igual a 3, consideramos que son sinónimos y que hacen referencia a la misma categoría. Las relaciones que vamos estableciendo las almacenamos en una base de datos.
+	
+
+Con el proceso anterior podemos hacer grupos con la mayoría de las etiquetas pero aún quedan palabras que no podemos asociar a ningún grupo ya que no cumplen el umbral de la distancia de Levenshtein establecido.
+
+Una opción es el caso de encontrarnos con una categoría que en realidad podemos separar en dos etiquetas, para clasificar esta etiqueta buscamos otras cadenas que estén contenidas en la etiqueta compuesta. En el caso de \textit{saludyconsumo} tenemos que salud y consumo forman parte de la etiqueta por lo que podemos decir que \textit{saludyconsumo} responde a estas dos categorías, salud y consumo.
+
+Otro caso son el de aquellas etiquetas que no se parecen, según el criterio establecido, a ninguna otra palabra de la lista, bien sea por que la etiqueta es un acrónimo, una abreviatura o una palabra totalmente distinta pero que representa el mismo concepto de una determinada categoría (Ej. Lasetiqueta terceraedad ha añadido a la categoría Mayores). Estos casos se han añadido a alguna categoría de manera manual.
+
+\subsection{Listado de categorías}
+\label{subsec:listacat}
+Tras terminar los procesos anteriores la lista obtenida es la siguiente:
+\begin{multicols}{3}
+\begin{enumerate}
+    \item Turismo
+    \item Servicios sociales
+    \item Recursos Humanos
+    \item Obras
+    \item Igualdad
+    \item Mujer
+    \item PIM
+    \item Consumo
+    \item Grupos municipales
+    \item Seguridad Ciudadana
+    \item Comercio
+    \item Juventud
+    \item Medio Ambiente
+    \item Municipal
+    \item Deportes
+    \item Salud
+    \item Generales
+    \item Atención al ciudadano
+    \item Formación
+    \item Noticias anuales
+    \item Régimen Interior
+    \item Desarrollo
+    \item Economía
+    \item Empleo
+    \item Guadalinfo
+    \item Policía
+    \item Bienestar social
+    \item Agricultura
+    \item Cultura
+    \item Servicios
+    \item Comunicación
+    \item Festejos
+    \item Ayuntamiento
+    \item Relaciones institucionales
+    \item Vivienda
+    \item Urbanismo
+    \item Cursos
+    \item Asuntos Sociales
+    \item Participación Ciudadana
+    \item Infraestructuras
+    \item RSS
+    \item Social
+    \item Tecnología
+    \item Educación
+    \item Ciudadanía
+    \item Parques y Jardines
+    \item Tráfico
+    \item Delegación
+    \item Patrimonio
+    \item Mayores
+    \item Radio y TV
+    \item Contratante
+\end{enumerate}
+\end{multicols}
+
+\subsection{Refinado de las categorías seleccionadas}
+
+La lista de categorías se ha obtenido de forma automática en base a las etiquetas encontradas en la web, ahora podemos estudiar si existe algún tipo de jerarquía entre estas etiquetas y determinar si alguna categoría puede considerarse como subcategoría de otras ya que representan conceptos muy similares (Ej: \textit{Policía} y \textit{Seguridad Ciudadana}). Además podemos eliminar categorías que hemos encontrado pero que no representan ningún concepto como la etiqueta RSS o Noticias Anuales.
+
+A continuación creamos una jerarquía con las categorías que tenemos y establecemos relaciones entre algunas de ellas ya que representan conceptos similares. La figura \ref{fig:ontologia} muestra las categorías que utilizamos para crear nuestra jerarquía.
+
+\begin{sidewaysfigure}[h]
+\includegraphics[width=\textwidth]{Categorias/creacion_conjunto/semandal.png}
+\caption{Jerarquía}
+\label{fig:ontologia}
+\end{sidewaysfigure}
+
+Una vez tengamos un sistema de extracción de noticias tendremos en cuenta esta jerarquía para etiquetar el contenido extraído.

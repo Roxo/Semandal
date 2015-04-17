@@ -1,0 +1,109 @@
+\chapter{Motor de clasificación}
+
+Para la clasificación de noticias hemos propuesto un sistema experto flexible que permita clasificar utilizando distintas metodologías, para ello como motor de nuestro clasificador la librería JESS y como reglas tenemos varios conjuntos de reglas en formato CLIPS que generamos a partir de árboles de decisión, análisis formal de conceptos y sistemas de producción de reglas.
+\section{Sistema experto}
+
+Como motor de clasificación hemos utilizado la herramienta JESS, que integra CLIPS con Java. Su funcionamiento se basa en el algoritmo RETE, este algoritmo se utiliza para ver las coincidencias entre un conjunto de patrones y un conjunto de objetos\cite{A2}.
+
+\subsection{Algoritmo RETE}
+
+Los algoritmos de búsqueda de patrones se tratan de buscar coincidencias entre un conjunto de reglas y un conjunto de hechos en un proceso iterativo para buscar que reglas quedan satisfechas por el conjunto de hechos. Este proceso puede llegar a ser muy costoso desde el punto de vista computacional cuando el conjunto de reglas es grande.
+
+El algoritmo RETE se diferencia de otros algoritmos de este tipo en que guarda en memoria la información obtenida en las iteraciones realizadas por lo que en siguientes iteraciones se ahorra el tener que repetir iteraciones ya hechas. De esta manera el algoritmo es más rápido que algoritmos del mismo tipo utilizados con anterioridad.
+
+El funcionamiento más detallado es el siguiente, la base es la creación de una red de nodos. Esta red almacena la información de la búsqueda de patrones entre iteraciones, de forma que solo es necesario procesar aquellos hechos que se han modificado, una vez hecho se actualiza la información guardada con los hechos añadidos o eliminados. Conforme la lista de hechos se reduce el proceso se hace más rápido.
+
+\section{Entradas del sistema experto}
+\subsection{Conjunto de hechos}
+
+El conjunto de hechos que se le dará al clasificador serán las palabras de cada noticia que se quiera clasificar eliminando aquellas que no aportan información y están listadas en un fichero StopWords.
+
+\subsection{Conjunto de reglas}
+
+Para la generación de las reglas que utilizaremos junto a JESS hemos generado conjuntos de reglas con distintos métodos: análisis formal de conceptos, árboles de decisión y sistemas de producción de reglas. Utilizamos como fuente para generar estas reglas aquellas noticias de las que conocemos su categoría. En las siguientes páginas se documenta la metodología utilizada con mayor detalle.
+
+\section{Método propuesto}
+\subsection{Clasificación de noticias}
+La fase de clasificación comienza con una selección en la base de datos de aquellas noticias que no están clasificadas, estas son aquellas noticias asignadas a la categoría \textit{Sin Categoría}. Una vez hecho esto se van recorriendo una a una, y se toma el texto de la noticia para extraer una lista de palabras que usaremos como conjunto de hechos en el clasificador. El siguiente paso es lanzar desde Python un proceso que ejecute el archivo .jar que contiene el código de clasificador, pasando como parámetros los conjuntos de reglas y hechos. Una vez el clasificador termina se recupera la salida y se almacena el resultado en la base de datos. Si el clasificador no devuelve ningún resultado, que se puede dar si la noticia no cuenta con un texto a parte del titular o resumen, se mantiene la categoría \textit{Sin Categoría}.
+\subsection{Aplicación de la jerarquía}
+\label{subsec:apli_onto}
+Una vez se determina la categoría de una noticia, se comprueba si siguiendo la jerarquía que hemos creado podemos sugerir alguna etiqueta más. Para ello hacemos un recorrido del grafo que contiene la jerarquía (Ver figura \ref{fig:ontologia}) tomando como punto de partida la categoría que queremos asignar. Siguiendo el recorrido añadimos las etiquetas que corresponda. Si la categoría asignada no aparece en la jerarquía, o la noticia extraída no cuenta con una categoría en la web de su municipio, no se añaden etiquetas nuevas.
+
+\subsection{Resultados obtenidos}
+
+Tras pasar todo este proceso, damos una o varias etiquetas a aquellas noticias que no tenían una categoría asignada en su web. A continuación se muestran unos ejemplos de noticias clasificadas:
+
+\subsubsection*{Ejemplo 1}
+
+\textbf{Titular\footnote{\url{http://www.benalupcasasviejas.es/opencms/opencms/benalup/actualidad/noticias/noticia_2473.html}}}
+
+La cabeza de la Liga se mantiene igual a la espera del Corinthians-Boomerang de este viernes
+
+\textbf{Cuerpo de la noticia:}
+
+Tras su derrota con el líder en la primera vuelta, para Boomerang este viernes 27 será la última oportunidad de poder acortar su distancia de siete puntos con Corinthians y poder seguir siendo alternativa al campeonato de liga regular. De lo  contrario, será complicado que el líder pierda la cómoda distancia que posee de aquí a la llegada de los playoffs, plazas que ambos conjuntos tienen ya prácticamente aseguradas. Seguridad que aún no tienen el resto de aspirantes a esos primeros  puestos que dan lugar a las eliminatorias por el título, ya que sólo existen ocho puntos de diferencia entre el tercero (Matadero) y el noveno (Casas Viejas Independiente), por lo que pasan las jornadas y ninguno de los equipos de ese pelotón se descuelgan.-En segunda división, al jugarse la liga regular a una sola vuelta, Calle Nueva Veteranos depende de sí mismos para conquistar ese título honorífico, incluso podría  perder un partido y seguir siendo campeón, ya que el enfrentamiento directo con Casas Viejas Veteranos, su inmediato perseguidor, lo tiene ganado.-Se adjuntan resultados de esta pasada semana de campeonato y clasificaciones.
+
+\textbf{Etiquetas sugeridas:}
+\begin{center}
+\begin{table}[h]
+\centering
+\begin{tabular}{c|c|c|c|}
+\cline{2-4}
+          & RIPPER   & FCA                & C4.5               \\ \cline{2-4} 
+          & Deportes & Grupos municipales & Asuntos sociales   \\ \cline{2-4} 
+          & -        & Juventud           & -                  \\ \cline{2-4} 
+          & -        & Deportes           & -                  \\ \cline{2-4} 
+          & -        & Desarrollo         & -                  \\ \cline{2-4} 
+          & -        & Cultura            & -                  \\ \cline{2-4} 
+          & -        & Ayuntamiento       & -                  \\ \cline{2-4} 
+Algoritmo & -        & Educación          & -                  \\ \hline
+Jerarquía & -        & Economía           & Servicios sociales \\ \cline{2-4} 
+          & -        & -                  & Servicios          \\ \cline{2-4} 
+          & -        & -                  & Social             \\ \cline{2-4} 
+\end{tabular}
+\end{table}
+\end{center}
+\subsubsection*{Ejemplo 2}
+\textbf{Titular\footnote{\url{http://www.bornos.es/opencms/opencms/bornos/actualidad/noticias/noticia_1389.html}}}
+
+Donación de Sangre el próximo 1 de diciembre en Bornos
+
+\textbf{Cuerpo de la noticia:}
+
+La Delegación de Sanidad del Ayuntamiento de Bornos informa que el próximo LUNES 1 de diciembre el Centro Regional de Transfusión Sanguínea de Cádiz, se va a desplazar a Bornos para realizar una campaña de recogida de sangre.- -Todo el que quiera podrá donar sangre a partir de las 17:30 horas y hasta las 21:30 horas, en el Centro de Mayores, Plaza I de Mayo.- -Recordar que con este simple gesto se pueden salvar vidas.- -Las condiciones para donar sangre son tener más de 18 años al menos 50 kilos de peso y gozar de buena salud.- -Los donantes habituales deben esperar dos meses entre una donación y otra y pueden realizar un máximo de cuatro donaciones por año los varones y tres las mujeres.- -DONACIÓN EN BORNOS- -LUNES 1 DE DICIEMBRE- -HORARIO: DESDE LAS 17:30 HORAS A LAS 21:30 HORAS- -LUGAR: CENTRO DE LOS MAYORES. PLAZA I DE MAYO
+\begin{center}
+
+
+\textbf{Etiquetas sugeridas:}
+\begin{tabular}{|c|c|c|}
+ \hline 
+ RIPPER & FCA & C4.5 \\ 
+ \hline 
+ Economía & Salud & Salud \\ 
+ \hline 
+\end{tabular}
+\end{center}
+ \subsubsection*{Ejemplo 3}
+ 
+\textbf{Titular\footnote{\url{http://www.algar.es/opencms/opencms/algar/actualidad/noticias/noticia_0009.html}}}
+
+Concierto de 'Laura Gallego'
+
+\textbf{Cuerpo de la noticia:}
+
+Día: 10 de Septiembre de 2.011-Hora: A partir de las 23:00 h.
+Puntos de Venta de Entradas-Ayuntamiento:-Lunes a Viernes de 9:00 hº a 14:00 hº.
+Sábados de 10:00 hº a 14:00 hº.
+Excmo. Ayto. de Algar-Concejalía de Fiestas
+\begin{center}
+
+
+\textbf{Etiquetas sugeridas:}
+\begin{tabular}{|c|c|c|}
+ \hline 
+ RIPPER & FCA &  C4.5\\ 
+ \hline 
+ Cultura & Patrimonio & Generales \\ 
+ \hline 
+\end{tabular}
+\end{center}

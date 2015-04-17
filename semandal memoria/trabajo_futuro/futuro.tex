@@ -1,0 +1,64 @@
+\section{Trabajos futuros}
+
+\subsection{Extracción}
+
+\subsubsection{Extracción de contenidos desde otros gestores de contenidos}
+
+Hasta ahora todo el proceso de extracción se ha realizado sobre municipios cuyas web se han generado haciendo uso del gestor de contenidos OpenCMS, una ampliación del proyecto puede ser la extracción de otros gestores de contenidos que usan los municipios de Andalucía como Joomla!, TYPO3 o WordPress.
+
+\subsubsection{Extracción completa de los datos disponibles en el Instituto de estadística y cartografía de Andalucía}
+
+Extracción de todos los datos que ofrece el Instituto de estadística y cartografía de Andalucía, actualmente solo obtenemos los datos relativos al número de contratos de trabajo creados en el municipio.
+
+\subsubsection{Extracción de otros datos de la web de un municipio}
+
+En la web de un municipio hay mucha más información a parte de las noticias, una posible ampliación de Semandal podría ser la extracción de esta información. En ella se incluyen enlaces a trámites que se pueden realizar a través de Internet, calendarios de eventos, etc.
+
+\subsubsection{Extracción de elementos adjuntos a las noticias}
+
+Junto con el texto de una noticia muchas veces se pueden encontrar elementos que lo acompañan, estos elementos son: imágenes, documentos (.pdf o .doc), enlaces a otros lugares de Internet, etc. En futuras versiones de la aplicación podrían ofrecerse enlaces a estos elementos o en el caso de las imágenes mostrarse junto al texto de la noticia.
+
+\subsubsection{Búsqueda y creación de extractores para nuevas webs que usen OpenCMS}
+
+Con el paso del tiempo es posible que uno o varios municipios hayan modificado sus páginas web. Una tarea futura sería buscar si existen nuevos pueblos que usen OpenCMS y extraer de ellos las noticias creando un nuevo script, si fuese necesario.
+\subsection{Clasificación}
+
+
+\subsubsection{Utilización de nuevos algoritmos de clasificación}
+
+El uso de otros algoritmos aplicables a la clasificación de texto como las máquinas de vector soporte (SVM), junto con los algoritmos que usamos actualmente puede ayudar a, en general, obtener mejores resultados.
+
+\subsubsection{Actualización de los modelos de clasificación}
+Una tarea de especial interés es la actualización de nuestros modelos de clasificación teniendo en cuenta las nuevas noticias de las que se disponen y las correcciones de las categorías que realicen los usuarios de la aplicación. De esta forma de depura la base de conocimiento y se podría mejorar la tasa de acierto de los modelos de clasificación.
+
+
+\subsection{Publicación}
+
+\subsubsection{Migrar a estructura json por defecto django}
+Las estructuras devueltas en JSON son creadas a mano por comodidad y simpleza. Pero para realizar un uso correcto de django deberíamos estudiar los plugins y métodos para convertir a json estructuras devueltas con django para realizar una API más profesional.
+
+\subsubsection{Encriptación de contraseñas}
+
+A la hora de realizar el logueo, la contraseña se manda en texto plano. Un trabajo futuro sería poder enviar datos del usuario encriptados, para poder ofrecer al usuario la seguridad de sus datos a la hora de utilizar la APP.
+
+\subsubsection{Implementación de OUATH2}
+Existe un plugin para django que realiza la autenticación a través de OUATH2. Aunque en otro trabajo futuro se enfoca la implementación de facebook sdk, también sería correcto tener un sistema de logueo propio para aquellos usuarios que no dispongan de cuenta en facebook.
+
+\subsubsection{Agregar funcionalidad social}
+Aunque ya implementada, quitamos la funcionalidad de amigos porque no era un objetivo desde un primer momento del proyecto. Un trabajo futuro sería activar esta funcionalidad y testear su comportamiento. También debemos cambiar la apariencia de dichas pantallas, ya bien sea cambiando su estructura y/o agregand otros elementos visuales como bandera de pueblos a los que siguen los distintos usuarios en su perfil.
+
+\subsubsection{Implementar Facebook SDK}
+Algo que expandiría y mejoraría la usabilidad de nuestra aplicación sería integrar Facebook con ésta. Así mejoraríamos la funcionalidad social descrita anteriormente. También nos ayudaría en la gestión social ya que podría ser más sencillo usar el sdk de facebook que implementar la agregación de amigos y el almacenamiento de estos.
+
+\subsubsection{Agregar geolocalización embebida en la aplicación android}
+Otra mejora, en lugar de poner un enlace a google maps, sería insertarla en la misma pantalla que nos ofrece los datos de los pueblos. Para ello habría que investigar en la utilización más a fondo de la tecnología y realizar un estudio de compatibilidades de dicha función con las distintas versiones de android a ver si quitaría usuarios potenciales.
+
+\subsubsection{Compartir}
+Para la funcionalidad social de la aplicación y para que ésta funcione entre los usuarios debemos implementar un botón para compartir enlaces de las noticias.
+
+\subsection{Infraestructura}
+
+\subsubsection{Migrar a un sistema amazon web service}
+
+Unas de las mejoras más útiles sería migrar a un sistema de amazon web services ya que son los que mejor rendimiento han ofrecido. Este sistema también nos ofrece balanceadores de cargas y distintas copias de seguridad. La pega de este sistema, es que es un sistema de pago por tanto, deberíamos migrar a esta estructura una vez que tuviésemos un número elevado de usuarios y por tanto se incrementen las ofertas por publicidad.
+

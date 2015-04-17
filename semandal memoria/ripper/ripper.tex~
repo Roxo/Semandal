@@ -1,0 +1,41 @@
+
+
+
+
+
+\subsection*{Introducción}
+
+El análisis formal de conceptos (FCA) queda definido por Wille en \cite{A3} como una teoría matemática basada en conceptos y jerarquías de conceptos para apoyar la comunicación humana racional desarrollando matemáticamente estructuras conceptuales que pueden ser activadas con la lógica. Un concepto, la unidad básica en FCA, está formado por una serie de objetos que pertenecen al concepto y una serie de atributos o propiedades que tienen todos los objetos anteriores. El modelo matemático que se crea con FCA y permite establecer relaciones entre los objetos y los atributos se denomina Contexto Formal  \cite{A3}. Además con el análisis formal de conceptos se permite visualizar la jerarquía creada. Este tipo de análisis puede aplicarse a problemas de clasificación de textos y procesamiento del lenguaje natural, por lo que parece adecuado para nuestro problema de clasificación de noticias.
+
+\subsection*{Concept Explorer}
+Concept Explorer es la herramienta que hemos utilizado para obtener las reglas de asociación que posteriormente utilizaremos en la fase de clasificación y para visualizar la jerarquía de nuestro contexto.
+\subsubsection*{Creación del contexto}
+Para la creación del contexto necesitamos un conjunto de atributos y un conjunto de objetos. Como atributos hemos tomado un conjunto de palabras extraídas de las noticias formado por las palabras más comunes de cada categoría de noticias. Como conjunto de objetos tenemos el texto de un número determinado de noticias de cada categoría. Una vez hemos determinado ambos conjuntos, el valor que puede tomar cada atributo es si aparece o no en el texto de cada noticia por lo que para cada objeto vamos indicando si contiene cada elemento del conjunto de atributos.
+\subsubsection*{Selección de atributos}
+EN OTRO DOCUMENTO
+\subsection*{Resultados obtenidos}
+Para determinar como afecta el tamaño de los conjuntos de objetos y atributos a la precisión del clasificador hemos realizado pruebas con diferentes tamaños de conjuntos con los valores indicados en la siguiente tabla:
+
+\begin{tabular}{|c|c|c|}
+  \hline 
+  Experimento & Número de objetos & Número de atributos \\ 
+  \hline 
+  Experimento 1 & 421 & 235 \\ 
+  \hline 
+  Experimento 2 & 372 & 257 \\ 
+  \hline 
+  \end{tabular}   
+  
+Como resultado obtenemos un conjunto de reglas de asociación que transformaremos en un fichero clp de CLIPS y el grafo de la jerarquía. El grafo obtenido se muestra a continuación.
+
+%\begin{center}
+%\includegraphics[width=\textwidth]{matrizconfusion.png} 
+%\end{center}
+
+\subsection*{Extracción de reglas}
+Para generar el fichero clp vamos procesando cada regla filtrando aquellas con un soporte mayor a 0, ya que aquellas reglas que no cumplen esta condición no tienen ningún objeto que las cumpla. También eliminamos aquellas reglas que en su parte izquierda no tengan una etiqueta de alguna categoría ya que no nos aportan información útil en nuestro estudio.
+
+
+ 
+%\include{apendice}
+%\bibliography{mybib}

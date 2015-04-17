@@ -1,0 +1,63 @@
+\section{Creación de comandos personalizados}
+
+La ejecución de scripts en Django se realiza a través de la shell ejecutando el ficheto manager.py. Para la ejecución de tareas periódicas se recomienda la creación de comandos para facilitar la ejecución automática de las tareas. Para la creación de los comandos se debe modificar la estructura de archivos creada durante la instalación de Django, para permitir la ejecución de comandos personalizados se debe modificar la estructura de la siguiente manera:
+
+\begin{lstlisting}
+polls/
+    __init__.py
+    models.py
+    management/
+        __init__.py
+        commands/
+            __init__.py
+            _private.py
+            closepoll.py
+    tests.py
+    views.py
+\end{lstlisting}
+
+Siguiendo el ejemplo de la creación de la aplicación polls, la modificación incluye la creación de los ficheros \textit{management} y \textit{commands}. Dentro de esta última carpeta se incluyen los ficheros con el código que se ejecutará con el comando, el nombre del comando es el mismo que se le de al fichero. Si el nombre del fichero comienza con guión bajo (\_) el comando no se podrá ejecutar.
+
+El código que incluye el fichero que contiene el código del comando es el siguiente:
+
+\begin{lstlisting}
+import sys
+sys.path.insert(0, '...django/mysite/Programas/Update/')
+import mi_modulo
+from django.core.management.base import NoArgsCommand
+
+class Command(NoArgsCommand):
+    def handle_noargs(self, **options):
+		mi_modulo.run()
+
+\end{lstlisting}
+
+Con este código se crea un comando sin argumentos. Con el módulo sys se agrega a la variable PATH de Python la ruta al script que realiza la extracción de noticias, de esta forma luego podemos exportarlo como un módulo y ejecutarlo.
+
+Para ejecutar el comando, lo utilizamos como argumento al ejecutar el fichero manage.py
+
+
+\begin{lstlisting}
+python ./manage.py mi_comando
+\end{lstlisting}
+\section{Uso de Django-extensions}
+Django-extension es un conjunto de comandos y extras que se añaden a la funcionalidad que ofrece Django. Una vez instaladas las extensiones, hay que agregarlas a la aplicación que se está creando. Para agregarla hay que modificar la variable INSTALLED\_APPS que se encuentra en el fichero \textit{settings.py}:Django-extension es un conjunto de comandos y extras que se añaden a la funcionalidad que ofrece Django
+
+\begin{lstlisting}
+INSTALLED_APPS = (
+    ...
+    'django_extensions',
+)
+\end{lstlisting}
+
+Una vez instalado, puede generarse el fichero dot que contiene un grafo creado a partir del modelo creado en django con el siguiente comando:
+
+\begin{lstlisting}
+manage.py graph_models -a > my_project.dot
+\end{lstlisting}
+
+Con el fichero dot podemos obtener el grafo en formato PNG con el siguiente comando:
+
+\begin{lstlisting}
+dot -Tpng my_project.dot > my_project.png
+\end{lstlisting}

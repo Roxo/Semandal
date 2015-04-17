@@ -1,0 +1,213 @@
+%\documentclass[a4paper,openright,12pt]{book}
+%
+%\usepackage[utf8]{inputenc}
+%\usepackage[spanish]{babel}
+%\usepackage{amsmath}
+%\usepackage{fancyhdr}
+%\usepackage{todonotes}
+%\usepackage{graphicx}
+%\usepackage{float}
+%% aqui definimos el encabezado de las paginas pares e impares.
+%%\lhead[Daniel Albendín y ángel Cantó]{Daniel Albendín y ángel Cantó}
+%%\chead[]{}
+%%\rhead[Resumen]{Resumen}
+%%\renewcommand{\headrulewidth}{0.5pt}
+%%
+%%% aqui definimos el pie de pagina de las paginas pares e impares.
+%%\lfoot[Universidad de Huelva]{Universidad de Huelva}
+%%\cfoot[\thepage]{\thepage}
+%%\rfoot[Proyecto Semandal]{Proyecto Semandal}
+%%\renewcommand{\footrulewidth}{0.5pt}
+%
+%
+%
+%% Este es un comentario, no será mostrado en el documento final.
+%\begin{document}
+
+\chapter{API}
+
+El segundo método de publicación de la información que usaremos es una API Rest, así el usuario únicamente con visitar nuestra web podrá obtener los datos que hemos recopilado.
+
+Una API es un conjunto de llamadas a ciertas bibliotecas y ofrecen un cierto servicio. Existen muchas API conocidas como las de Google \textit{(Geolocalización, Custom Search, etc \ldots)}, Wikipedia, etc \ldots 
+\linebreak
+Una API se convierte en una API REST cuando nuestra API puede ser utilizada por cualquier dipositivo o cliente que entienda HTTP, así que podríamos decir que REST es un tipo de arquitectura más natural y estandar para crear APIs
+
+Existen tres niveles de calidad a la hora de aplicar REST en el desarrollo de una aplicación web que se recoge en un modelo llamado 
+\href{http://martinfowler.com/articles/richardsonMaturityModel.html}{\textbf{Richardson Maturity Model}} Y los tres niveles son:
+\begin{description}
+\item[Uso correcto de las URI]
+La estructura de la URI debe ser la siguiente:
+
+\hspace*{-10mm}
+\begin{minipage}{12cm}
+\begin{lstlisting}
+{protocolo}://{hostname}[:puerto]/{ruta del recurso}?{consulta de filtrado}
+\end{lstlisting}
+\end{minipage}
+
+También existen varias restricciones a la hora de crear las URIs:
+
+\begin{enumerate}
+\item Los nombres de la URI deben implicar una acción por tanto deben evitarse usar verbos en ellos.
+\item Deben ser únicas, no debemos tener más de una URI para identificar un mismo recurso.
+\item Deben ser independiente de formato.
+\item Deben mantener una jerarquía lógica.
+\item Los filtrados de información de un recurso no se hacen en la URI.
+\end{enumerate}
+
+\item[HTTP]
+Existen varios puntos que tenemos que tener en cuenta a la hora de la creación API REST, como los métodos de HTTP (GET, POST, PUT, DELETE, PATCH) los códigos de estado para consultar cual es el problema y la aceptación de tipos de contenido.
+Nosotros hemos dado una vuelta más al uso de la API en este sentido y en lugar de estos métodos, desde nuestra API únicamente dejamos hacer llamadas GET. Y éstas serán las llamadas públicas a la API. Digamos que también le hemos dado una vuelta al uso de estos recursos y hemos intentado hacer que la API sea mucho más sencilla para el usuario.
+\item[Hypermedia]
+El lenguaje en el que está escrito el resultado de la llamada a la API, Nosostros usaremos JSON.
+\end{description}
+
+\section{JSON}
+Para la parte de la publicación de los datos debíamos elegir un formato y nos decidimos por JSON. 
+
+JSON, \textbf{Java Script Object Notation}, está siendo uno de los formatos más usados por todas las API's debido a la simplicidad de éste.
+
+Aunque XML es más extensible, dependiendo del tipo de información que vamos a transferir, ésta cualidad nos puede hacer más o menos falta. Para nosotros, por nuestra forma de trabajar, utilizamos únicamente datos clásicos así que no nos hace falta la extensibilidad de XML y por tanto podemos aprovecharnos de otras cualidades de JSON como por ejemplo legibilidad.
+
+La superioridad de JSON a la hora de tratar datos básicos, es el almacenamiento en vectores y registros en lugar de árboles como hace XML. Por tanto aprovechamos la facilidad a la hora de importar estos datos a objetos en lenguajes de programación. Para hacer lo mismo con xml, deberíamos transformar los datos antes de importarlos. Por eso JSON es el formato más utilizado en las APIs y por ese motivo lo usaremos nosotros.
+
+
+\section{Llamadas}
+
+Todas las llamadas tendrán la estructura definida anteriormente con protocolo http, dirección y puerto 8000 (Es el que django abre por defecto aunque podemos cambiarlo si fuera necesario).
+Como hemos dicho también, existen unas URIs Públicas y otras privadas, aquí pondremos todas las llamadas públicas en la url seguido de su valor de retorno. No se hará así para las privadas ya que no es necesario porque nos devuelve en JSON, un objeto con una variable booleana con valor False si se ha producido algún error y True si la operación se ha completado sin fallos.
+
+A continuación pondremos dos de las llamadas más comunes y la estructura que deberían devolver junto a un ejemplo.
+
+
+
+\begin{description}
+
+\item[/api/pueblos/:id]
+Esta llamada muestra todos los atributos de un pueblo con el id que le indiquemos. Existe un número total de 8118 pueblos, por tanto el id debe estar entre 1 y 8118 en un intervalo cerrado.
+
+\lstset{frame=none}
+
+\begin{tabular}{p{6cm}p{6cm}}
+
+\begin{minipage}{6cm}
+
+\begin{lstlisting}
+
+{
+pueblos:[
+	{
+		id:"int",
+		dspueblo:"string",	
+		coordenadas:{
+			longitud:"double",
+			longitud:"double"
+		}
+		url:"string",
+		opencms:"boolean",
+		habitantes:"integer",
+		deuda:"double",
+		deudaxhab:"double",
+		fecha_inscripcion:"string",
+		superficie:"double",
+		wiki:"string",
+		cp:"integer"
+		n_noticias:"integer"
+	}
+]
+}
+
+\end{lstlisting}
+
+\end{minipage}
+
+&
+
+\begin{minipage}{6cm}
+
+\begin{lstlisting}
+{
+"id_provincia":11,
+"dsprovincia":" Cadiz",
+"npueblos":"1",
+"pueblos":[{
+	"id": 1766,
+	"dspueblo" : "Alcala de los Gazules",
+	"coordenadas":{
+		"longitud":-5.7245344,
+		"latitud":36.4617479
+	},
+	"url":"http://www.alcaladelosgazules.es/",
+	"opencms":true,
+	"habitantes":5439,
+	"deuda":5697.33,
+	"deudaxhab":502.41005291,
+	"fecha_inscripcion":"1986-11-26",
+	"superficie":479.59, 
+	"wiki":"http://es.wikipedia.org/wiki/Alcala_de_los_Gazules", 
+	"cp":11001,
+	"n_noticias":228
+	}]
+}
+
+\end{lstlisting}
+
+\end{minipage}
+
+\\
+
+\end{tabular}
+
+
+%\begin{lstlisting}
+%{
+%pueblos:[
+%	{
+%		id:"int",
+%		dspueblo:"string",	
+%		coordenadas:{
+%			longitud:"double",
+%			longitud:"double"
+%		}
+%		url:"string",
+%		opencms:"boolean",
+%		habitantes:"integer",
+%		deuda:"double",
+%		deudaxhab:"double",
+%		fecha_inscripcion:"string",
+%		superficie:"double",
+%		wiki:"string",
+%		cp:"integer"
+%		n_noticias:"integer"
+%	}
+%]
+%}
+%\end{lstlisting}
+\item[/api/noticias/:id]
+Este método nos muestra la noticia con el ID que le indiquemos. Los saltos de linea se sustituyen por el caracter - al no ser compatible con json. tanto en el campo cuerpo como en el campo titular. Se recomienda volver a cambiarlo a la hora de capturar la consulta json.
+
+\begin{lstlisting}
+{
+	resultado:[
+	{
+		id_noticia:"integer",
+		titular:"string",
+		fecha:"string",
+		url:"string",
+		liked:"integer",
+		dspueblo:"string",
+		ncomentarios:"integer",
+		categoria:[
+		{
+			id_categoria:"integer",
+			dscategoria:"string"
+		}
+		],
+		vista:"boolean"
+	}
+	]
+}
+\end{lstlisting}
+
+\end{description}
+

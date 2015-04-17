@@ -1,0 +1,7 @@
+\section{Extracción de datos del Instituto de estadística y cartografía  de Andalucía}
+
+Otra de las fuentes utilizadas para la extracción de información es el Instituto de estadística y cartografía  de Andalucía\footnote{\url{http://www.juntadeandalucia.es/institutodeestadisticaycartografia}}. En este portal, dentro de la parte de estadística, se encuentran unas fichas municipales llamadas Andalucía pueblo a pueblo\footnote{\url{http://www.juntadeandalucia.es/institutodeestadisticaycartografia/sima/index.htm}}. En estas fichas se encuentran publicados una serie de datos relativos a todos los municipios de Andalucía, estos datos incluyen información sobre el propio municipio, la población o a la economía de la zona. Aun siendo una información que necesite ser actualizada en algunos casos, puede ser de interés para el ciudadano.
+
+El acceso a los datos se realiza con la librería urllib2, la URL tiene una parte fija y una variable. La parte fija es \textit{\path{...estadisticaycartografia/sima/htm/sm}} y la parte variable es un código de provincia que ya extrajimos previamente desde el Instituto Nacional de Estadística (INE).
+
+La estructura interna de la página es bastante sencilla y se estructura en tablas, esta estructura facilita el proceso de extracción de datos. Este proceso está basado, como en casos anteriores, en la librería BeautifulSoup de Python, con ella extraemos las celdas cuyos datos son de nuestro interés y a continuación se almacenan en la base de datos asignándolos al municipio correspondiente.
